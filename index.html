@@ -169,6 +169,37 @@
   <!-- ================= DASHBOARD CHỦ NHIỆM ================= -->
   <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
+    <!-- ================= BẢNG GIÁ 100K - HIỂN THỊ CÔNG KHAI ================= -->
+    <section id="pricingSection" class="mb-8">
+      <div class="rounded-3xl bg-white border border-amber-200 shadow-sm overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_.8fr]">
+          <div class="p-6 sm:p-7">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold border border-amber-200 mb-3">
+              <i class="fa-solid fa-crown"></i> GÓI GIÁO VIÊN TRỌN ĐỜI
+            </div>
+            <h3 class="text-xl sm:text-2xl font-extrabold text-stone-900">Sử dụng đầy đủ chỉ <span class="text-amber-800">100.000đ</span></h3>
+            <p class="text-sm text-stone-500 mt-2 max-w-2xl leading-relaxed">Một lần thanh toán, dùng lâu dài cho công tác chủ nhiệm. Có tài khoản riêng, đồng bộ dữ liệu Supabase và hỗ trợ khôi phục mật khẩu qua email.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-5 text-xs text-stone-700">
+              <div class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Không giới hạn giấy mời và phản hồi phụ huynh</span></div>
+              <div class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Link & QR mở được trên điện thoại phụ huynh</span></div>
+              <div class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Xuất Excel, ảnh JPG và nội dung gửi Zalo</span></div>
+              <div class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Quên mật khẩu có thể tự đặt lại qua email</span></div>
+            </div>
+          </div>
+          <div class="bg-gradient-to-br from-[#7a3206] to-[#b45309] text-white p-6 sm:p-7 flex flex-col justify-center">
+            <p class="text-xs uppercase tracking-widest text-amber-200 font-bold">Giá kích hoạt</p>
+            <div class="flex items-end gap-2 mt-1"><span class="text-4xl font-extrabold">100.000</span><span class="text-lg font-bold text-amber-200 mb-1">VNĐ</span></div>
+            <p class="text-xs text-amber-100 mt-2">Thanh toán MBBank • Xác nhận qua Zalo • Cấp tài khoản theo email</p>
+            <button onclick="openPurchaseModal()" class="mt-5 w-full py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-extrabold text-sm shadow-lg transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-cart-shopping"></i> Mua & Kích Hoạt Ngay
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
     <!-- Hero Profile Banner -->
     <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#7a3206] via-[#9e4310] to-[#b45309] text-white p-6 sm:p-8 shadow-xl mb-8">
       <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -211,35 +242,6 @@
         </div>
       </div>
     </div>
-
-    <!-- ================= BẢNG GIÁ / BÁN TÀI KHOẢN ================= -->
-    <section id="pricingSection" class="mb-8">
-      <div class="rounded-3xl bg-white border border-amber-200 shadow-sm overflow-hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_.8fr]">
-          <div class="p-6 sm:p-7">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold border border-amber-200 mb-3">
-              <i class="fa-solid fa-crown"></i> GÓI GIÁO VIÊN TRỌN ĐỜI
-            </div>
-            <h3 class="text-xl sm:text-2xl font-extrabold text-stone-900">Sử dụng đầy đủ chỉ <span class="text-amber-800">100.000đ</span></h3>
-            <p class="text-sm text-stone-500 mt-2 max-w-2xl leading-relaxed">Một lần thanh toán, dùng lâu dài cho công tác chủ nhiệm. Có tài khoản riêng, đồng bộ dữ liệu Supabase và hỗ trợ khôi phục mật khẩu qua email.</p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-5 text-xs text-stone-700">
-              <div class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Không giới hạn giấy mời và phản hồi phụ huynh</span></div>
-              <div class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Link & QR mở được trên điện thoại phụ huynh</span></div>
-              <div class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Xuất Excel, ảnh JPG và nội dung gửi Zalo</span></div>
-              <div class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Quên mật khẩu có thể tự đặt lại qua email</span></div>
-            </div>
-          </div>
-          <div class="bg-gradient-to-br from-[#7a3206] to-[#b45309] text-white p-6 sm:p-7 flex flex-col justify-center">
-            <p class="text-xs uppercase tracking-widest text-amber-200 font-bold">Giá kích hoạt</p>
-            <div class="flex items-end gap-2 mt-1"><span class="text-4xl font-extrabold">100.000</span><span class="text-lg font-bold text-amber-200 mb-1">VNĐ</span></div>
-            <p class="text-xs text-amber-100 mt-2">Thanh toán MBBank • Xác nhận qua Zalo • Cấp tài khoản theo email</p>
-            <button onclick="openPurchaseModal()" class="mt-5 w-full py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-extrabold text-sm shadow-lg transition flex items-center justify-center gap-2">
-              <i class="fa-solid fa-cart-shopping"></i> Mua & Kích Hoạt Ngay
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- Meetings Section Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
