@@ -1,0 +1,2421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giấy Mời Họp Phụ Huynh 4.0 - Chuyển Đổi Số Công Tác Chủ Nhiệm</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Cinzel:wght@600;700;800&family=Quicksand:wght@600;700&display=swap');
+
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background-color: #f7f4ef;
+      color: #2b231d;
+    }
+    .font-formal { font-family: 'Playfair Display', serif; }
+    .font-royal { font-family: 'Cinzel', serif; }
+    .font-cute { font-family: 'Quicksand', sans-serif; }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f5f0eb; }
+    ::-webkit-scrollbar-thumb { background: #d7ccc8; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #bcaaa4; }
+
+    /* 3D Envelope Animation */
+    .envelope-3d-scene { perspective: 1400px; }
+    .env-card {
+      position: relative;
+      width: 360px;
+      max-width: 90vw;
+      height: 240px;
+      margin: 0 auto;
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(78, 38, 12, 0.35);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .env-card:hover { transform: translateY(-4px); }
+
+    .env-traditional { background: #fdfbf7; border: 1px solid #e7dfd5; }
+    .env-traditional .env-flap { background: #eee5d8; box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
+    .env-traditional .env-seal { background: radial-gradient(circle at 35% 35%, #b91c1c, #7f1d1d); border: 2px dashed rgba(254, 240, 138, 0.7); color: #fef08a; }
+
+    .env-royal { background: #18181b; border: 1px solid #3f3f46; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6); }
+    .env-royal .env-flap { background: #27272a; }
+    .env-royal .env-seal { background: radial-gradient(circle at 35% 35%, #ca8a04, #713f12); border: 2px dashed #fef08a; color: #fef9c3; }
+
+    .env-emerald { background: #064e3b; border: 1px solid #047857; }
+    .env-emerald .env-flap { background: #047857; }
+    .env-emerald .env-seal { background: radial-gradient(circle at 35% 35%, #10b981, #065f46); border: 2px dashed #a7f3d0; color: #d1fae5; }
+
+    .env-cute { background: #fff1f2; border: 1px solid #fecdd3; }
+    .env-cute .env-flap { background: #ffe4e6; }
+    .env-cute .env-seal { background: radial-gradient(circle at 35% 35%, #fb7185, #e11d48); border: 2px dashed #ffe4e6; color: #ffffff; }
+
+    .env-flap {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 125px;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top center;
+      transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 4;
+    }
+    .env-card.opened .env-flap { transform: rotateX(180deg); z-index: 1; }
+
+    .env-seal {
+      position: absolute;
+      top: 96px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.35), inset 0 2px 4px rgba(255,255,255,0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      transition: transform 0.2s, opacity 0.3s;
+    }
+    .env-seal:hover { transform: translate(-50%, -50%) scale(1.1); }
+    .env-card.opened .env-seal { opacity: 0; pointer-events: none; }
+
+    /* Wedding Frame Filigree & Corners */
+    .wedding-frame-wrapper {
+      position: relative;
+      background-color: #fffdfa;
+      background-image: radial-gradient(#e7dfd5 0.5px, transparent 0.5px);
+      background-size: 16px 16px;
+    }
+    .wedding-inner-border {
+      position: relative;
+      border: 2px solid #b45309;
+      border-radius: 16px;
+    }
+    .wedding-inner-border::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px dashed rgba(180, 83, 9, 0.45);
+      border-radius: 12px;
+      pointer-events: none;
+    }
+    .corner-filigree {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+    .corner-tl { top: 6px; left: 6px; }
+    .corner-tr { top: 6px; right: 6px; transform: scaleX(-1); }
+    .corner-bl { bottom: 6px; left: 6px; transform: scaleY(-1); }
+    .corner-br { bottom: 6px; right: 6px; transform: scale(-1); }
+
+    .wedding-flourish-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .wedding-flourish-divider .line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, currentColor, transparent);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+  <!-- ================= TOP HEADER ================= -->
+  <header class="bg-white border-b border-stone-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8a3809] to-[#c25e19] text-white flex items-center justify-center shadow-md shadow-amber-900/15">
+          <i class="fa-regular fa-envelope-open text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-extrabold text-base sm:text-lg text-stone-900 leading-tight">Giấy Mời Họp Phụ Huynh</h1>
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200">Dành cho Giáo viên</span>
+          </div>
+          <p class="text-xs text-stone-500 font-medium hidden sm:block">Hệ thống tạo & quản lý thư mời điện tử trang trọng</p>
+        </div>
+      </div>
+
+      <!-- Right Header Actions -->
+      <div class="flex items-center gap-2.5">
+        <button onclick="openLicensePaywallModal()" id="btnHeaderLicenseStatus" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-crown text-amber-950"></i>
+          <span>Kích Hoạt Bản Quyền (100k)</span>
+        </button>
+
+        <button onclick="openAdminPortal()" class="px-2.5 py-1.5 rounded-xl bg-stone-900 hover:bg-black text-amber-300 text-xs font-semibold transition flex items-center gap-1.5" title="Quản trị duyệt đơn (Admin)">
+          <i class="fa-solid fa-user-shield text-amber-400"></i>
+          <span class="hidden md:inline">Admin</span>
+          <span id="badgePendingOrdersCount" class="w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] flex items-center justify-center font-bold">1</span>
+        </button>
+
+        <button onclick="openAuthModal('login')" class="text-stone-500 hover:text-amber-800 p-2 rounded-xl hover:bg-stone-100 transition" title="Đăng nhập tài khoản">
+          <i class="fa-solid fa-right-to-bracket text-base"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= DASHBOARD CHỦ NHIỆM ================= -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+    <!-- Hero Profile Banner -->
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#7a3206] via-[#9e4310] to-[#b45309] text-white p-6 sm:p-8 shadow-xl mb-8">
+      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/25 text-amber-200 text-xs font-medium mb-3 backdrop-blur-sm">
+            <i class="fa-solid fa-shield-halved text-amber-300"></i>
+            <span id="bannerSubLabel">Khu vực quản trị riêng của Cô Nguyễn Thu Hà</span>
+            <span id="bannerLicenseBadge" class="ml-1 px-2 py-0.2 rounded bg-amber-500 text-stone-900 font-extrabold text-[10px]">BẢN DÙNG THỬ</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2" id="bannerHeading">Xin chào, Cô Nguyễn Thu Hà</h2>
+          <p class="text-amber-100 text-xs sm:text-sm max-w-xl leading-relaxed" id="bannerDescription">
+            Trường THCS Chu Văn An • Mã giáo viên: <strong class="text-white font-semibold" id="dispTeacherCode">GV001</strong>. Tạo giấy mời điện tử và theo dõi phản hồi phụ huynh trực quan theo thời gian thực.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button onclick="openCreateModal()" class="px-5 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-stone-900 font-bold text-sm shadow-lg transition flex items-center gap-2 transform active:scale-95">
+            <i class="fa-solid fa-plus text-base"></i> Tạo Giấy Mời Họp
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Metric Counters -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-6 pt-6 border-t border-white/15">
+        <div class="bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+          <span class="text-xs text-amber-200 font-medium block">Tổng cuộc họp đã tạo</span>
+          <span class="text-2xl sm:text-3xl font-extrabold text-white mt-1 block" id="cntTotalMeetings">1</span>
+        </div>
+        <div class="bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+          <span class="text-xs text-amber-200 font-medium block">Tổng lượt phản hồi</span>
+          <span class="text-2xl sm:text-3xl font-extrabold text-white mt-1 block" id="cntTotalResponses">5</span>
+        </div>
+        <div class="bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+          <span class="text-xs text-emerald-300 font-medium block">Xác nhận tham dự</span>
+          <span class="text-2xl sm:text-3xl font-extrabold text-emerald-300 mt-1 block" id="cntTotalAttend">4</span>
+        </div>
+        <div class="bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+          <span class="text-xs text-rose-300 font-medium block">Không thể tham dự</span>
+          <span class="text-2xl sm:text-3xl font-extrabold text-rose-300 mt-1 block" id="cntTotalAbsent">1</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meetings Section Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+      <div>
+        <h3 class="text-xl font-bold text-stone-900">Danh Sách Giấy Mời Họp Của Bạn</h3>
+        <p class="text-xs sm:text-sm text-stone-500">Mỗi cuộc họp sở hữu một liên kết và mã QR riêng để gửi tới phụ huynh</p>
+      </div>
+      <div class="relative w-full sm:w-72">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 text-sm"></i>
+        <input type="text" id="meetingSearchInput" oninput="renderMeetingsList()" placeholder="Tìm theo tên cuộc họp, lớp..." 
+          class="w-full pl-9 pr-4 py-2 bg-white border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-amber-600 transition" />
+      </div>
+    </div>
+
+    <div id="meetingsListContainer" class="space-y-4"></div>
+  </main>
+
+  <!-- ================= MODAL XÁC NHẬN XÓA CUỘC HỌP (KHÔNG DÙNG CONFIRM) ================= -->
+  <div id="deleteConfirmModal" class="fixed inset-0 z-[80] bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center space-y-4 border border-stone-200">
+      <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-xl">
+        <i class="fa-regular fa-trash-can"></i>
+      </div>
+      <div>
+        <h4 class="font-bold text-base text-stone-900">Xác Nhận Xóa Cuộc Họp?</h4>
+        <p class="text-xs text-stone-500 mt-1 leading-relaxed">
+          Thao tác này sẽ xóa vĩnh viễn giấy mời họp của lớp <strong id="deleteTargetClass" class="text-stone-800"></strong> cùng toàn bộ phản hồi của phụ huynh.
+        </p>
+      </div>
+      <div class="grid grid-cols-2 gap-2.5 pt-2">
+        <button onclick="closeModal('deleteConfirmModal')" class="py-2.5 px-4 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs transition">
+          Hủy bỏ
+        </button>
+        <button onclick="confirmExecuteDeleteMeeting()" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow transition">
+          Đồng ý xóa
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-stone-200 py-4 text-xs text-stone-500 mt-auto">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div>© 2026 Giấy Mời Họp Phụ Huynh – Hỗ trợ kỹ thuật: <strong>0386435510</strong> (Zalo: Nguyễn Công Dinh)</div>
+      <div class="text-stone-400">Tối ưu trên cả máy tính & điện thoại thông minh</div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================================= -->
+  <!-- MODAL TẠO GIẤY MỜI HỌP PHỤ HUYNH (ẢNH 4, ẢNH 7 & ẢNH 88FDCC)                            -->
+  <!-- ========================================================================================= -->
+  <div id="createMeetingModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden my-auto border border-stone-300">
+      
+      <!-- Modal Header -->
+      <div class="bg-[#241711] text-white px-6 py-4 flex items-center justify-between">
+        <div>
+          <h3 class="font-bold text-lg leading-snug" id="createModalHeading">Tạo Giấy Mời Họp Phụ Huynh</h3>
+          <p class="text-xs text-stone-400" id="createModalSubHeading">Điền thông tin và lựa chọn mẫu bì thư mỹ thuật chuẩn giáo dục</p>
+        </div>
+        <button onclick="closeModal('createMeetingModal')" class="text-stone-400 hover:text-white p-1 text-xl"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="p-6 space-y-5 max-h-[78vh] overflow-y-auto">
+        <!-- 4 Mẫu Bì Thư Mỹ Thuật -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <label class="text-xs font-bold text-stone-800 flex items-center gap-1.5">
+              <i class="fa-solid fa-palette text-amber-700"></i> CHỌN MẪU BÌ THƯ & GIẤY MỜI MỸ THUẬT *
+            </label>
+            <span class="text-[11px] text-stone-400 font-medium">4 phong cách thiết kế mỹ thuật & thủ công</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <!-- 1: Sư phạm truyền thống -->
+            <div onclick="selectThemeRadio('traditional')" id="themeBox_traditional" class="theme-card relative border-2 border-amber-600 rounded-2xl p-3 bg-amber-50/40 cursor-pointer flex flex-col items-center text-center transition">
+              <span class="theme-check absolute top-2 right-2 w-4 h-4 rounded-full bg-amber-600 text-white text-[9px] flex items-center justify-center font-bold"><i class="fa-solid fa-check"></i></span>
+              <span class="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 text-[9px] font-bold border border-amber-200">Khuyên Dùng Cho Nhà Trường</span>
+              <div class="w-12 h-16 rounded-full bg-[#fcfaf6] border border-stone-200 shadow-sm flex flex-col items-center justify-center mb-2 mt-5">
+                <span class="px-2 py-0.5 rounded-full bg-[#991b1b] text-white text-[8px] font-bold uppercase mb-1">Truyền Thống</span>
+                <div class="w-8 h-8 rounded-full bg-[#831818] text-amber-200 flex items-center justify-center text-xs"><i class="fa-solid fa-landmark"></i></div>
+              </div>
+              <span class="font-bold text-xs text-stone-900 leading-tight">Sư Phạm Truyền Thống</span>
+              <span class="text-[10px] text-stone-500 mt-1 leading-snug">Bì thư trắng tinh khôi chuẩn bưu chính...</span>
+              <button type="button" onclick="event.stopPropagation(); previewThemeDirectly('traditional')" class="mt-2 text-[10px] font-bold text-amber-800 hover:underline"><i class="fa-regular fa-eye"></i> Xem trước bản 3D</button>
+            </div>
+
+            <!-- 2: Hoàng gia sang trọng -->
+            <div onclick="selectThemeRadio('royal')" id="themeBox_royal" class="theme-card relative border-2 border-stone-200 rounded-2xl p-3 bg-white cursor-pointer flex flex-col items-center text-center transition">
+              <span class="theme-check hidden absolute top-2 right-2 w-4 h-4 rounded-full bg-amber-600 text-white text-[9px] flex items-center justify-center font-bold"><i class="fa-solid fa-check"></i></span>
+              <span class="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-stone-100 text-stone-700 text-[9px] font-bold border border-stone-200">Phong Cách VIP Danh Giá</span>
+              <div class="w-12 h-16 rounded-full bg-[#18181b] border border-amber-400/40 shadow-sm flex flex-col items-center justify-center mb-2 mt-5">
+                <span class="px-2 py-0.5 rounded-full bg-amber-500 text-stone-950 text-[8px] font-bold uppercase mb-1">Hoàng Gia</span>
+                <div class="w-8 h-8 rounded-full bg-stone-900 text-amber-400 flex items-center justify-center text-xs border border-amber-400/50"><i class="fa-solid fa-crown"></i></div>
+              </div>
+              <span class="font-bold text-xs text-stone-900 leading-tight">Hoàng Gia Sang Trọng</span>
+              <span class="text-[10px] text-stone-500 mt-1 leading-snug">Nhung đen hoàng gia phối viền nẹp vàng...</span>
+              <button type="button" onclick="event.stopPropagation(); previewThemeDirectly('royal')" class="mt-2 text-[10px] font-bold text-amber-800 hover:underline"><i class="fa-regular fa-eye"></i> Xem trước bản 3D</button>
+            </div>
+
+            <!-- 3: Ngọc bích hiện đại -->
+            <div onclick="selectThemeRadio('emerald')" id="themeBox_emerald" class="theme-card relative border-2 border-stone-200 rounded-2xl p-3 bg-white cursor-pointer flex flex-col items-center text-center transition">
+              <span class="theme-check hidden absolute top-2 right-2 w-4 h-4 rounded-full bg-amber-600 text-white text-[9px] flex items-center justify-center font-bold"><i class="fa-solid fa-check"></i></span>
+              <span class="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 text-[9px] font-bold border border-emerald-200">Ươm Mầm Tri Thức • Tươi Sáng</span>
+              <div class="w-12 h-16 rounded-full bg-[#064e3b] border border-emerald-400/40 shadow-sm flex flex-col items-center justify-center mb-2 mt-5">
+                <span class="px-2 py-0.5 rounded-full bg-emerald-400 text-stone-950 text-[8px] font-bold uppercase mb-1">Ngọc Bích</span>
+                <div class="w-8 h-8 rounded-full bg-[#047857] text-emerald-200 flex items-center justify-center text-xs"><i class="fa-solid fa-gem"></i></div>
+              </div>
+              <span class="font-bold text-xs text-stone-900 leading-tight">Ngọc Bích Hiện Đại</span>
+              <span class="text-[10px] text-stone-500 mt-1 leading-snug">Xanh lục bảo tươi tắn của hy vọng...</span>
+              <button type="button" onclick="event.stopPropagation(); previewThemeDirectly('emerald')" class="mt-2 text-[10px] font-bold text-amber-800 hover:underline"><i class="fa-regular fa-eye"></i> Xem trước bản 3D</button>
+            </div>
+
+            <!-- 4: Dễ thương -->
+            <div onclick="selectThemeRadio('cute')" id="themeBox_cute" class="theme-card relative border-2 border-stone-200 rounded-2xl p-3 bg-white cursor-pointer flex flex-col items-center text-center transition">
+              <span class="theme-check hidden absolute top-2 right-2 w-4 h-4 rounded-full bg-amber-600 text-white text-[9px] flex items-center justify-center font-bold"><i class="fa-solid fa-check"></i></span>
+              <span class="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 text-[9px] font-bold border border-rose-200">Dễ Thương • Mầm Non & TH</span>
+              <div class="w-12 h-16 rounded-full bg-[#fff1f2] border border-rose-300 shadow-sm flex flex-col items-center justify-center mb-2 mt-5">
+                <span class="px-2 py-0.5 rounded-full bg-rose-500 text-white text-[8px] font-bold uppercase mb-1">Dễ Thương</span>
+                <div class="w-8 h-8 rounded-full bg-rose-400 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-heart"></i></div>
+              </div>
+              <span class="font-bold text-xs text-stone-900 leading-tight">Dễ Thương (Cute)</span>
+              <span class="text-[10px] text-stone-500 mt-1 leading-snug">Hồng pastel dịu ngọt gần gũi phụ huynh...</span>
+              <button type="button" onclick="event.stopPropagation(); previewThemeDirectly('cute')" class="mt-2 text-[10px] font-bold text-amber-800 hover:underline"><i class="fa-regular fa-eye"></i> Xem trước bản 3D</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thông tin hành chính -->
+        <div class="space-y-3.5 pt-2">
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <div class="sm:col-span-3">
+              <label class="block text-xs font-bold text-stone-700 mb-1">TÊN CUỘC HỌP <span class="text-rose-600">*</span></label>
+              <input type="text" id="createMeetingTitle" value="Họp phụ huynh đầu năm học 2024 - 2025" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1">LỚP <span class="text-rose-600">*</span></label>
+              <input type="text" id="createMeetingClass" value="7A1" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1">TÊN GIÁO VIÊN HIỂN THỊ TRÊN GIẤY MỜI <span class="text-rose-600">*</span></label>
+              <input type="text" id="createTeacherName" value="Cô Nguyễn Thu Hà" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1">NĂM HỌC</label>
+              <input type="text" id="createSchoolYear" value="2024 - 2025" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-xs font-bold text-stone-700">NGÀY HỌP <span class="text-rose-600">*</span></label>
+                <button type="button" onclick="quickSelectDate()" class="text-[11px] text-amber-800 font-semibold hover:underline flex items-center gap-1">
+                  <i class="fa-regular fa-calendar-days"></i> Chọn lịch
+                </button>
+              </div>
+              <input type="text" id="createMeetingDate" value="Chủ Nhật, 15/09/2024" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1">THỜI GIAN HỌP <span class="text-rose-600">*</span></label>
+              <input type="text" id="createMeetingTime" value="14:00 - 16:00" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1">ĐỊA ĐIỂM <span class="text-rose-600">*</span></label>
+              <input type="text" id="createMeetingLocation" value="Phòng học lớp 7A1 (Tầng 2, Nhà B)" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Chế độ nhập nội dung cuộc họp -->
+        <div class="pt-3 border-t border-stone-200">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+            <div>
+              <label class="text-xs font-bold text-stone-800">Nội dung cuộc họp</label>
+              <span class="text-[11px] text-stone-400 block sm:inline sm:ml-1">(Hiển thị trên giấy mời gửi phụ huynh)</span>
+            </div>
+
+            <div class="inline-flex rounded-xl border border-stone-200 overflow-hidden text-xs">
+              <button type="button" id="tabAgenda_item" onclick="switchAgendaTab('item')" class="px-3 py-1.5 font-bold bg-white text-stone-800 border-r border-stone-200 flex items-center gap-1.5">
+                <i class="fa-solid fa-list-ol"></i> Danh sách từng mục
+              </button>
+              <button type="button" id="tabAgenda_free" onclick="switchAgendaTab('free')" class="px-3 py-1.5 font-semibold bg-stone-50 text-stone-600 border-r border-stone-200 hover:bg-stone-100 flex items-center gap-1.5">
+                <i class="fa-solid fa-bars"></i> Nội dung tự do
+              </button>
+              <button type="button" id="tabAgenda_bulk" onclick="switchAgendaTab('bulk')" class="px-3 py-1.5 font-semibold bg-[#fffbeb] text-[#92400e] border border-amber-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-paste"></i> Nhập nhanh nhiều dòng
+              </button>
+            </div>
+          </div>
+
+          <div id="agendaView_item" class="space-y-2">
+            <div id="agendaItemsDynamicContainer" class="space-y-2">
+              <div class="flex items-center gap-2 agenda-row">
+                <span class="w-6 h-6 rounded-full bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs flex items-center justify-center flex-shrink-0">1</span>
+                <input type="text" value="Báo cáo tóm tắt tình hình học tập và rèn luyện của học sinh" class="agenda-row-input flex-1 px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+                <button type="button" onclick="removeAgendaRow(this)" class="p-2 text-stone-300 hover:text-rose-600"><i class="fa-regular fa-trash-can text-sm"></i></button>
+              </div>
+              <div class="flex items-center gap-2 agenda-row">
+                <span class="w-6 h-6 rounded-full bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs flex items-center justify-center flex-shrink-0">2</span>
+                <input type="text" value="Triển khai phương hướng, chỉ tiêu và kế hoạch năm học mới" class="agenda-row-input flex-1 px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+                <button type="button" onclick="removeAgendaRow(this)" class="p-2 text-stone-300 hover:text-rose-600"><i class="fa-regular fa-trash-can text-sm"></i></button>
+              </div>
+              <div class="flex items-center gap-2 agenda-row">
+                <span class="w-6 h-6 rounded-full bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs flex items-center justify-center flex-shrink-0">3</span>
+                <input type="text" value="Thống nhất các biện pháp phối hợp giữa gia đình và nhà trường" class="agenda-row-input flex-1 px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+                <button type="button" onclick="removeAgendaRow(this)" class="p-2 text-stone-300 hover:text-rose-600"><i class="fa-regular fa-trash-can text-sm"></i></button>
+              </div>
+              <div class="flex items-center gap-2 agenda-row">
+                <span class="w-6 h-6 rounded-full bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs flex items-center justify-center flex-shrink-0">4</span>
+                <input type="text" value="Bầu Ban đại diện cha mẹ học sinh lớp" class="agenda-row-input flex-1 px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+                <button type="button" onclick="removeAgendaRow(this)" class="p-2 text-stone-300 hover:text-rose-600"><i class="fa-regular fa-trash-can text-sm"></i></button>
+              </div>
+            </div>
+
+            <button type="button" onclick="addNewAgendaRow()" class="mt-2 px-3.5 py-2 rounded-xl border border-dashed border-stone-300 text-stone-600 hover:text-amber-800 text-xs font-bold transition flex items-center gap-1.5">
+              <span class="text-amber-700 font-extrabold">+ +</span> Thêm nội dung
+            </button>
+          </div>
+
+          <div id="agendaView_free" class="hidden">
+            <textarea id="agendaFreeContent" rows="4" placeholder="Nhập nội dung cuộc họp tự do dưới dạng đoạn văn..." class="w-full p-3 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700"></textarea>
+          </div>
+
+          <div id="agendaView_bulk" class="hidden">
+            <textarea id="agendaBulkContent" rows="5" placeholder="Dán danh sách nội dung (mỗi mục một dòng)..." class="w-full p-3 bg-white border border-stone-300 rounded-xl text-xs font-mono focus:outline-none focus:border-amber-700"></textarea>
+          </div>
+        </div>
+
+        <!-- PHẦN BỔ SUNG THEO ẢNH: LỜI MỜI RIÊNG & GHI CHÚ THÊM -->
+        <div class="pt-3 border-t border-stone-200">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label class="block text-xs font-bold text-stone-800 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+                <i class="fa-regular fa-comment-dots text-amber-700"></i> LỜI MỜI / LỜI NHẮN RIÊNG CỦA GIÁO VIÊN
+              </label>
+              <textarea id="createTeacherQuote" rows="3" placeholder="Lời nhắn gửi trao đổi chân tình của GVCN..." 
+                class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-xs text-stone-800 leading-relaxed focus:bg-white focus:outline-none focus:border-amber-700 transition shadow-inner">Sự hiện diện của Quý phụ huynh là niềm vinh hạnh và nguồn động viên to lớn cho các thầy cô cùng các em học sinh!</textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-800 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-info text-amber-700"></i> GHI CHÚ THÊM (KHÔNG BẮT BUỘC)
+              </label>
+              <textarea id="createSchoolNote" rows="3" placeholder="Ghi chú về gửi xe, mang theo sổ tay, thời gian có mặt..." 
+                class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-xs text-stone-800 leading-relaxed focus:bg-white focus:outline-none focus:border-amber-700 transition shadow-inner">Quý phụ huynh vui lòng gửi xe tại cổng trường và mang theo sổ tay.</textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="px-6 py-4 bg-stone-50 border-t border-stone-200 flex items-center justify-between">
+        <button onclick="closeModal('createMeetingModal')" class="text-xs text-stone-500 font-bold hover:text-stone-800 px-3 py-2 rounded-xl transition hover:bg-stone-100">
+          Hủy bỏ
+        </button>
+        <button onclick="saveAndGenerateInvitation()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#b44509] to-[#963704] hover:from-[#963704] hover:to-[#782802] text-white font-bold text-xs shadow-md shadow-amber-900/20 transition flex items-center gap-2 transform active:scale-95">
+          <i class="fa-solid fa-check text-sm"></i> Tạo Giấy Mời & Lấy Link
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================================= -->
+  <!-- MODAL BÌ THƯ 3D & GIẤY MỜI PHONG CÁCH THIỆP CƯỚI (TUYỆT ĐỐI KHÔNG CÓ LOGO TÒA NHÀ)       -->
+  <!-- ========================================================================================= -->
+  <div id="parentInvitationModal" class="fixed inset-0 z-[70] bg-stone-950/90 backdrop-blur-md hidden items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="w-full max-w-xl my-auto text-stone-100">
+      
+      <!-- Top Control Bar -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="text-xs text-amber-300 flex items-center gap-2">
+          <i class="fa-regular fa-eye"></i> <span id="envPreviewThemeBadge">Xem trước: Sư Phạm Truyền Thống (Lớp 7A1)</span>
+        </div>
+        <button onclick="closeModal('parentInvitationModal')" class="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white transition flex items-center gap-1.5 border border-white/20">
+          <i class="fa-solid fa-arrow-left"></i> <span id="txtBackFromParentView">Về Bảng Điều Khiển</span>
+        </button>
+      </div>
+
+      <!-- STAGE 1: BÌ THƯ 3D TƯƠNG TÁC -->
+      <div id="viewStageEnvelope" class="text-center py-6">
+        <span class="inline-block px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-semibold mb-3 border border-amber-500/30">
+          Khuyên Dùng Cho Nhà Trường
+        </span>
+        <h3 class="text-2xl sm:text-3xl font-extrabold text-white mb-1">Thư Mời Họp Phụ Huynh Trực Tuyến</h3>
+        <p class="text-xs text-stone-400 mb-6" id="envSubHeader">Cô Nguyễn Thu Hà • Lớp 7A1 (2024 - 2025)</p>
+
+        <div class="envelope-3d-scene">
+          <div id="envelopeInteractiveObj" class="env-card env-traditional flex flex-col justify-end p-5 text-center" onclick="open3dEnvelopeInteractive()">
+            <div class="env-flap"></div>
+            <div class="env-seal" title="Chạm con dấu sáp để mở thư">
+              <i class="fa-solid fa-stamp text-lg"></i>
+              <span class="text-[8px] font-bold tracking-tighter uppercase mt-0.5">DẤU SÁP</span>
+            </div>
+            <div class="relative z-10 bg-white/95 backdrop-blur rounded-xl p-3 border border-stone-300 shadow-md mt-auto">
+              <span class="text-[9px] uppercase tracking-widest text-stone-400 font-bold block">TRÂN TRỌNG KÍNH GỬI</span>
+              <strong class="text-sm text-stone-900 font-extrabold block mt-0.5" id="envCardRecipient">Quý Phụ Huynh Học Sinh Lớp 7A1</strong>
+              <span class="text-[10px] text-stone-500 block mt-0.5" id="envCardSubInfo">Năm học 2024 - 2025 • GVCN: Cô Nguyễn Thu Hà</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-xs text-amber-200 mt-5 font-medium"><i class="fa-solid fa-hand-pointer text-amber-400 animate-bounce mr-1"></i> Chạm con dấu sáp để mở thư</p>
+        <button onclick="open3dEnvelopeInteractive()" class="mt-4 px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-extrabold text-xs shadow-xl transition flex items-center gap-2 mx-auto">
+          <i class="fa-regular fa-envelope-open text-sm"></i> MỞ BÌ THƯ & XEM GIẤY MỜI
+        </button>
+      </div>
+
+      <!-- STAGE 2: GIẤY MỜI BÊN TRONG (KHUNG THIỆP CƯỚI - KHÔNG CÓ LOGO TÒA NHÀ) -->
+      <div id="viewStageLetter" class="hidden wedding-frame-wrapper rounded-3xl shadow-2xl p-4 sm:p-6 text-left max-h-[85vh] overflow-y-auto transition-all text-stone-900">
+        
+        <div class="wedding-inner-border p-5 sm:p-7 space-y-4">
+          <!-- 4 Góc Hoa Văn Tân Cổ Điển -->
+          <svg class="corner-filigree corner-tl text-amber-800" viewBox="0 0 100 100" fill="currentColor">
+            <path d="M0,0 L40,0 C20,10 10,20 0,40 Z M15,15 C25,20 20,25 15,35 C10,25 5,20 15,15 Z" />
+          </svg>
+          <svg class="corner-filigree corner-tr text-amber-800" viewBox="0 0 100 100" fill="currentColor">
+            <path d="M0,0 L40,0 C20,10 10,20 0,40 Z M15,15 C25,20 20,25 15,35 C10,25 5,20 15,15 Z" />
+          </svg>
+          <svg class="corner-filigree corner-bl text-amber-800" viewBox="0 0 100 100" fill="currentColor">
+            <path d="M0,0 L40,0 C20,10 10,20 0,40 Z M15,15 C25,20 20,25 15,35 C10,25 5,20 15,15 Z" />
+          </svg>
+          <svg class="corner-filigree corner-br text-amber-800" viewBox="0 0 100 100" fill="currentColor">
+            <path d="M0,0 L40,0 C20,10 10,20 0,40 Z M15,15 C25,20 20,25 15,35 C10,25 5,20 15,15 Z" />
+          </svg>
+
+          <!-- TIÊU ĐỀ QUỐC HIỆU (TRỰC TIẾP, KHÔNG CÓ LOGO TÒA NHÀ) -->
+          <div class="text-center space-y-1 pb-3">
+            <p class="font-extrabold text-xs sm:text-sm tracking-wider uppercase text-stone-900">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</p>
+            <p class="text-xs text-stone-600 italic">Độc lập – Tự do – Hạnh phúc</p>
+            
+            <!-- Họa tiết dải hoa văn phân cách -->
+            <div class="wedding-flourish-divider my-2">
+              <span class="line" style="width: 50px;"></span>
+              <i class="fa-solid fa-feather text-amber-800 text-xs opacity-75"></i>
+              <span class="line" style="width: 50px;"></span>
+            </div>
+
+            <div class="pt-1">
+              <span class="inline-block px-3.5 py-1 rounded-full bg-amber-100/80 text-amber-950 font-bold text-[11px] tracking-wide border border-amber-300/60" id="letterBadgeClass">
+                BAN GIÁM HIỆU & GIÁO VIÊN CHỦ NHIỆM LỚP 7A1
+              </span>
+            </div>
+
+            <h2 class="text-2xl sm:text-3xl font-formal font-bold text-amber-950 pt-2 tracking-wide" id="letterTitle">GIẤY MỜI HỌP PHỤ HUYNH</h2>
+            <p class="text-xs text-amber-900 font-semibold" id="letterClassYear">Lớp 7A1 • Năm học 2024 - 2025</p>
+          </div>
+
+          <!-- Lời kính mời -->
+          <div class="text-xs sm:text-sm text-stone-700 leading-relaxed text-center font-medium">
+            Trân trọng kính mời Quý phụ huynh học sinh <strong class="text-amber-950 underline font-bold" id="letterRecipientName">Lớp 7A1</strong> tham dự buổi họp phụ huynh:
+          </div>
+
+          <!-- Chi tiết cuộc họp -->
+          <div class="bg-amber-50/70 rounded-2xl p-4 border border-amber-200/80 text-xs sm:text-sm space-y-2.5">
+            <div class="flex items-center gap-2.5">
+              <i class="fa-regular fa-user text-amber-800 w-4"></i>
+              <span>Giáo viên chủ nhiệm: <strong class="text-stone-900" id="letterTeacherName">Cô Nguyễn Thu Hà</strong></span>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <i class="fa-regular fa-calendar-check text-amber-800 w-4"></i>
+              <span>Thời gian: <strong class="text-stone-900" id="letterTimeInfo">14:00 - 16:00, 15/09/2024</strong></span>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <i class="fa-solid fa-location-dot text-amber-800 w-4"></i>
+              <span>Địa điểm: <strong class="text-stone-900" id="letterLocationInfo">Phòng học lớp 7A1 (Tầng 2, Nhà B)</strong></span>
+            </div>
+          </div>
+
+          <!-- Nội dung chương trình -->
+          <div>
+            <h4 class="text-xs font-bold text-stone-800 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+              <i class="fa-solid fa-list-check text-amber-800"></i> Nội dung chương trình cuộc họp
+            </h4>
+            <div id="letterAgendaList" class="space-y-2 text-xs text-stone-700"></div>
+          </div>
+
+          <!-- Dải hoa văn phân cách nhỏ -->
+          <div class="wedding-flourish-divider my-2">
+            <span class="line" style="width: 45px;"></span>
+            <i class="fa-regular fa-heart text-xs opacity-60"></i>
+            <span class="line" style="width: 45px;"></span>
+          </div>
+
+          <!-- Lời nhắn riêng của giáo viên (Động) -->
+          <div class="p-4 rounded-2xl border border-amber-200 bg-amber-50/50 text-xs sm:text-sm italic text-center leading-relaxed text-amber-950 font-serif" id="letterTeacherQuoteText">
+            "Sự hiện diện của Quý phụ huynh là niềm vinh hạnh và nguồn động viên to lớn cho các thầy cô cùng các em học sinh!"
+          </div>
+
+          <!-- Ghi chú thêm (Động) -->
+          <p class="text-xs text-stone-500 italic text-center" id="letterSchoolNoteText">
+            * Quý phụ huynh vui lòng gửi xe tại cổng trường và mang theo sổ tay.
+          </p>
+
+          <!-- Form xác nhận trực tuyến 3 giây -->
+          <div class="border-t-2 border-dashed border-amber-900/20 pt-4 bg-white/90 p-4 rounded-2xl border border-stone-200">
+            <h4 class="text-xs font-extrabold text-amber-900 uppercase tracking-wider mb-2 text-center">XÁC NHẬN THAM DỰ TRỰC TUYẾN (3 GIÂY)</h4>
+            <form id="parentFeedbackForm" onsubmit="handleParentFeedbackSubmit(event)" class="space-y-3">
+              <div class="grid grid-cols-2 gap-2">
+                <label class="border-2 border-emerald-500 bg-emerald-50 rounded-xl p-2.5 flex items-center justify-center gap-2 cursor-pointer text-xs font-bold text-emerald-900">
+                  <input type="radio" name="feedbackStatus" value="attend" checked /> Sẽ tham dự
+                </label>
+                <label class="border-2 border-stone-300 rounded-xl p-2.5 flex items-center justify-center gap-2 cursor-pointer text-xs font-bold text-stone-600">
+                  <input type="radio" name="feedbackStatus" value="absent" /> Xin vắng mặt
+                </label>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input type="text" id="feedbackStudent" required placeholder="Họ và tên học sinh *" class="px-3.5 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+                <input type="text" id="feedbackParent" required placeholder="Họ và tên phụ huynh *" class="px-3.5 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+              </div>
+              <textarea id="feedbackNote" rows="2" placeholder="Lời nhắn gửi trực tiếp đến GVCN..." class="w-full px-3.5 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-amber-700"></textarea>
+              <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow transition flex items-center justify-center gap-2">
+                <i class="fa-regular fa-paper-plane"></i> Gửi Xác Nhận Ngay
+              </button>
+            </form>
+          </div>
+
+          <div class="text-center pt-2">
+            <button onclick="foldLetterBack()" class="text-xs text-stone-400 hover:text-stone-700 underline">Đóng giấy mời lại</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= MODAL MÃ QR & ẢNH GIẤY MỜI ================= -->
+  <div id="qrModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden my-auto border border-stone-200">
+      <div class="bg-[#83380c] text-white p-4 flex items-center justify-between">
+        <div class="flex items-center gap-2 text-sm font-bold"><i class="fa-solid fa-qrcode text-amber-300"></i> Mã QR & Giấy Mời Họp Phụ Huynh</div>
+        <button onclick="closeModal('qrModal')" class="text-amber-200 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="p-6 text-center space-y-4">
+        <div class="border-2 border-dashed border-amber-300 bg-amber-50/40 rounded-2xl p-4 text-center">
+          <span class="text-[10px] uppercase font-extrabold text-stone-400 block mb-1">THƯ MỜI HỌP ĐIỆN TỬ</span>
+          <h4 class="font-bold text-stone-900 text-sm" id="qrFlyerTitle">Họp phụ huynh đầu năm học 2024 - 2025</h4>
+          <p class="text-xs text-stone-600 mb-3" id="qrFlyerClassYear">Lớp 7A1 • Năm học 2024 - 2025</p>
+
+          <div id="qrcodeBox" class="flex justify-center my-3 p-3 bg-white rounded-xl shadow-sm inline-block mx-auto border border-stone-100"></div>
+
+          <div class="text-[11px] text-stone-700 space-y-1 text-left bg-white/90 p-2.5 rounded-xl border border-amber-200 mt-3">
+            <div><i class="fa-regular fa-calendar text-amber-800 mr-1.5"></i> Ngày: <strong id="qrFlyerDate">Chủ Nhật, 15/09/2024</strong></div>
+            <div><i class="fa-regular fa-clock text-amber-800 mr-1.5"></i> Thời gian: <strong id="qrFlyerTime">14:00 - 16:00</strong></div>
+            <div><i class="fa-solid fa-location-dot text-amber-800 mr-1.5"></i> Địa điểm: <span id="qrFlyerLocation">Phòng học lớp 7A1 (Tầng 2, Nhà B)</span></div>
+          </div>
+
+          <div class="mt-3 flex items-center gap-1.5 bg-white p-1.5 rounded-xl border border-stone-200">
+            <input type="text" id="qrFlyerUrlInput" readonly class="text-[11px] font-mono text-stone-600 bg-transparent flex-1 px-2 focus:outline-none" />
+            <button onclick="copyFlyerLinkInput()" class="px-3 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-stone-800 text-xs font-bold">Chép</button>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <button onclick="exportHighResInvitationFlyer()" class="w-full py-2.5 rounded-xl bg-[#b44509] hover:bg-[#963704] text-white text-xs font-bold shadow transition flex items-center justify-center gap-2">
+            <i class="fa-regular fa-image"></i> Xuất ảnh giấy mời kèm link (JPG siêu nhẹ)
+          </button>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="copyZaloFlyerInviteText()" class="py-2.5 px-3 rounded-xl bg-amber-100 hover:bg-amber-200 text-stone-900 text-xs font-bold transition flex items-center justify-center gap-1.5">
+              <i class="fa-regular fa-copy"></i> Copy tin Zalo
+            </button>
+            <button onclick="downloadQrCodeFile()" class="py-2.5 px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-download"></i> Tải mã QR (PNG)
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="px-5 py-2.5 bg-stone-50 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-400">
+        <span>Hỗ trợ gửi Zalo hoặc in ấn trực tiếp</span>
+        <button onclick="closeModal('qrModal')" class="hover:text-stone-600">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL QUẢN LÝ PHẢN HỒI & EXCEL ================= -->
+  <div id="responsesModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden my-auto border border-stone-200">
+      <div class="bg-[#83380c] text-white p-5 flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="font-bold text-lg">Quản Lý Phản Hồi Phụ Huynh</h3>
+            <span class="px-2 py-0.5 rounded bg-amber-400 text-stone-900 font-extrabold text-xs" id="tableClassBadge">Lớp 7A1</span>
+          </div>
+          <p class="text-xs text-amber-200 mt-0.5" id="tableMeetingSub">Họp phụ huynh đầu năm học 2024 - 2025</p>
+        </div>
+        <button onclick="closeModal('responsesModal')" class="text-amber-200 hover:text-white p-1 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 p-5 bg-stone-50/70 border-b border-stone-200 text-xs">
+        <div class="p-3.5 bg-white rounded-2xl border border-stone-200 shadow-sm flex items-center justify-between">
+          <div><span class="text-stone-500 block">Tổng phản hồi</span><span class="text-2xl font-extrabold text-stone-900 mt-0.5 block" id="respStatTotal">5</span></div>
+          <i class="fa-solid fa-users text-stone-300 text-xl"></i>
+        </div>
+        <div class="p-3.5 bg-white rounded-2xl border border-stone-200 shadow-sm flex items-center justify-between">
+          <div><span class="text-emerald-700 block font-bold">Tham dự</span><span class="text-2xl font-extrabold text-emerald-700 mt-0.5 block" id="respStatAttend">4</span></div>
+          <i class="fa-solid fa-user-check text-emerald-300 text-xl"></i>
+        </div>
+        <div class="p-3.5 bg-white rounded-2xl border border-stone-200 shadow-sm flex items-center justify-between">
+          <div><span class="text-rose-600 block font-bold">Không tham dự</span><span class="text-2xl font-extrabold text-rose-600 mt-0.5 block" id="respStatAbsent">1</span></div>
+          <i class="fa-solid fa-user-xmark text-rose-300 text-xl"></i>
+        </div>
+        <div class="p-3.5 bg-white rounded-2xl border border-stone-200 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-stone-500 font-medium">Chưa phản hồi</span>
+            <button onclick="promptImportStudentRoster()" class="text-[10px] text-amber-800 font-bold hover:underline">+ Thêm DS</button>
+          </div>
+          <div class="text-xs font-semibold text-stone-400 mt-1.5" id="respStatPending">— Chưa nhập DS</div>
+        </div>
+      </div>
+
+      <div class="px-5 py-3 border-b border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <button onclick="setFilterAttendance('all')" id="tabFilterAll" class="px-3 py-1 rounded-xl text-xs font-bold bg-amber-900 text-white">Tất cả (5)</button>
+          <button onclick="setFilterAttendance('attend')" id="tabFilterAttend" class="px-3 py-1 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700">Tham dự (4)</button>
+          <button onclick="setFilterAttendance('absent')" id="tabFilterAbsent" class="px-3 py-1 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700">Vắng (1)</button>
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <input type="text" id="filterRespSearch" oninput="renderAttendanceRows()" placeholder="Tìm tên học sinh, phụ huynh..." class="px-3 py-1.5 text-xs bg-stone-50 border border-stone-200 rounded-xl w-full sm:w-60 focus:outline-none focus:border-amber-700" />
+          <button onclick="exportToAdministrativeExcel()" class="px-4 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow transition flex items-center gap-1.5 whitespace-nowrap">
+            <i class="fa-solid fa-file-excel"></i> Xuất Excel
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto max-h-80">
+        <table class="w-full text-left text-xs text-stone-800">
+          <thead class="bg-stone-100 text-stone-500 uppercase text-[11px] sticky top-0 border-b border-stone-200">
+            <tr>
+              <th class="py-3 px-4 w-12 text-center">STT</th>
+              <th class="py-3 px-4">Họ và tên học sinh</th>
+              <th class="py-3 px-4">Họ và tên phụ huynh</th>
+              <th class="py-3 px-4">Phản hồi</th>
+              <th class="py-3 px-4">Ghi chú</th>
+              <th class="py-3 px-4 text-right">Thời gian</th>
+            </tr>
+          </thead>
+          <tbody id="attendanceTableBody" class="divide-y divide-stone-100"></tbody>
+        </table>
+      </div>
+
+      <div class="p-4 bg-stone-50 border-t border-stone-200 flex justify-end">
+        <button onclick="closeModal('responsesModal')" class="px-5 py-2 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-800 text-xs font-bold">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL BÁN BẢN QUYỀN 100K (MBBANK - NGUYỄN CÔNG DINH) ================= -->
+  <div id="licensePaywallModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden my-auto border border-amber-900/30">
+      <div class="bg-gradient-to-r from-[#83380c] to-[#b45309] text-white p-5 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-amber-400 text-stone-950 flex items-center justify-center text-xl font-bold shadow"><i class="fa-solid fa-crown"></i></div>
+          <div>
+            <h3 class="font-extrabold text-lg leading-tight">Kích Hoạt Tài Khoản Vĩnh Viễn</h3>
+            <p class="text-xs text-amber-200">Gói bản quyền trọn đời chỉ với 100.000 VNĐ</p>
+          </div>
+        </div>
+        <button onclick="closeModal('licensePaywallModal')" class="text-amber-200 hover:text-white p-1 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="p-6 space-y-4 max-h-[82vh] overflow-y-auto">
+        <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 space-y-2 text-xs text-stone-700">
+          <div class="flex items-center justify-between pb-2 border-b border-amber-200/80">
+            <span class="font-extrabold text-stone-900 text-sm">Phí kích hoạt trọn đời: 100.000 VNĐ</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-rose-600 text-white font-extrabold text-xs">BẢN QUYỀN</span>
+          </div>
+          <div class="grid grid-cols-1 gap-1 text-[11.5px] text-stone-600">
+            <div>• Sử dụng vĩnh viễn • Không giới hạn thư mời & lượt phản hồi</div>
+            <div>• Xuất file Excel (.xls) chuẩn thể thức kèm chữ ký GVCN</div>
+            <div>• Xuất ảnh thiệp mời JPG sắc nét gửi nhóm Zalo lớp</div>
+          </div>
+        </div>
+
+        <div id="paywallFormView" class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Họ và tên giáo viên <span class="text-rose-600">*</span></label>
+            <input type="text" id="buyName" value="Cô Nguyễn Thu Hà" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-700" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Số điện thoại / Zalo nhận tài khoản <span class="text-rose-600">*</span></label>
+            <input type="tel" id="buyPhone" value="0386435510" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-700" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Trường học / Đơn vị công tác</label>
+            <input type="text" id="buySchool" value="Trường THCS Chu Văn An" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-700" />
+          </div>
+          <button onclick="generateOrderPayment()" class="w-full py-3 rounded-2xl bg-[#b44509] hover:bg-[#963704] text-white font-bold text-xs shadow transition flex items-center justify-center gap-2 mt-2">
+            Tiếp tục: Thanh toán & Kích hoạt <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <!-- Màn hình chuyển khoản MBBANK chuẩn theo Nguyễn Công Dinh -->
+        <div id="paywallQrView" class="space-y-4 hidden">
+          <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 flex items-start gap-2">
+            <i class="fa-regular fa-circle-check text-emerald-600 text-base mt-0.5"></i>
+            <div>Thông tin đăng ký đã được lưu. Thầy/cô vui lòng chuyển khoản <strong>100.000 VNĐ</strong> và sao chép tin nhắn gửi Zalo cho Admin Dinh để kích hoạt.</div>
+          </div>
+
+          <div class="p-4 rounded-2xl border border-amber-200 bg-amber-50/50">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-stone-800"><i class="fa-solid fa-qrcode text-amber-700 mr-1"></i> MÃ QR CHUYỂN KHOẢN (MBBANK)</span>
+              <span class="px-2 py-0.5 rounded-full bg-amber-200 text-[#7a3206] font-extrabold text-xs">100.000 VNĐ</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+              <div class="bg-white p-2 rounded-xl border border-stone-200 shadow-sm flex flex-col items-center justify-center">
+                <img id="vietQrImgTag" src="" alt="VietQR MBBANK" class="w-40 h-40 object-contain rounded-lg" />
+              </div>
+              <div class="space-y-2 text-xs">
+                <div class="p-2.5 bg-white rounded-xl border border-stone-200">
+                  <span class="text-stone-400 block text-[10px]">Chủ tài khoản / Admin kích hoạt:</span>
+                  <span class="font-extrabold text-stone-800 text-sm">NGUYỄN CÔNG DINH</span>
+                  <div class="text-stone-600 font-bold mt-0.5">STK: <span class="font-mono text-amber-900">157303979</span></div>
+                  <span class="text-stone-500 block text-[11px]">Ngân hàng Quân Đội (MBBANK)</span>
+                </div>
+                <div class="p-2.5 bg-amber-100/70 rounded-xl border border-amber-200">
+                  <div class="flex items-center justify-between text-[10px] font-bold text-amber-900">
+                    <span>Nội dung chuyển khoản:</span>
+                    <button onclick="copyToClipboard(document.getElementById('dispOrderContent').innerText)" class="text-amber-800 hover:underline">Sao chép</button>
+                  </div>
+                  <div class="font-mono font-bold text-stone-900 text-xs bg-white p-1.5 rounded mt-1 text-center" id="dispOrderContent">Đăng Ký Giấy Mời Trực Tuyến</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3.5 bg-white border border-stone-200 rounded-2xl space-y-2 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-stone-800">Số Zalo Admin: <strong class="text-amber-900">0386435510 (Nguyễn Công Dinh)</strong></span>
+              <button onclick="copyToClipboard('0386435510')" class="text-amber-800 hover:underline font-semibold">Sao chép SĐT</button>
+            </div>
+            <textarea id="zaloPaywallMessage" rows="5" class="w-full p-2 bg-stone-50 border border-stone-200 rounded-xl text-xs font-mono text-stone-700 focus:outline-none" readonly></textarea>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="copyZaloTextAction()" class="py-2 rounded-xl bg-[#b44509] hover:bg-[#963704] text-white font-bold text-xs shadow transition flex items-center justify-center gap-1.5">
+                <i class="fa-regular fa-copy"></i> Sao chép tin Zalo
+              </button>
+              <a href="https://zalo.me/0386435510" target="_blank" class="py-2 rounded-xl bg-white border border-stone-300 text-stone-800 font-bold text-xs transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-arrow-up-right-from-square text-blue-600"></i> Mở Zalo chat
+              </a>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="backToPaywallForm()" class="text-xs text-stone-500 hover:text-stone-800">← Sửa lại thông tin</button>
+            <button onclick="confirmPaidAndClose()" class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow transition flex items-center gap-1.5">
+              <i class="fa-regular fa-circle-check"></i> Xác nhận đã chuyển khoản
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="px-6 py-2.5 bg-stone-50 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-400">
+        <span>Bảo mật danh sách giáo viên & học sinh 100%</span>
+        <button onclick="closeModal('licensePaywallModal')" class="hover:text-stone-700">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL ADMIN PORTAL ================= -->
+  <div id="adminPortalModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden my-auto border border-amber-900/30">
+      <div class="bg-stone-900 text-white p-5 flex items-center justify-between border-b border-amber-600/30">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-lg"><i class="fa-solid fa-user-shield"></i></div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-extrabold text-base sm:text-lg text-amber-300">Quản Trị Bán Hàng & Duyệt Đơn 100k</h3>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-mono">MBBANK 157303979</span>
+            </div>
+            <p class="text-xs text-stone-400">Admin: Nguyễn Công Dinh • SĐT Zalo: 0386435510</p>
+          </div>
+        </div>
+        <button onclick="closeModal('adminPortalModal')" class="text-stone-400 hover:text-white p-1 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-5 bg-stone-50 border-b border-stone-200 text-xs">
+        <div class="p-4 bg-white rounded-2xl border border-stone-200 shadow-sm flex items-center justify-between">
+          <div><span class="text-stone-500 block">Tổng doanh thu thực thu</span><span class="text-2xl font-extrabold text-emerald-700 mt-1 block" id="admTotalRevenue">100.000 VNĐ</span></div>
+          <i class="fa-solid fa-sack-dollar text-2xl text-emerald-600"></i>
+        </div>
+        <div class="p-4 bg-white rounded-2xl border border-stone-200 shadow-sm flex items-center justify-between">
+          <div><span class="text-stone-500 block">Đơn hàng chờ duyệt (100k)</span><span class="text-2xl font-extrabold text-amber-600 mt-1 block" id="admPendingCount">1</span></div>
+          <i class="fa-solid fa-clock-rotate-left text-2xl text-amber-500"></i>
+        </div>
+        <div class="p-4 bg-white rounded-2xl border border-stone-200 shadow-sm flex items-center justify-between">
+          <div><span class="text-stone-500 block">Tài khoản GV đã kích hoạt</span><span class="text-2xl font-extrabold text-stone-900 mt-1 block" id="admActiveCount">1</span></div>
+          <i class="fa-solid fa-users-viewfinder text-2xl text-blue-600"></i>
+        </div>
+      </div>
+
+      <div class="p-5">
+        <div class="overflow-x-auto border border-stone-200 rounded-2xl max-h-80">
+          <table class="w-full text-left text-xs text-stone-800">
+            <thead class="bg-stone-100 text-stone-500 uppercase text-[11px] font-semibold sticky top-0 border-b border-stone-200">
+              <tr>
+                <th class="py-3 px-4">Mã đơn / Mã GV</th>
+                <th class="py-3 px-4">Tên giáo viên</th>
+                <th class="py-3 px-4">Số Zalo</th>
+                <th class="py-3 px-4">Số tiền</th>
+                <th class="py-3 px-4">Trạng thái</th>
+                <th class="py-3 px-4 text-center">Thao tác duyệt</th>
+              </tr>
+            </thead>
+            <tbody id="admOrdersTableBody" class="divide-y divide-stone-100"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="p-4 bg-stone-50 border-t border-stone-200 flex items-center justify-between text-xs text-stone-500">
+        <div>Quản trị yêu cầu xác thực backend khi triển khai thực tế.</div>
+        <button onclick="closeModal('adminPortalModal')" class="px-5 py-2 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold transition">Đóng Quản Trị</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL ĐĂNG NHẬP / DÙNG THỬ ================= -->
+  <div id="authModal" class="fixed inset-0 z-50 bg-black/65 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden my-auto border border-stone-200">
+      <div class="bg-[#83380c] text-white p-5 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-600/50 border border-amber-300/40 flex items-center justify-center text-amber-200"><i class="fa-solid fa-graduation-cap text-lg"></i></div>
+          <div>
+            <h3 class="font-bold text-lg leading-tight">Đăng Nhập Giáo Viên</h3>
+            <p class="text-xs text-amber-200">Quản lý giấy mời điện tử và danh sách phụ huynh phản hồi</p>
+          </div>
+        </div>
+        <button onclick="closeModal('authModal')" class="text-amber-200 hover:text-white p-1 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Email giáo viên *</label>
+          <input type="text" id="loginUsername" value="" placeholder="Ví dụ: giaovien@truong.edu.vn" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-amber-700" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Mật khẩu *</label>
+          <input type="password" id="loginPassword" placeholder="Nhập mật khẩu tài khoản" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-amber-700" />
+        </div>
+        <button onclick="handleLoginSubmit()" class="w-full py-3 rounded-xl bg-[#b44509] hover:bg-[#963704] text-white font-bold text-sm shadow transition">
+          Đăng nhập hệ thống
+        </button>
+
+        <div class="pt-2">
+          <div class="flex items-center my-3">
+            <div class="flex-grow border-t border-stone-200"></div>
+            <span class="px-3 text-xs uppercase tracking-wider font-semibold text-stone-400">Hoặc dùng thử trải nghiệm</span>
+            <div class="flex-grow border-t border-stone-200"></div>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <span class="px-2.5 py-1 rounded-lg bg-[#83380c] text-white text-xs font-bold">Demo</span>
+              <div>
+                <p class="text-xs font-bold text-stone-800">Tài khoản Dùng thử (Cô Thu Hà – 7A1) ✨</p>
+                <p class="text-[11px] text-stone-500">Xem 1 giấy mời họp mẫu & danh sách phụ huynh phản hồi</p>
+              </div>
+            </div>
+            <button onclick="loginAsDemoUser()" class="px-3 py-1.5 rounded-lg bg-amber-200 hover:bg-amber-300 text-stone-900 font-bold text-xs transition">Dùng thử 1 chạm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="invitationFlyerCanvas" class="hidden"></canvas>
+
+  <!-- ================= JAVASCRIPT APPLICATION CORE ================= -->
+  <script>
+    const SYSTEM_STORAGE = "GIAY_MOI_HOP_MBBANK_V8";
+
+
+    /* ================= CẤU HÌNH ỨNG DỤNG & SUPABASE =================
+       1) Tạo project Supabase và chạy file supabase_schema.sql đi kèm.
+       2) Dán Project URL + Publishable key (sb_publishable_...) bên dưới.
+       3) KHÔNG đặt Secret key / service_role key trong file HTML.
+       4) provider = "supabase" để dùng dữ liệu thật; đổi về "local" nếu muốn demo offline.
+    =================================================================== */
+    const APP_CONFIG = {
+      backend: {
+        provider: "supabase", // "local" | "supabase"
+        supabase: {
+          url: "PASTE_SUPABASE_PROJECT_URL_HERE",
+          publishableKey: "PASTE_SUPABASE_PUBLISHABLE_KEY_HERE",
+          meetingsTable: "meetings",
+          responsesTable: "responses"
+        }
+      },
+      // Để trống => tự lấy domain hiện tại khi deploy Vercel/Netlify/domain riêng.
+      publicBaseUrl: "",
+      features: {
+        localAdminDemo: false
+      }
+    };
+
+    function cloneData(value) {
+      if (typeof structuredClone === 'function') return structuredClone(value);
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value).replaceAll('`', '&#096;');
+    }
+
+    function getCurrentSchoolYear() {
+      const now = new Date();
+      const y = now.getFullYear();
+      return now.getMonth() >= 6 ? `${y} - ${y + 1}` : `${y - 1} - ${y}`;
+    }
+
+    function getNextSundayLabel() {
+      const d = new Date();
+      const delta = (7 - d.getDay()) % 7 || 7;
+      d.setDate(d.getDate() + delta);
+      const weekday = d.toLocaleDateString('vi-VN', { weekday: 'long' });
+      const date = d.toLocaleDateString('vi-VN');
+      return `${weekday.charAt(0).toUpperCase()}${weekday.slice(1)}, ${date}`;
+    }
+
+    function createMeetingId() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const bytes = new Uint8Array(6);
+      if (window.crypto?.getRandomValues) crypto.getRandomValues(bytes);
+      else for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
+      return 'MTG-' + Array.from(bytes, b => chars[b % chars.length]).join('');
+    }
+
+    function buildPublicMeetingUrl(meetingOrToken) {
+      const token = typeof meetingOrToken === 'string'
+        ? meetingOrToken
+        : (meetingOrToken?.publicToken || meetingOrToken?.public_token || meetingOrToken?.id);
+      const configured = APP_CONFIG.publicBaseUrl.trim().replace(/\/$/, '');
+      let base;
+      if (configured) {
+        base = configured;
+      } else if (window.location.protocol !== 'file:' && window.location.origin && window.location.origin !== 'null') {
+        base = window.location.origin + window.location.pathname;
+      } else {
+        base = window.location.href.split('?')[0].split('#')[0];
+      }
+      const url = new URL(base, window.location.href);
+      url.search = '';
+      url.hash = '';
+      url.searchParams.set('m', token);
+      return url.toString();
+    }
+
+    function getAgendaFromForm() {
+      if (activeAgendaTabMode === 'free') {
+        const txt = document.getElementById('agendaFreeContent').value.trim();
+        return txt ? [txt] : [];
+      }
+      if (activeAgendaTabMode === 'bulk') {
+        const txt = document.getElementById('agendaBulkContent').value.trim();
+        return txt ? txt.split(/\r?\n/).map(s => s.trim()).filter(Boolean) : [];
+      }
+      return Array.from(document.querySelectorAll('.agenda-row-input'))
+        .map(inp => inp.value.trim()).filter(Boolean);
+    }
+
+    function isSupabaseConfigured() {
+      const cfg = APP_CONFIG.backend.supabase;
+      return /^https:\/\/.+\.supabase\.co\/?$/i.test(cfg.url || '') &&
+        !!cfg.publishableKey && !cfg.publishableKey.includes('PASTE_');
+    }
+
+    function meetingRowToApp(row, responses = []) {
+      if (!row) return null;
+      return {
+        id: row.id,
+        publicToken: row.public_token,
+        title: row.title,
+        className: row.class_name,
+        teacherName: row.teacher_name,
+        schoolYear: row.school_year,
+        date: row.meeting_date,
+        time: row.meeting_time,
+        location: row.location,
+        teacherQuote: row.teacher_quote || '',
+        schoolNote: row.school_note || '',
+        theme: row.theme || 'traditional',
+        agenda: Array.isArray(row.agenda) ? row.agenda : [],
+        responses: responses || [],
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      };
+    }
+
+    function responseRowToApp(row) {
+      return {
+        id: row.id,
+        student: row.student_name,
+        parent: row.parent_name,
+        status: row.status,
+        note: row.note || '—',
+        time: row.created_at ? new Date(row.created_at).toLocaleTimeString('vi-VN') + ', ' + new Date(row.created_at).toLocaleDateString('vi-VN') : '',
+        createdAt: row.created_at
+      };
+    }
+
+    let supabaseRuntime = null;
+
+    async function getSupabaseClient() {
+      if (!isSupabaseConfigured()) {
+        throw new Error('Chưa cấu hình Supabase Project URL và Publishable key trong APP_CONFIG.');
+      }
+      if (supabaseRuntime) return supabaseRuntime;
+      const sdk = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+      const cfg = APP_CONFIG.backend.supabase;
+      supabaseRuntime = sdk.createClient(cfg.url, cfg.publishableKey, {
+        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+      });
+      return supabaseRuntime;
+    }
+
+    const BACKEND_ADAPTERS = {
+      local: {
+        async listMeetings() { return cloneData(appData.meetings || []); },
+        async getMeeting(id) { return cloneData((appData.meetings || []).find(m => m.id === id) || null); },
+        async getPublicMeeting(token) { return cloneData((appData.meetings || []).find(m => m.publicToken === token || m.id === token) || null); },
+        async saveMeeting(meeting) { return cloneData(meeting); },
+        async deleteMeeting() { return true; },
+        async addResponse(_meeting, response) { return cloneData(response); }
+      },
+      supabase: {
+        async runtime() { return getSupabaseClient(); },
+        async getSession() {
+          const client = await this.runtime();
+          const { data, error } = await client.auth.getSession();
+          if (error) throw error;
+          return data.session || null;
+        },
+        async listMeetings() {
+          const client = await this.runtime();
+          const session = await this.getSession();
+          if (!session) return [];
+          const cfg = APP_CONFIG.backend.supabase;
+          const { data: meetingRows, error: mErr } = await client
+            .from(cfg.meetingsTable)
+            .select('*')
+            .order('created_at', { ascending: false });
+          if (mErr) throw mErr;
+          const ids = (meetingRows || []).map(r => r.id);
+          let responseRows = [];
+          if (ids.length) {
+            const { data, error } = await client
+              .from(cfg.responsesTable)
+              .select('*')
+              .in('meeting_id', ids)
+              .order('created_at', { ascending: false });
+            if (error) throw error;
+            responseRows = data || [];
+          }
+          const grouped = new Map();
+          responseRows.forEach(r => {
+            if (!grouped.has(r.meeting_id)) grouped.set(r.meeting_id, []);
+            grouped.get(r.meeting_id).push(responseRowToApp(r));
+          });
+          return (meetingRows || []).map(row => meetingRowToApp(row, grouped.get(row.id) || []));
+        },
+        async getMeeting(id) {
+          const client = await this.runtime();
+          const cfg = APP_CONFIG.backend.supabase;
+          const { data: row, error } = await client.from(cfg.meetingsTable).select('*').eq('id', id).maybeSingle();
+          if (error) throw error;
+          if (!row) return null;
+          const { data: responses, error: rErr } = await client.from(cfg.responsesTable)
+            .select('*').eq('meeting_id', id).order('created_at', { ascending: false });
+          if (rErr) throw rErr;
+          return meetingRowToApp(row, (responses || []).map(responseRowToApp));
+        },
+        async getPublicMeeting(token) {
+          const client = await this.runtime();
+          const { data, error } = await client.rpc('get_public_meeting', { p_token: token });
+          if (error) throw error;
+          if (!data) return null;
+          return {
+            id: data.id,
+            publicToken: token,
+            title: data.title,
+            className: data.className,
+            teacherName: data.teacherName,
+            schoolYear: data.schoolYear,
+            date: data.date,
+            time: data.time,
+            location: data.location,
+            teacherQuote: data.teacherQuote || '',
+            schoolNote: data.schoolNote || '',
+            theme: data.theme || 'traditional',
+            agenda: Array.isArray(data.agenda) ? data.agenda : [],
+            responses: []
+          };
+        },
+        async saveMeeting(meeting) {
+          const client = await this.runtime();
+          const session = await this.getSession();
+          if (!session?.user) throw new Error('Bạn cần đăng nhập giáo viên trước khi tạo hoặc sửa cuộc họp.');
+          const cfg = APP_CONFIG.backend.supabase;
+          const row = {
+            id: meeting.id,
+            owner_id: session.user.id,
+            title: meeting.title,
+            class_name: meeting.className,
+            teacher_name: meeting.teacherName,
+            school_year: meeting.schoolYear,
+            meeting_date: meeting.date,
+            meeting_time: meeting.time,
+            location: meeting.location,
+            teacher_quote: meeting.teacherQuote || '',
+            school_note: meeting.schoolNote || '',
+            theme: meeting.theme || 'traditional',
+            agenda: meeting.agenda || [],
+            is_active: true
+          };
+          const { data, error } = await client.from(cfg.meetingsTable)
+            .upsert(row, { onConflict: 'id' })
+            .select('*')
+            .single();
+          if (error) throw error;
+          return meetingRowToApp(data, meeting.responses || []);
+        },
+        async deleteMeeting(id) {
+          const client = await this.runtime();
+          const { error } = await client.from(APP_CONFIG.backend.supabase.meetingsTable).delete().eq('id', id);
+          if (error) throw error;
+          return true;
+        },
+        async addResponse(meeting, response) {
+          const client = await this.runtime();
+          const token = meeting?.publicToken || new URLSearchParams(window.location.search).get('m');
+          if (!token) throw new Error('Thiếu mã giấy mời công khai.');
+          const { data, error } = await client.rpc('submit_parent_response', {
+            p_token: token,
+            p_student_name: response.student,
+            p_parent_name: response.parent,
+            p_status: response.status,
+            p_note: response.note === '—' ? '' : response.note
+          });
+          if (error) throw error;
+          return data || response;
+        }
+      }
+    };
+
+    function getBackendAdapter() {
+      return BACKEND_ADAPTERS[APP_CONFIG.backend.provider] || BACKEND_ADAPTERS.local;
+    }
+
+    async function syncMeetingToBackend(meeting) {
+      if (APP_CONFIG.backend.provider === 'local') return meeting;
+      try {
+        const saved = await getBackendAdapter().saveMeeting(meeting);
+        if (saved) {
+          Object.assign(meeting, saved);
+          const idx = appData.meetings.findIndex(m => m.id === meeting.id);
+          if (idx >= 0) appData.meetings[idx] = meeting;
+          try { localStorage.setItem(SYSTEM_STORAGE, JSON.stringify(appData)); } catch (_) {}
+        }
+        return meeting;
+      } catch (err) {
+        console.error('Backend save failed:', err);
+        showToastNotification('Không thể đồng bộ Supabase: ' + err.message, false);
+        throw err;
+      }
+    }
+
+    async function deleteMeetingFromBackend(meetingId) {
+      if (APP_CONFIG.backend.provider === 'local') return;
+      await getBackendAdapter().deleteMeeting(meetingId);
+    }
+
+    // Cấu hình thanh toán chuẩn MBBANK - Nguyễn Công Dinh
+    const ADMIN_BANK_CONFIG = {
+      bankName: "MBBANK",
+      bankId: "970422",
+      accountNo: "157303979",
+      accountName: "NGUYEN CONG DINH",
+      adminPhone: "0386435510",
+      amount: 100000
+    };
+
+    const defaultDatabase = {
+      currentUser: {
+        code: "GV001",
+        name: "Cô Nguyễn Thu Hà",
+        school: "Trường THCS Chu Văn An",
+        isLicensed: false
+      },
+      orders: [
+        {
+          orderCode: "GV-1001",
+          name: "Cô Nguyễn Thu Hà",
+          phone: "0386435510",
+          school: "Trường THCS Chu Văn An",
+          amount: 100000,
+          status: "pending",
+          time: "14:20, 14/09/2026"
+        }
+      ],
+      meetings: [
+        {
+          id: "MTG-8F72K",
+          title: "Họp phụ huynh đầu năm học 2024 - 2025",
+          className: "7A1",
+          teacherName: "Cô Nguyễn Thu Hà",
+          schoolYear: "2024 - 2025",
+          theme: "traditional",
+          date: "Chủ Nhật, 15/09/2024",
+          time: "14:00 - 16:00",
+          location: "Phòng học lớp 7A1 (Tầng 2, Nhà B)",
+          teacherQuote: "Sự hiện diện của Quý phụ huynh là niềm vinh hạnh và nguồn động viên to lớn cho các thầy cô cùng các em học sinh!",
+          schoolNote: "Quý phụ huynh vui lòng gửi xe tại cổng trường và mang theo sổ tay.",
+          agenda: [
+            "Báo cáo tóm tắt tình hình học tập và rèn luyện của học sinh",
+            "Triển khai phương hướng, chỉ tiêu và kế hoạch năm học mới",
+            "Thống nhất các biện pháp phối hợp giữa gia đình và nhà trường",
+            "Bầu Ban đại diện cha mẹ học sinh lớp"
+          ],
+          responses: [
+            { id: 1, student: "Nguyễn Minh An", parent: "Nguyễn Văn Bình", status: "attend", note: "—", time: "21:10, 2/9/2024" },
+            { id: 2, student: "Trần Minh Anh", parent: "Trần Thị Hoa", status: "absent", note: "Bận công tác đột xuất, sẽ trao đổi riêng với cô sau.", time: "22:25, 2/9/2024" },
+            { id: 3, student: "Lê Hoàng Nam", parent: "Lê Văn Tuấn", status: "attend", note: "—", time: "16:12, 3/9/2024" },
+            { id: 4, student: "Phạm Quỳnh Chi", parent: "Phạm Hải Đăng", status: "attend", note: "—", time: "18:40, 3/9/2024" },
+            { id: 5, student: "Vũ Đức Duy", parent: "Vũ Quốc Toàn", status: "attend", note: "—", time: "01:05, 4/9/2024" }
+          ]
+        }
+      ]
+    };
+
+    let appData = loadAppState();
+    let currentSelectedTheme = "traditional";
+    let activeAgendaTabMode = "item";
+    let currentMeetingTarget = appData.meetings[0];
+    let attendanceFilterMode = "all";
+    let isOpenedFromCreateModal = false;
+    let editingMeetingId = null;
+    let meetingIdToDelete = null;
+
+    function loadAppState() {
+      try {
+        const raw = localStorage.getItem(SYSTEM_STORAGE);
+        if (!raw) return cloneData(defaultDatabase);
+        const parsed = JSON.parse(raw);
+        return {
+          currentUser: { ...cloneData(defaultDatabase.currentUser), ...(parsed.currentUser || {}) },
+          orders: Array.isArray(parsed.orders) ? parsed.orders : [],
+          meetings: Array.isArray(parsed.meetings) ? parsed.meetings : []
+        };
+      } catch (e) {
+        console.warn('Không đọc được localStorage, dùng dữ liệu mặc định.', e);
+        return cloneData(defaultDatabase);
+      }
+    }
+
+    function saveAppDatabase() {
+      try {
+        localStorage.setItem(SYSTEM_STORAGE, JSON.stringify(appData));
+      } catch (e) {
+        console.error('Không thể lưu localStorage:', e);
+        showToastNotification('Trình duyệt không cho phép lưu dữ liệu cục bộ.', false);
+      }
+      refreshUI();
+    }
+
+    /* ================= 1. HỘP THOẠI TOAST UI HIỆN ĐẠI ================= */
+    function showToastNotification(msg, isSuccess = true) {
+      const toast = document.createElement('div');
+      toast.className = `fixed bottom-6 right-6 z-[100] px-4 py-3 rounded-2xl shadow-2xl text-xs font-bold flex items-center gap-2 transition-all transform duration-300 translate-y-10 opacity-0 ${
+        isSuccess ? 'bg-stone-900 text-amber-300 border border-amber-500/40' : 'bg-rose-900 text-white border border-rose-500/40'
+      }`;
+      const icon = document.createElement('i');
+      icon.className = isSuccess ? 'fa-solid fa-circle-check text-emerald-400' : 'fa-solid fa-triangle-exclamation text-rose-300';
+      const span = document.createElement('span');
+      span.textContent = String(msg);
+      toast.append(icon, span);
+      document.body.appendChild(toast);
+
+      setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 50);
+      setTimeout(() => {
+        toast.classList.add('translate-y-10', 'opacity-0');
+        setTimeout(() => toast.remove(), 350);
+      }, 2800);
+    }
+
+    /* ================= 2. QUẢN LÝ BẢN QUYỀN 100K & MBBANK ================= */
+    function openLicensePaywallModal() {
+      document.getElementById('paywallFormView').classList.remove('hidden');
+      document.getElementById('paywallQrView').classList.add('hidden');
+      document.getElementById('licensePaywallModal').classList.remove('hidden');
+      document.getElementById('licensePaywallModal').classList.add('flex');
+    }
+
+    function backToPaywallForm() {
+      document.getElementById('paywallFormView').classList.remove('hidden');
+      document.getElementById('paywallQrView').classList.add('hidden');
+    }
+
+    function generateOrderPayment() {
+      const name = document.getElementById('buyName').value.trim();
+      const phone = document.getElementById('buyPhone').value.trim();
+      const school = document.getElementById('buySchool').value.trim() || "THCS Chu Văn An";
+
+      if (!name || !phone) {
+        showToastNotification("Vui lòng nhập họ tên và số điện thoại Zalo!", false);
+        return;
+      }
+
+      const orderCode = "GV" + Math.floor(1000 + Math.random() * 9000);
+      const transferContent = `Dang Ky ${orderCode}`;
+
+      const newOrder = {
+        orderCode: orderCode,
+        name: name,
+        phone: phone,
+        school: school,
+        amount: 100000,
+        status: "pending",
+        time: new Date().toLocaleTimeString('vi-VN') + ", " + new Date().toLocaleDateString('vi-VN')
+      };
+
+      appData.orders.unshift(newOrder);
+      saveAppDatabase();
+
+      document.getElementById('dispOrderContent').innerText = transferContent;
+      const vietQrUrl = `https://api.vietqr.io/image/${ADMIN_BANK_CONFIG.bankId}-${ADMIN_BANK_CONFIG.accountNo}-compact2.jpg?amount=${ADMIN_BANK_CONFIG.amount}&accountName=${encodeURIComponent(ADMIN_BANK_CONFIG.accountName)}&addInfo=${encodeURIComponent(transferContent)}`;
+      document.getElementById('vietQrImgTag').src = vietQrUrl;
+
+      const zaloMsg = 
+`Chào bạn Dinh, tôi đã chuyển khoản 100.000đ mua bản quyền Giấy Mời Họp Phụ Huynh:
+- Họ và tên: ${name}
+- Số điện thoại/Zalo: ${phone}
+- Trường công tác: ${school}
+- Mã GV dự kiến: ${orderCode}
+- Nội dung CK: ${transferContent} (100.000đ MBBANK - 157303979)
+Nhờ bạn kiểm tra và kích hoạt tài khoản giúp tôi nhé. Cảm ơn bạn!`;
+
+      document.getElementById('zaloPaywallMessage').value = zaloMsg;
+      document.getElementById('paywallFormView').classList.add('hidden');
+      document.getElementById('paywallQrView').classList.remove('hidden');
+    }
+
+    function copyZaloTextAction() {
+      copyToClipboard(document.getElementById('zaloPaywallMessage').value);
+      showToastNotification("Đã sao chép tin nhắn Zalo gửi Admin Nguyễn Công Dinh!");
+    }
+
+    function confirmPaidAndClose() {
+      showToastNotification("Đơn hàng đang chờ duyệt. Admin sẽ kiểm tra và kích hoạt ngay!");
+      closeModal('licensePaywallModal');
+    }
+
+    /* ================= 3. QUẢN TRỊ ADMIN PORTAL ================= */
+    function openAdminPortal() {
+      if (APP_CONFIG.backend.provider === 'local' && !APP_CONFIG.features.localAdminDemo) {
+        showToastNotification('Admin đã được khóa ở bản frontend. Hãy nối Firebase/Supabase + xác thực trước khi bật quản trị.', false);
+        return;
+      }
+      // Khi triển khai thực tế, quyền Admin phải được xác thực bằng Firebase Auth/Supabase Auth + rules/RLS.
+      renderAdminOrders();
+      document.getElementById('adminPortalModal').classList.remove('hidden');
+      document.getElementById('adminPortalModal').classList.add('flex');
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) openAdminPortal();
+    });
+
+    function renderAdminOrders() {
+      const tbody = document.getElementById('admOrdersTableBody');
+      tbody.innerHTML = '';
+      let pending = 0, active = 0, totalRev = 0;
+
+      (appData.orders || []).forEach(ord => {
+        if (ord.status === 'pending') pending++;
+        if (ord.status === 'activated') { active++; totalRev += (ord.amount || 100000); }
+        const isAct = ord.status === 'activated';
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-amber-50/50 transition';
+        tr.innerHTML = `
+          <td class="py-3 px-4 font-mono font-bold text-amber-900">${escapeHtml(ord.orderCode)}</td>
+          <td class="py-3 px-4"><strong>${escapeHtml(ord.name)}</strong><div class="text-[11px] text-stone-400">${escapeHtml(ord.school)}</div></td>
+          <td class="py-3 px-4 font-mono">${escapeHtml(ord.phone)}</td>
+          <td class="py-3 px-4 font-bold text-emerald-700">${Number(ord.amount || 100000).toLocaleString('vi-VN')}đ</td>
+          <td class="py-3 px-4">${isAct ? '<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">Đã kích hoạt</span>' : '<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold animate-pulse">Chờ duyệt</span>'}</td>
+          <td class="py-3 px-4 text-center">${isAct ? '<span class="text-stone-400 text-xs">Đã duyệt</span>' : `<button data-order-code="${escapeAttr(ord.orderCode)}" class="approve-order-btn px-3 py-1 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow transition">Duyệt Kích Hoạt</button>`}</td>`;
+        tbody.appendChild(tr);
+      });
+
+      tbody.querySelectorAll('.approve-order-btn').forEach(btn => btn.addEventListener('click', () => approveOrderAction(btn.dataset.orderCode)));
+      document.getElementById('admTotalRevenue').innerText = totalRev.toLocaleString('vi-VN') + ' VNĐ';
+      document.getElementById('admPendingCount').innerText = pending;
+      document.getElementById('admActiveCount').innerText = active;
+      document.getElementById('badgePendingOrdersCount').innerText = pending;
+    }
+
+    function approveOrderAction(code) {
+      const ord = appData.orders.find(o => o.orderCode === code);
+      if (!ord) return;
+      ord.status = "activated";
+      if (appData.currentUser.code === ord.orderCode || appData.currentUser.name === ord.name) {
+        appData.currentUser.isLicensed = true;
+      }
+      saveAppDatabase();
+      renderAdminOrders();
+      showToastNotification(`Đã duyệt đơn [${ord.orderCode} - ${ord.name}]!`);
+    }
+
+    /* ================= 4. TẠO & SỬA GIẤY MỜI HỌP ================= */
+    function openCreateModal() {
+      editingMeetingId = null;
+      const schoolYear = getCurrentSchoolYear();
+      document.getElementById('createModalHeading').innerText = 'Tạo Giấy Mời Họp Phụ Huynh';
+      document.getElementById('createModalSubHeading').innerText = 'Điền thông tin và lựa chọn mẫu bì thư mỹ thuật chuẩn giáo dục';
+      document.getElementById('createMeetingTitle').value = `Họp phụ huynh năm học ${schoolYear}`;
+      document.getElementById('createMeetingClass').value = '';
+      document.getElementById('createTeacherName').value = appData.currentUser.name || '';
+      document.getElementById('createSchoolYear').value = schoolYear;
+      document.getElementById('createMeetingDate').value = getNextSundayLabel();
+      document.getElementById('createMeetingTime').value = '14:00 - 16:00';
+      document.getElementById('createMeetingLocation').value = '';
+      document.getElementById('createTeacherQuote').value = 'Sự hiện diện của Quý phụ huynh là niềm vinh hạnh và nguồn động viên to lớn cho các thầy cô cùng các em học sinh!';
+      document.getElementById('createSchoolNote').value = 'Quý phụ huynh vui lòng có mặt đúng giờ.';
+      document.getElementById('agendaFreeContent').value = '';
+      document.getElementById('agendaBulkContent').value = '';
+      switchAgendaTab('item');
+      selectThemeRadio('traditional');
+      renderAgendaInputs([
+        'Báo cáo tóm tắt tình hình học tập và rèn luyện của học sinh',
+        'Triển khai phương hướng, chỉ tiêu và kế hoạch năm học',
+        'Thống nhất các biện pháp phối hợp giữa gia đình và nhà trường',
+        'Trao đổi, giải đáp ý kiến của phụ huynh'
+      ]);
+      document.getElementById('createMeetingModal').classList.remove('hidden');
+      document.getElementById('createMeetingModal').classList.add('flex');
+    }
+
+    function openEditMeetingModal(meetingId) {
+      const m = appData.meetings.find(x => x.id === meetingId);
+      if (!m) return;
+      editingMeetingId = meetingId;
+      document.getElementById('createModalHeading').innerText = 'Chỉnh Sửa Giấy Mời Họp';
+      document.getElementById('createModalSubHeading').innerText = `Chỉnh sửa thông tin cuộc họp lớp ${m.className} (${m.id})`;
+      document.getElementById('createMeetingTitle').value = m.title || '';
+      document.getElementById('createMeetingClass').value = m.className || '';
+      document.getElementById('createTeacherName').value = m.teacherName || '';
+      document.getElementById('createSchoolYear').value = m.schoolYear || '';
+      document.getElementById('createMeetingDate').value = m.date || '';
+      document.getElementById('createMeetingTime').value = m.time || '';
+      document.getElementById('createMeetingLocation').value = m.location || '';
+      document.getElementById('createTeacherQuote').value = m.teacherQuote || '';
+      document.getElementById('createSchoolNote').value = m.schoolNote || '';
+      document.getElementById('agendaFreeContent').value = '';
+      document.getElementById('agendaBulkContent').value = '';
+      switchAgendaTab('item');
+      selectThemeRadio(m.theme || 'traditional');
+      renderAgendaInputs(m.agenda && m.agenda.length ? m.agenda : ['Báo cáo tóm tắt tình hình học tập']);
+      document.getElementById('createMeetingModal').classList.remove('hidden');
+      document.getElementById('createMeetingModal').classList.add('flex');
+    }
+
+    function renderAgendaInputs(items) {
+      const container = document.getElementById('agendaItemsDynamicContainer');
+      container.innerHTML = '';
+      (items || []).forEach((item, idx) => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center gap-2 agenda-row';
+        const num = document.createElement('span');
+        num.className = 'w-6 h-6 rounded-full bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs flex items-center justify-center flex-shrink-0';
+        num.textContent = idx + 1;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = item || '';
+        input.className = 'agenda-row-input flex-1 px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'p-2 text-stone-300 hover:text-rose-600';
+        btn.innerHTML = '<i class="fa-regular fa-trash-can text-sm"></i>';
+        btn.addEventListener('click', () => removeAgendaRow(btn));
+        row.append(num, input, btn);
+        container.appendChild(row);
+      });
+      if (!container.children.length) addNewAgendaRow();
+    }
+
+    function requestDeleteMeeting(meetingId) {
+      const m = appData.meetings.find(x => x.id === meetingId);
+      if (!m) return;
+      meetingIdToDelete = meetingId;
+      document.getElementById('deleteTargetClass').innerText = m.className;
+      document.getElementById('deleteConfirmModal').classList.remove('hidden');
+      document.getElementById('deleteConfirmModal').classList.add('flex');
+    }
+
+    async function confirmExecuteDeleteMeeting() {
+      if (!meetingIdToDelete) return;
+      const deletingId = meetingIdToDelete;
+      appData.meetings = appData.meetings.filter(x => x.id !== deletingId);
+      meetingIdToDelete = null;
+      saveAppDatabase();
+      closeModal('deleteConfirmModal');
+      await deleteMeetingFromBackend(deletingId);
+      showToastNotification('Đã xóa cuộc họp thành công!');
+    }
+
+    async function copyMeetingLinkDirectly(meetingId) {
+      const meeting = appData.meetings.find(m => m.id === meetingId);
+      if (!meeting) return;
+      if (APP_CONFIG.backend.provider === 'supabase' && !meeting.publicToken) {
+        showToastNotification('Cuộc họp chưa có public token. Hãy lưu lại cuộc họp sau khi đăng nhập Supabase.', false);
+        return;
+      }
+      const url = buildPublicMeetingUrl(meeting);
+      await copyToClipboard(url);
+      if (window.location.protocol === 'file:') {
+        showToastNotification('Đã chép link test. Muốn gửi phụ huynh, hãy deploy website trước.', false);
+      } else {
+        showToastNotification('Đã sao chép link mời họp!');
+      }
+    }
+
+    function selectThemeRadio(themeKey) {
+      currentSelectedTheme = themeKey;
+      document.querySelectorAll('.theme-card').forEach(card => {
+        card.classList.remove('border-amber-600', 'bg-amber-50/40');
+        card.classList.add('border-stone-200', 'bg-white');
+        const chk = card.querySelector('.theme-check');
+        if (chk) chk.classList.add('hidden');
+      });
+
+      const active = document.getElementById('themeBox_' + themeKey);
+      if (active) {
+        active.classList.remove('border-stone-200', 'bg-white');
+        active.classList.add('border-amber-600', 'bg-amber-50/40');
+        const chk = active.querySelector('.theme-check');
+        if (chk) chk.classList.remove('hidden');
+      }
+    }
+
+    function previewThemeDirectly(key) {
+      selectThemeRadio(key);
+      isOpenedFromCreateModal = true;
+      const agenda = getAgendaFromForm();
+      currentMeetingTarget = {
+        id: 'PREVIEW',
+        title: document.getElementById('createMeetingTitle').value.trim() || 'Họp phụ huynh',
+        className: document.getElementById('createMeetingClass').value.trim() || 'Lớp học',
+        teacherName: document.getElementById('createTeacherName').value.trim() || appData.currentUser.name || 'Giáo viên chủ nhiệm',
+        schoolYear: document.getElementById('createSchoolYear').value.trim() || getCurrentSchoolYear(),
+        date: document.getElementById('createMeetingDate').value.trim() || getNextSundayLabel(),
+        time: document.getElementById('createMeetingTime').value.trim() || '14:00 - 16:00',
+        location: document.getElementById('createMeetingLocation').value.trim() || 'Phòng học của lớp',
+        teacherQuote: document.getElementById('createTeacherQuote').value.trim(),
+        schoolNote: document.getElementById('createSchoolNote').value.trim(),
+        theme: key,
+        agenda: agenda.length ? agenda : ['Nội dung cuộc họp sẽ được cập nhật'],
+        responses: []
+      };
+      launchParentView('PREVIEW', key, currentMeetingTarget);
+    }
+
+    function switchAgendaTab(mode) {
+      activeAgendaTabMode = mode;
+      document.getElementById('agendaView_item').classList.toggle('hidden', mode !== 'item');
+      document.getElementById('agendaView_free').classList.toggle('hidden', mode !== 'free');
+      document.getElementById('agendaView_bulk').classList.toggle('hidden', mode !== 'bulk');
+
+      document.getElementById('tabAgenda_item').className = mode === 'item' ? "px-3 py-1.5 font-bold bg-white text-stone-800 border-r border-stone-200 flex items-center gap-1.5 shadow-sm" : "px-3 py-1.5 font-semibold bg-stone-50 text-stone-600 border-r border-stone-200 hover:bg-stone-100 flex items-center gap-1.5";
+      document.getElementById('tabAgenda_free').className = mode === 'free' ? "px-3 py-1.5 font-bold bg-white text-stone-800 border-r border-stone-200 flex items-center gap-1.5 shadow-sm" : "px-3 py-1.5 font-semibold bg-stone-50 text-stone-600 border-r border-stone-200 hover:bg-stone-100 flex items-center gap-1.5";
+      document.getElementById('tabAgenda_bulk').className = mode === 'bulk' ? "px-3 py-1.5 font-bold bg-[#fffbeb] text-[#92400e] border border-amber-300 flex items-center gap-1.5 shadow-sm" : "px-3 py-1.5 font-semibold bg-stone-50 text-stone-600 hover:bg-stone-100 flex items-center gap-1.5";
+    }
+
+    function addNewAgendaRow(val = '') {
+      const container = document.getElementById('agendaItemsDynamicContainer');
+      const idx = container.querySelectorAll('.agenda-row').length + 1;
+      const row = document.createElement('div');
+      row.className = 'flex items-center gap-2 agenda-row';
+      const num = document.createElement('span');
+      num.className = 'w-6 h-6 rounded-full bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs flex items-center justify-center flex-shrink-0';
+      num.textContent = idx;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = val;
+      input.placeholder = `Nhập nội dung mục ${idx}...`;
+      input.className = 'agenda-row-input flex-1 px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'p-2 text-stone-300 hover:text-rose-600';
+      btn.innerHTML = '<i class="fa-regular fa-trash-can text-sm"></i>';
+      btn.addEventListener('click', () => removeAgendaRow(btn));
+      row.append(num, input, btn);
+      container.appendChild(row);
+    }
+
+    function removeAgendaRow(btn) {
+      const rows = document.querySelectorAll('.agenda-row');
+      if (rows.length > 1) {
+        btn.closest('.agenda-row').remove();
+        document.querySelectorAll('.agenda-row').forEach((r, i) => r.querySelector('span').innerText = i + 1);
+      } else {
+        showToastNotification("Cuộc họp cần ít nhất 1 nội dung chương trình!", false);
+      }
+    }
+
+    function quickSelectDate() {
+      const suggested = getNextSundayLabel();
+      const d = prompt('Nhập ngày họp (ví dụ: Chủ Nhật, 20/09/2026):', suggested);
+      if (d) document.getElementById('createMeetingDate').value = d.trim();
+    }
+
+    async function saveAndGenerateInvitation() {
+      const title = document.getElementById('createMeetingTitle').value.trim();
+      const className = document.getElementById('createMeetingClass').value.trim();
+      const teacherName = document.getElementById('createTeacherName').value.trim();
+      const schoolYear = document.getElementById('createSchoolYear').value.trim();
+      const date = document.getElementById('createMeetingDate').value.trim();
+      const time = document.getElementById('createMeetingTime').value.trim();
+      const location = document.getElementById('createMeetingLocation').value.trim();
+      const teacherQuote = document.getElementById('createTeacherQuote').value.trim();
+      const schoolNote = document.getElementById('createSchoolNote').value.trim();
+      const agenda = getAgendaFromForm();
+
+      const required = [
+        ['Tên cuộc họp', title], ['Lớp', className], ['Tên giáo viên', teacherName],
+        ['Ngày họp', date], ['Thời gian họp', time], ['Địa điểm', location]
+      ];
+      const missing = required.filter(([, value]) => !value).map(([label]) => label);
+      if (missing.length) {
+        showToastNotification('Vui lòng nhập: ' + missing.join(', '), false);
+        return;
+      }
+      if (!agenda.length) {
+        showToastNotification('Vui lòng nhập ít nhất 1 nội dung cuộc họp.', false);
+        return;
+      }
+
+      let meeting;
+      const isEdit = !!editingMeetingId;
+      if (isEdit) {
+        meeting = appData.meetings.find(x => x.id === editingMeetingId);
+        if (!meeting) return;
+        Object.assign(meeting, { title, className, teacherName, schoolYear, date, time, location, teacherQuote, schoolNote, theme: currentSelectedTheme, agenda });
+      } else {
+        meeting = {
+          id: createMeetingId(), title, className, teacherName, schoolYear, date, time, location,
+          teacherQuote, schoolNote, theme: currentSelectedTheme, agenda, responses: [],
+          createdAt: new Date().toISOString()
+        };
+        appData.meetings.unshift(meeting);
+      }
+
+      try {
+        await syncMeetingToBackend(meeting);
+      } catch (_) {
+        if (!isEdit) appData.meetings = appData.meetings.filter(m => m !== meeting);
+        refreshUI();
+        return;
+      }
+
+      saveAppDatabase();
+      closeModal('createMeetingModal');
+      if (isEdit) {
+        showToastNotification(`Đã cập nhật cuộc họp lớp ${className}!`);
+        editingMeetingId = null;
+      } else {
+        showToastNotification('Tạo giấy mời họp thành công!');
+        openQrModalForMeeting(meeting.id);
+      }
+    }
+
+    /* ================= 5. BÌ THƯ 3D TƯƠNG TÁC & ÂM THANH ================= */
+    function playWaxSealAudio() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.31);
+      } catch (e) {}
+    }
+
+    function launchParentView(meetingId, overrideTheme = null, meetingOverride = null) {
+      if (meetingOverride) currentMeetingTarget = meetingOverride;
+      else if (meetingId !== 'PREVIEW') currentMeetingTarget = appData.meetings.find(x => x.id === meetingId) || currentMeetingTarget;
+      if (!currentMeetingTarget) {
+        showToastNotification('Không tìm thấy giấy mời.', false);
+        return;
+      }
+      const th = overrideTheme || currentMeetingTarget.theme || 'traditional';
+
+      const env = document.getElementById('envelopeInteractiveObj');
+      env.className = 'env-card flex flex-col justify-end p-5 text-center';
+      if (th === 'royal') env.classList.add('env-royal');
+      else if (th === 'emerald') env.classList.add('env-emerald');
+      else if (th === 'cute') env.classList.add('env-cute');
+      else env.classList.add('env-traditional');
+
+      document.getElementById('envPreviewThemeBadge').innerText = `Xem trước: Lớp ${currentMeetingTarget.className} (${th.toUpperCase()})`;
+      document.getElementById('envSubHeader').innerText = `${currentMeetingTarget.teacherName} • Lớp ${currentMeetingTarget.className} (${currentMeetingTarget.schoolYear})`;
+      document.getElementById('envCardRecipient').innerText = `Quý Phụ Huynh Học Sinh Lớp ${currentMeetingTarget.className}`;
+      document.getElementById('envCardSubInfo').innerText = `Năm học ${currentMeetingTarget.schoolYear} • GVCN: ${currentMeetingTarget.teacherName}`;
+      document.getElementById('letterBadgeClass').innerText = `BAN GIÁM HIỆU & GIÁO VIÊN CHỦ NHIỆM LỚP ${currentMeetingTarget.className}`;
+      document.getElementById('letterTitle').innerText = String(currentMeetingTarget.title || 'GIẤY MỜI HỌP PHỤ HUYNH').toUpperCase();
+      document.getElementById('letterClassYear').innerText = `Lớp ${currentMeetingTarget.className} • Năm học ${currentMeetingTarget.schoolYear}`;
+      document.getElementById('letterRecipientName').innerText = `Lớp ${currentMeetingTarget.className}`;
+      document.getElementById('letterTeacherName').innerText = currentMeetingTarget.teacherName;
+      document.getElementById('letterTimeInfo').innerText = `${currentMeetingTarget.time}, ${currentMeetingTarget.date}`;
+      document.getElementById('letterLocationInfo').innerText = currentMeetingTarget.location;
+
+      const quoteEl = document.getElementById('letterTeacherQuoteText');
+      if (quoteEl) quoteEl.innerText = currentMeetingTarget.teacherQuote ? `"${currentMeetingTarget.teacherQuote}"` : '';
+      const noteEl = document.getElementById('letterSchoolNoteText');
+      if (noteEl) {
+        noteEl.innerText = currentMeetingTarget.schoolNote ? `* ${currentMeetingTarget.schoolNote}` : '';
+        noteEl.classList.toggle('hidden', !currentMeetingTarget.schoolNote);
+      }
+      const txtBack = document.getElementById('txtBackFromParentView');
+      if (txtBack) txtBack.innerText = isOpenedFromCreateModal ? 'Quay lại tạo giấy mời' : 'Về Bảng Điều Khiển';
+
+      const agendaList = document.getElementById('letterAgendaList');
+      agendaList.innerHTML = '';
+      (currentMeetingTarget.agenda || []).forEach((ag, i) => {
+        const row = document.createElement('div');
+        row.className = 'flex items-start gap-2.5 p-2 rounded-xl border border-amber-900/10 bg-white/60';
+        const num = document.createElement('span');
+        num.className = 'w-5 h-5 rounded-full bg-amber-100 text-amber-900 font-bold text-[10px] flex items-center justify-center flex-shrink-0 mt-0.5';
+        num.textContent = i + 1;
+        const content = document.createElement('span');
+        content.textContent = ag;
+        row.append(num, content);
+        agendaList.appendChild(row);
+      });
+
+      document.getElementById('parentFeedbackForm').reset();
+      const attendRadio = document.querySelector('input[name="feedbackStatus"][value="attend"]');
+      if (attendRadio) attendRadio.checked = true;
+      env.classList.remove('opened');
+      document.getElementById('viewStageEnvelope').classList.remove('hidden');
+      document.getElementById('viewStageLetter').classList.add('hidden');
+      document.getElementById('parentInvitationModal').classList.remove('hidden');
+      document.getElementById('parentInvitationModal').classList.add('flex');
+    }
+
+    function open3dEnvelopeInteractive() {
+      playWaxSealAudio();
+      const env = document.getElementById('envelopeInteractiveObj');
+      env.classList.add('opened');
+      setTimeout(() => {
+        document.getElementById('viewStageEnvelope').classList.add('hidden');
+        document.getElementById('viewStageLetter').classList.remove('hidden');
+      }, 550);
+    }
+
+    function foldLetterBack() {
+      const env = document.getElementById('envelopeInteractiveObj');
+      env.classList.remove('opened');
+      document.getElementById('viewStageEnvelope').classList.remove('hidden');
+      document.getElementById('viewStageLetter').classList.add('hidden');
+    }
+
+    async function handleParentFeedbackSubmit(e) {
+      e.preventDefault();
+      const student = document.getElementById('feedbackStudent').value.trim();
+      const parent = document.getElementById('feedbackParent').value.trim();
+      const note = document.getElementById('feedbackNote').value.trim() || '—';
+      const checked = document.querySelector('input[name="feedbackStatus"]:checked');
+      const status = checked ? checked.value : 'attend';
+      if (!student || !parent) {
+        showToastNotification('Vui lòng nhập tên học sinh và phụ huynh!', false);
+        return;
+      }
+      if (!currentMeetingTarget) return;
+
+      const response = {
+        id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())),
+        student, parent, status, note,
+        time: new Date().toLocaleTimeString('vi-VN') + ', ' + new Date().toLocaleDateString('vi-VN'),
+        createdAt: new Date().toISOString()
+      };
+
+      try {
+        if (APP_CONFIG.backend.provider === 'supabase') {
+          await getBackendAdapter().addResponse(currentMeetingTarget, response);
+        } else {
+          currentMeetingTarget.responses = Array.isArray(currentMeetingTarget.responses) ? currentMeetingTarget.responses : [];
+          currentMeetingTarget.responses.unshift(response);
+          const localMeeting = appData.meetings.find(m => m.id === currentMeetingTarget.id);
+          if (localMeeting && localMeeting !== currentMeetingTarget) localMeeting.responses = cloneData(currentMeetingTarget.responses);
+          saveAppDatabase();
+        }
+        document.getElementById('parentFeedbackForm')?.reset();
+        showToastNotification(`Phụ huynh ${parent} đã xác nhận thành công!`);
+        closeModal('parentInvitationModal');
+      } catch (err) {
+        console.error('Submit response failed:', err);
+        showToastNotification('Chưa gửi được xác nhận: ' + err.message, false);
+      }
+    }
+
+    /* ================= 6. QR CODE & FLYER EXPORT ================= */
+    function openQrModalForMeeting(meetingId) {
+      currentMeetingTarget = appData.meetings.find(x => x.id === meetingId) || appData.meetings[0];
+      if (!currentMeetingTarget) return;
+      document.getElementById('qrFlyerTitle').innerText = currentMeetingTarget.title;
+      document.getElementById('qrFlyerClassYear').innerText = `Lớp ${currentMeetingTarget.className} • Năm học ${currentMeetingTarget.schoolYear}`;
+      document.getElementById('qrFlyerDate').innerText = currentMeetingTarget.date;
+      document.getElementById('qrFlyerTime').innerText = currentMeetingTarget.time;
+      document.getElementById('qrFlyerLocation').innerText = currentMeetingTarget.location;
+
+      const url = buildPublicMeetingUrl(currentMeetingTarget);
+      document.getElementById('qrFlyerUrlInput').value = url;
+      const qrBox = document.getElementById('qrcodeBox');
+      qrBox.innerHTML = '';
+      new QRCode(qrBox, { text: url, width: 165, height: 165, colorDark: '#18181b', colorLight: '#ffffff' });
+      document.getElementById('qrModal').classList.remove('hidden');
+      document.getElementById('qrModal').classList.add('flex');
+    }
+
+    async function copyFlyerLinkInput() {
+      await copyToClipboard(document.getElementById('qrFlyerUrlInput').value);
+      showToastNotification('Đã sao chép link mời họp!');
+    }
+
+    function copyZaloFlyerInviteText() {
+      const m = currentMeetingTarget;
+      const url = document.getElementById('qrFlyerUrlInput').value;
+      const msg = 
+`[THƯ MỜI HỌP PHỤ HUYNH ĐIỆN TỬ 4.0]
+Kính gửi Quý phụ huynh học sinh Lớp ${m.className} - ${m.schoolYear},
+Giáo viên chủ nhiệm trân trọng kính mời Quý phụ huynh tham dự buổi họp phụ huynh:
+- Cuộc họp: ${m.title}
+- Thời gian: ${m.time}, ${m.date}
+- Địa điểm: ${m.location}
+- Giáo viên chủ nhiệm: ${m.teacherName}
+
+Kính mời Quý phụ huynh bấm vào liên kết dưới đây để mở Bì thư điện tử 3D trang trọng và xác nhận tham dự chỉ trong 3 giây:
+👉 ${url}
+
+Trân trọng cảm ơn Quý phụ huynh!`;
+
+      copyToClipboard(msg);
+      showToastNotification("Đã sao chép tin nhắn Zalo gửi nhóm lớp!");
+    }
+
+    function downloadQrCodeFile() {
+      const img = document.querySelector('#qrcodeBox img');
+      if (img) {
+        const a = document.createElement('a');
+        a.download = `QR_HopPhuHuynh_${currentMeetingTarget.className}.png`;
+        a.href = img.src;
+        a.click();
+      }
+    }
+
+    function exportHighResInvitationFlyer() {
+      const m = currentMeetingTarget;
+      if (!m) return;
+      const canvas = document.getElementById('invitationFlyerCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 800; canvas.height = 1050;
+
+      const grad = ctx.createLinearGradient(0, 0, 0, 1050);
+      grad.addColorStop(0, '#7a3206'); grad.addColorStop(0.35, '#fef3c7'); grad.addColorStop(1, '#fffdfa');
+      ctx.fillStyle = grad; ctx.fillRect(0, 0, 800, 1050);
+      ctx.fillStyle = '#ffffff';
+      if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(40, 40, 720, 970, 24); ctx.fill(); ctx.strokeStyle = '#b45309'; ctx.lineWidth = 3; ctx.stroke(); }
+      else { ctx.fillRect(40, 40, 720, 970); ctx.strokeStyle = '#b45309'; ctx.lineWidth = 3; ctx.strokeRect(40, 40, 720, 970); }
+
+      const wrap = (txt, x, y, maxWidth, lineHeight, maxLines = 3) => {
+        const words = String(txt).split(/\s+/); let line = '', lines = [];
+        words.forEach(word => { const test = line ? line + ' ' + word : word; if (ctx.measureText(test).width > maxWidth && line) { lines.push(line); line = word; } else line = test; });
+        if (line) lines.push(line);
+        lines.slice(0, maxLines).forEach((ln, i) => ctx.fillText(ln, x, y + i * lineHeight));
+        return y + Math.min(lines.length, maxLines) * lineHeight;
+      };
+
+      ctx.fillStyle = '#1c1917'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM', 400, 95);
+      ctx.font = 'italic 16px sans-serif'; ctx.fillStyle = '#78350f'; ctx.fillText('Độc lập – Tự do – Hạnh phúc', 400, 125);
+      ctx.fillStyle = '#83380c'; ctx.font = 'bold 32px serif'; ctx.fillText('GIẤY MỜI HỌP PHỤ HUYNH', 400, 185);
+      ctx.fillStyle = '#18181b'; ctx.font = 'bold 20px sans-serif';
+      let y = wrap(m.title, 400, 230, 650, 28, 2);
+      ctx.fillStyle = '#9a3412'; ctx.font = 'bold 16px sans-serif'; ctx.fillText(`Lớp ${m.className} • Năm học ${m.schoolYear}`, 400, y + 8);
+
+      ctx.textAlign = 'left'; ctx.fillStyle = '#292524'; ctx.font = '16px sans-serif';
+      const left = 120; let infoY = y + 55;
+      ctx.fillText(`Giáo viên chủ nhiệm: ${m.teacherName}`, left, infoY); infoY += 32;
+      ctx.fillText(`Ngày họp: ${m.date}`, left, infoY); infoY += 32;
+      ctx.fillText(`Thời gian: ${m.time}`, left, infoY); infoY += 32;
+      ctx.fillText(`Địa điểm: ${m.location}`, left, infoY);
+
+      const qrImg = document.querySelector('#qrcodeBox img') || document.querySelector('#qrcodeBox canvas');
+      if (qrImg) {
+        ctx.drawImage(qrImg, 290, 500, 220, 220);
+        ctx.strokeStyle = '#b45309'; ctx.lineWidth = 3; ctx.strokeRect(285, 495, 230, 230);
+      }
+      ctx.textAlign = 'center'; ctx.fillStyle = '#854d0e'; ctx.font = 'bold 16px sans-serif';
+      ctx.fillText('Quét mã QR để mở Giấy Mời 3D và xác nhận tham dự', 400, 765);
+      ctx.fillStyle = '#57534e'; ctx.font = '14px sans-serif';
+      wrap(m.schoolNote || 'Trân trọng kính mời Quý phụ huynh tham dự đầy đủ và đúng giờ.', 400, 815, 620, 22, 3);
+
+      const a = document.createElement('a');
+      a.download = `GiayMoiHop_${m.className}_Flyer.jpg`;
+      a.href = canvas.toDataURL('image/jpeg', 0.92);
+      a.click();
+    }
+
+    /* ================= 7. QUẢN LÝ PHẢN HỒI & EXCEL ================= */
+    async function openAttendanceManager(id) {
+      currentMeetingTarget = appData.meetings.find(x => x.id === id) || appData.meetings[0];
+      if (!currentMeetingTarget) return;
+      if (APP_CONFIG.backend.provider === 'supabase') {
+        try {
+          const fresh = await getBackendAdapter().getMeeting(id);
+          if (fresh) {
+            currentMeetingTarget = fresh;
+            const idx = appData.meetings.findIndex(m => m.id === id);
+            if (idx >= 0) appData.meetings[idx] = fresh;
+          }
+        } catch (err) {
+          showToastNotification('Không tải được phản hồi mới nhất: ' + err.message, false);
+        }
+      }
+      attendanceFilterMode = 'all';
+      const search = document.getElementById('filterRespSearch');
+      if (search) search.value = '';
+      document.getElementById('tableClassBadge').innerText = 'Lớp ' + currentMeetingTarget.className;
+      document.getElementById('tableMeetingSub').innerText = `${currentMeetingTarget.title} • ${currentMeetingTarget.date}`;
+      renderAttendanceRows();
+      document.getElementById('responsesModal').classList.remove('hidden');
+      document.getElementById('responsesModal').classList.add('flex');
+    }
+
+    function setFilterAttendance(st) {
+      attendanceFilterMode = st;
+      renderAttendanceRows();
+    }
+
+    function renderAttendanceRows() {
+      const list = currentMeetingTarget?.responses || [];
+      const total = list.length;
+      const attend = list.filter(r => r.status === 'attend').length;
+      const absent = list.filter(r => r.status === 'absent').length;
+      document.getElementById('respStatTotal').innerText = total;
+      document.getElementById('respStatAttend').innerText = attend;
+      document.getElementById('respStatAbsent').innerText = absent;
+      document.getElementById('tabFilterAll').innerText = `Tất cả (${total})`;
+      document.getElementById('tabFilterAttend').innerText = `Tham dự (${attend})`;
+      document.getElementById('tabFilterAbsent').innerText = `Vắng (${absent})`;
+
+      const term = (document.getElementById('filterRespSearch')?.value || '').trim().toLowerCase();
+      const tbody = document.getElementById('attendanceTableBody');
+      tbody.innerHTML = '';
+      const filtered = list.filter(r => {
+        if (attendanceFilterMode === 'attend' && r.status !== 'attend') return false;
+        if (attendanceFilterMode === 'absent' && r.status !== 'absent') return false;
+        if (term) {
+          const haystack = `${r.student || ''} ${r.parent || ''} ${r.note || ''}`.toLowerCase();
+          if (!haystack.includes(term)) return false;
+        }
+        return true;
+      });
+
+      if (!filtered.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 6; td.className = 'text-center py-6 text-stone-400';
+        td.textContent = term ? 'Không tìm thấy phản hồi phù hợp' : 'Chưa có dữ liệu phản hồi';
+        tr.appendChild(td); tbody.appendChild(tr); return;
+      }
+
+      filtered.forEach((r, i) => {
+        const isAtt = r.status === 'attend';
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-amber-50/40';
+        const cells = [i + 1, r.student || '', r.parent || '', '', r.note || '—', r.time || ''];
+        cells.forEach((value, idx) => {
+          const td = document.createElement('td');
+          td.className = idx === 0 ? 'py-3 px-4 text-center font-mono text-stone-400' : idx === 1 ? 'py-3 px-4 font-bold text-stone-900' : idx === 2 ? 'py-3 px-4 text-stone-700' : idx === 4 ? 'py-3 px-4 text-stone-500 italic truncate max-w-xs' : idx === 5 ? 'py-3 px-4 text-right font-mono text-[11px] text-stone-400' : 'py-3 px-4';
+          if (idx === 3) {
+            const badge = document.createElement('span');
+            badge.className = isAtt ? 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800' : 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800';
+            badge.textContent = isAtt ? 'Tham dự' : 'Không tham dự'; td.appendChild(badge);
+          } else td.textContent = value;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function promptImportStudentRoster() {
+      const str = prompt("Dán danh sách học sinh (mỗi dòng một tên) để hệ thống tự động dò danh sách vắng:", "");
+      if (str) {
+        const count = str.split("\n").filter(Boolean).length;
+        document.getElementById('respStatPending').innerText = `${count} học sinh`;
+        showToastNotification(`Đã nhận diện danh sách ${count} học sinh!`);
+      }
+    }
+
+    function exportToAdministrativeExcel() {
+      const m = currentMeetingTarget;
+      if (!m) return;
+      const rows = (m.responses || []).map((r, i) => ({
+        STT: i + 1,
+        'Họ tên học sinh': r.student || '',
+        'Họ tên phụ huynh': r.parent || '',
+        'Phản hồi': r.status === 'attend' ? 'Tham dự' : 'Vắng mặt',
+        'Ghi chú': r.note || '',
+        'Thời gian': r.time || ''
+      }));
+      if (window.XLSX) {
+        const ws = XLSX.utils.json_to_sheet(rows);
+        XLSX.utils.sheet_add_aoa(ws, [[`BÁO CÁO PHẢN HỒI HỌP PHỤ HUYNH - LỚP ${m.className}`], [`GVCN: ${m.teacherName} | ${m.title}`], []], { origin: 'A1' });
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Phản hồi');
+        XLSX.writeFile(wb, `BaoCao_PhanHoi_Lop${m.className}.xlsx`);
+      } else {
+        const header = ['STT','Họ tên học sinh','Họ tên phụ huynh','Phản hồi','Ghi chú','Thời gian'];
+        const escapeCsv = v => `"${String(v ?? '').replaceAll('"', '""')}"`;
+        const csv = '\uFEFF' + [header, ...rows.map(r => header.map(h => r[h]))].map(row => row.map(escapeCsv).join(',')).join('\r\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `BaoCao_PhanHoi_Lop${m.className}.csv`; a.click(); URL.revokeObjectURL(a.href);
+      }
+      showToastNotification('Đã xuất file Excel thành công!');
+    }
+
+    /* ================= 8. GIAO DIỆN & CƠ CHẾ HOẠT ĐỘNG CHÍNH ================= */
+    function refreshUI() {
+      const u = appData.currentUser || defaultDatabase.currentUser;
+      document.getElementById('dispTeacherCode').innerText = u.code || '—';
+      document.getElementById('bannerHeading').innerText = `Xin chào, ${u.name || 'Giáo viên'}`;
+      document.getElementById('bannerSubLabel').innerText = `Khu vực quản trị riêng của ${u.name || 'Giáo viên'}`;
+
+      const meetings = appData.meetings || [];
+      const responses = meetings.flatMap(m => m.responses || []);
+      document.getElementById('cntTotalMeetings').innerText = meetings.length;
+      document.getElementById('cntTotalResponses').innerText = responses.length;
+      document.getElementById('cntTotalAttend').innerText = responses.filter(r => r.status === 'attend').length;
+      document.getElementById('cntTotalAbsent').innerText = responses.filter(r => r.status === 'absent').length;
+      document.getElementById('badgePendingOrdersCount').innerText = (appData.orders || []).filter(o => o.status === 'pending').length;
+
+      const btnHeader = document.getElementById('btnHeaderLicenseStatus');
+      const badgeBanner = document.getElementById('bannerLicenseBadge');
+      if (u.isLicensed) {
+        btnHeader.className = 'px-3 py-1.5 rounded-xl bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold transition flex items-center gap-1.5';
+        btnHeader.innerHTML = '<i class="fa-solid fa-crown text-emerald-700"></i> <span>Đã Kích Hoạt Bản Quyền</span>';
+        badgeBanner.className = 'ml-1 px-2 py-0.2 rounded bg-emerald-400 text-stone-950 font-extrabold text-[10px]';
+        badgeBanner.innerText = 'BẢN QUYỀN VĨNH VIỄN';
+      } else {
+        btnHeader.className = 'px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold transition flex items-center gap-1.5 shadow-sm';
+        btnHeader.innerHTML = '<i class="fa-solid fa-crown text-amber-950"></i> <span>Kích Hoạt Bản Quyền (100k)</span>';
+        badgeBanner.className = 'ml-1 px-2 py-0.2 rounded bg-amber-400 text-stone-900 font-extrabold text-[10px]';
+        badgeBanner.innerText = 'BẢN DÙNG THỬ';
+      }
+      renderMeetingsList();
+    }
+
+    function renderMeetingsList() {
+      const container = document.getElementById('meetingsListContainer');
+      const term = (document.getElementById('meetingSearchInput').value || '').trim().toLowerCase();
+      container.innerHTML = '';
+      const themeNames = { traditional: 'Sư Phạm Truyền Thống', royal: 'Hoàng Gia Sang Trọng', emerald: 'Ngọc Bích Hiện Đại', cute: 'Dễ Thương (Cute)' };
+      const filteredMeetings = (appData.meetings || []).filter(m => `${m.title || ''} ${m.className || ''}`.toLowerCase().includes(term));
+      if (!filteredMeetings.length) {
+        const empty = document.createElement('div');
+        empty.className = 'bg-white rounded-3xl border border-stone-200 p-8 text-center text-sm text-stone-400';
+        empty.textContent = term ? 'Không tìm thấy cuộc họp phù hợp.' : 'Chưa có cuộc họp nào. Hãy tạo giấy mời đầu tiên.';
+        container.appendChild(empty); return;
+      }
+
+      filteredMeetings.forEach(m => {
+        const respCount = (m.responses || []).length;
+        const attendCount = (m.responses || []).filter(r => r.status === 'attend').length;
+        const absentCount = (m.responses || []).filter(r => r.status === 'absent').length;
+        const agendaCount = (m.agenda || []).length;
+        const agendaSummary = (m.agenda || []).join(' • ');
+        const themeLabel = themeNames[m.theme] || themeNames.traditional;
+        const id = escapeAttr(m.id);
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-3xl border border-stone-200/90 p-5 sm:p-6 shadow-sm hover:shadow-md transition space-y-4';
+        card.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-300 font-bold text-xs">Lớp ${escapeHtml(m.className)}</span>
+              <span class="px-2 py-0.5 rounded bg-stone-100 text-stone-500 font-mono text-xs font-semibold">${escapeHtml(m.id)}</span>
+              <span class="text-xs text-stone-600 flex items-center gap-1 font-medium"><i class="fa-solid fa-earth-americas text-stone-400"></i> ${escapeHtml(themeLabel)}</span>
+              <span class="text-xs text-stone-400">• Năm học ${escapeHtml(m.schoolYear)}</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <span class="font-medium text-stone-500">${respCount} phản hồi</span>
+              <span class="font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/80"><i class="fa-solid fa-user-check text-[11px]"></i> ${attendCount} tham dự</span>
+              <span class="font-bold text-rose-700 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200/80"><i class="fa-solid fa-user-xmark text-[11px]"></i> ${absentCount} vắng</span>
+            </div>
+          </div>
+          <div>
+            <h4 class="text-lg sm:text-xl font-bold text-stone-900 font-formal">${escapeHtml(m.title)}</h4>
+            <div class="bg-stone-50/80 rounded-2xl p-3 sm:p-3.5 border border-stone-200/70 grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-3 mt-3 text-xs text-stone-700">
+              <div class="flex items-center gap-2"><i class="fa-regular fa-calendar-days text-amber-800"></i><span>Ngày: <strong class="text-stone-900">${escapeHtml(m.date)}</strong></span></div>
+              <div class="flex items-center gap-2"><i class="fa-regular fa-clock text-amber-800"></i><span>Thời gian: <strong class="text-stone-900">${escapeHtml(m.time)}</strong></span></div>
+              <div class="flex items-center gap-2 truncate"><i class="fa-solid fa-location-dot text-amber-800"></i><span class="truncate">Địa điểm: <strong class="text-stone-900">${escapeHtml(m.location)}</strong></span></div>
+            </div>
+            <p class="text-xs text-stone-600 mt-2.5 line-clamp-1"><strong class="text-stone-800">Nội dung (${agendaCount} mục):</strong> ${escapeHtml(agendaSummary)}</p>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-stone-100">
+            <div class="flex items-center gap-2">
+              <button data-action="copy" data-id="${id}" class="meeting-action px-3 py-1.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"><i class="fa-regular fa-copy text-stone-400"></i> Sao chép link</button>
+              <button data-action="qr" data-id="${id}" class="meeting-action px-3.5 py-1.5 rounded-xl border border-amber-300 bg-[#fffbeb] hover:bg-amber-100 text-[#92400e] text-xs font-bold transition flex items-center gap-1.5 shadow-sm"><i class="fa-solid fa-qrcode"></i> QR & Ảnh JPG</button>
+            </div>
+            <div class="flex items-center gap-2">
+              <button data-action="view" data-id="${id}" class="meeting-action px-3.5 py-1.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"><i class="fa-regular fa-eye text-stone-400"></i> Xem giấy mời</button>
+              <button data-action="responses" data-id="${id}" class="meeting-action px-4 py-2 rounded-xl bg-gradient-to-r from-[#b44509] to-[#963704] hover:from-[#963704] hover:to-[#782802] text-white text-xs font-bold transition flex items-center gap-1.5 shadow"><i class="fa-solid fa-clipboard-check"></i> Quản lý phản hồi (${respCount})</button>
+              <button data-action="edit" data-id="${id}" class="meeting-action p-2 text-stone-400 hover:text-amber-800 rounded-xl hover:bg-amber-50 transition" title="Chỉnh sửa cuộc họp"><i class="fa-solid fa-pen text-sm"></i></button>
+              <button data-action="delete" data-id="${id}" class="meeting-action p-2 text-stone-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 transition" title="Xóa cuộc họp"><i class="fa-regular fa-trash-can text-sm"></i></button>
+            </div>
+          </div>`;
+        container.appendChild(card);
+      });
+
+      container.querySelectorAll('.meeting-action').forEach(btn => btn.addEventListener('click', () => {
+        const { action, id } = btn.dataset;
+        if (action === 'copy') copyMeetingLinkDirectly(id);
+        else if (action === 'qr') openQrModalForMeeting(id);
+        else if (action === 'view') { isOpenedFromCreateModal = false; launchParentView(id); }
+        else if (action === 'responses') openAttendanceManager(id);
+        else if (action === 'edit') openEditMeetingModal(id);
+        else if (action === 'delete') requestDeleteMeeting(id);
+      }));
+    }
+
+    async function handleLoginSubmit() {
+      const u = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword')?.value || '';
+      if (!u) {
+        showToastNotification('Vui lòng nhập email giáo viên.', false);
+        return;
+      }
+      if (APP_CONFIG.backend.provider === 'local') {
+        appData.currentUser.code = u.toUpperCase();
+        saveAppDatabase();
+        closeModal('authModal');
+        showToastNotification('Đã vào chế độ local demo.');
+        return;
+      }
+      if (!isSupabaseConfigured()) {
+        showToastNotification('Chưa dán Project URL và Publishable key Supabase vào APP_CONFIG.', false);
+        return;
+      }
+      if (!u.includes('@') || !password) {
+        showToastNotification('Supabase Auth cần email và mật khẩu.', false);
+        return;
+      }
+      try {
+        const client = await getSupabaseClient();
+        const { data, error } = await client.auth.signInWithPassword({ email: u, password });
+        if (error) throw error;
+        const user = data.user;
+        appData.currentUser = {
+          code: user.email || 'GV',
+          name: user.user_metadata?.full_name || user.user_metadata?.name || user.email || 'Giáo viên',
+          school: user.user_metadata?.school || '',
+          isLicensed: true
+        };
+        await hydrateMeetingsFromBackend();
+        saveAppDatabase();
+        closeModal('authModal');
+        showToastNotification('Đăng nhập Supabase thành công!');
+      } catch (err) {
+        showToastNotification('Đăng nhập thất bại: ' + err.message, false);
+      }
+    }
+
+    async function signOutTeacher() {
+      if (APP_CONFIG.backend.provider !== 'supabase') return;
+      try {
+        const client = await getSupabaseClient();
+        await client.auth.signOut();
+        appData.meetings = [];
+        appData.currentUser = cloneData(defaultDatabase.currentUser);
+        saveAppDatabase();
+        showToastNotification('Đã đăng xuất.');
+      } catch (err) {
+        showToastNotification('Không thể đăng xuất: ' + err.message, false);
+      }
+    }
+
+    function loginAsDemoUser() {
+      if (APP_CONFIG.backend.provider === 'supabase') {
+        showToastNotification('Bản Supabase dùng tài khoản giáo viên thật. Hãy đăng nhập bằng email và mật khẩu.', false);
+        return;
+      }
+      appData.currentUser = { code: "GV001", name: "Cô Nguyễn Thu Hà", school: "Trường THCS Chu Văn An", isLicensed: false };
+      saveAppDatabase();
+      closeModal('authModal');
+      showToastNotification("Đã kích hoạt tài khoản Demo: Cô Nguyễn Thu Hà");
+    }
+
+    function openAuthModal() {
+      document.getElementById('authModal').classList.remove('hidden');
+      document.getElementById('authModal').classList.add('flex');
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) { el.classList.remove('flex'); el.classList.add('hidden'); }
+    }
+
+    async function copyToClipboard(txt) {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(txt);
+          return true;
+        }
+      } catch (e) { console.warn('Clipboard API failed, dùng fallback.', e); }
+      const temp = document.createElement('textarea');
+      temp.value = txt; temp.style.position = 'fixed'; temp.style.opacity = '0';
+      document.body.appendChild(temp); temp.focus(); temp.select();
+      const ok = document.execCommand('copy'); document.body.removeChild(temp); return ok;
+    }
+
+
+
+    async function hydrateMeetingsFromBackend() {
+      if (APP_CONFIG.backend.provider === 'local') return;
+      try {
+        const remoteMeetings = await getBackendAdapter().listMeetings();
+        appData.meetings = Array.isArray(remoteMeetings) ? remoteMeetings : [];
+        try { localStorage.setItem(SYSTEM_STORAGE, JSON.stringify(appData)); } catch (_) {}
+      } catch (err) {
+        console.error('Không tải được backend:', err);
+        showToastNotification('Không tải được dữ liệu Supabase: ' + err.message, false);
+      }
+    }
+
+    async function restoreSupabaseSession() {
+      if (APP_CONFIG.backend.provider !== 'supabase' || !isSupabaseConfigured()) return;
+      try {
+        const client = await getSupabaseClient();
+        const { data } = await client.auth.getSession();
+        const user = data.session?.user;
+        if (user) {
+          appData.currentUser = {
+            code: user.email || 'GV',
+            name: user.user_metadata?.full_name || user.user_metadata?.name || user.email || 'Giáo viên',
+            school: user.user_metadata?.school || '',
+            isLicensed: true
+          };
+          await hydrateMeetingsFromBackend();
+        } else {
+          appData.meetings = [];
+        }
+      } catch (err) {
+        console.error('Restore session failed:', err);
+      }
+    }
+
+    async function openMeetingFromUrlIfAny() {
+      const token = new URLSearchParams(window.location.search).get('m');
+      if (!token) return;
+      try {
+        const meeting = await getBackendAdapter().getPublicMeeting(token);
+        if (!meeting) {
+          showToastNotification(APP_CONFIG.backend.provider === 'local'
+            ? 'Không tìm thấy giấy mời trên thiết bị này.'
+            : 'Không tìm thấy giấy mời hoặc giấy mời đã bị tắt.', false);
+          return;
+        }
+        currentMeetingTarget = meeting;
+        isOpenedFromCreateModal = false;
+        launchParentView(meeting.id, null, meeting);
+      } catch (err) {
+        console.error(err);
+        showToastNotification('Không thể mở giấy mời: ' + err.message, false);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (APP_CONFIG.backend.provider === 'supabase' && !isSupabaseConfigured()) {
+        showToastNotification('Bản Supabase đã sẵn sàng nhưng chưa có Project URL / Publishable key.', false);
+      }
+      await restoreSupabaseSession();
+      refreshUI();
+      await openMeetingFromUrlIfAny();
+    });
+  </script>
+</body>
+</html>
