@@ -7,67 +7,100 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="bg-stone-100 text-stone-900 min-h-screen">
-  <header class="bg-white border-b sticky top-0 z-20">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
-      <div><h1 class="font-extrabold text-lg">Quản trị khách hàng</h1><p class="text-xs text-stone-500">Gói giáo viên 100K • Supabase</p></div>
-      <div class="flex gap-2"><button onclick="loadDashboard()" class="px-3 py-2 rounded-xl border bg-white text-xs font-bold"><i class="fa-solid fa-rotate mr-1"></i>Làm mới</button><button onclick="signOut()" class="px-3 py-2 rounded-xl bg-stone-900 text-white text-xs font-bold">Đăng xuất</button></div>
-    </div>
-  </header>
-
-  <main id="appView" class="max-w-7xl mx-auto p-4 hidden">
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
-      <div class="bg-white rounded-2xl p-4 border"><div class="text-xs text-stone-500">Chờ duyệt</div><div id="sPending" class="text-2xl font-black">0</div></div>
-      <div class="bg-white rounded-2xl p-4 border"><div class="text-xs text-stone-500">Đã kích hoạt</div><div id="sApproved" class="text-2xl font-black text-emerald-700">0</div></div>
-      <div class="bg-white rounded-2xl p-4 border"><div class="text-xs text-stone-500">Bị khóa</div><div id="sBlocked" class="text-2xl font-black text-rose-700">0</div></div>
-      <div class="bg-white rounded-2xl p-4 border"><div class="text-xs text-stone-500">Đơn chờ</div><div id="sOrders" class="text-2xl font-black text-amber-700">0</div></div>
-      <div class="bg-white rounded-2xl p-4 border col-span-2 md:col-span-1"><div class="text-xs text-stone-500">Doanh thu kích hoạt</div><div id="sRevenue" class="text-xl font-black">0đ</div></div>
-    </div>
-
-    <div class="bg-white border rounded-2xl p-4 mb-5">
-      <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-3"><div><h2 class="font-extrabold">Tài khoản giáo viên</h2><p class="text-xs text-stone-500">Duyệt sau khi kiểm tra chuyển khoản.</p></div><input id="customerSearch" oninput="renderCustomers()" placeholder="Tìm email, tên, Zalo..." class="border rounded-xl px-3 py-2 text-sm sm:w-72"></div>
-      <div class="overflow-x-auto"><table class="w-full text-xs"><thead class="bg-stone-50"><tr><th class="p-3 text-left">Khách hàng</th><th class="p-3 text-left">Liên hệ</th><th class="p-3 text-left">Trạng thái</th><th class="p-3 text-left">Cuộc họp</th><th class="p-3 text-right">Thao tác</th></tr></thead><tbody id="customerRows"></tbody></table></div>
-    </div>
-
-    <div class="bg-white border rounded-2xl p-4">
-      <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-3"><div><h2 class="font-extrabold">Đơn mua gói 100K</h2><p class="text-xs text-stone-500">Mã chuyển khoản được tạo tự động từ website.</p></div><input id="orderSearch" oninput="renderOrders()" placeholder="Tìm mã đơn, email..." class="border rounded-xl px-3 py-2 text-sm sm:w-72"></div>
-      <div class="overflow-x-auto"><table class="w-full text-xs"><thead class="bg-stone-50"><tr><th class="p-3 text-left">Mã đơn</th><th class="p-3 text-left">Khách</th><th class="p-3 text-left">Số tiền</th><th class="p-3 text-left">Trạng thái</th><th class="p-3 text-left">Ngày tạo</th><th class="p-3 text-right">Thao tác</th></tr></thead><tbody id="orderRows"></tbody></table></div>
-    </div>
-  </main>
-
-  <div id="loginView" class="fixed inset-0 bg-stone-950/70 flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl">
-      <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-user-shield"></i></div>
-      <h2 class="text-xl font-black">Đăng nhập quản trị</h2><p class="text-xs text-stone-500 mt-1 mb-5">Chỉ tài khoản có role <b>admin</b> mới truy cập được.</p>
-      <input id="adminEmail" type="email" placeholder="Email admin" class="w-full border rounded-xl px-3 py-2.5 mb-3">
-      <input id="adminPassword" type="password" placeholder="Mật khẩu" class="w-full border rounded-xl px-3 py-2.5 mb-3">
-      <button onclick="adminLogin()" class="w-full py-3 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold">Đăng nhập Admin</button>
-      <p id="loginMsg" class="text-xs text-rose-600 mt-3 text-center"></p>
-    </div>
+<header class="bg-white border-b sticky top-0 z-20">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+    <div><h1 class="font-extrabold text-lg">Quản trị khách hàng</h1><p class="text-xs text-stone-500">Gói giáo viên 100K • Supabase • Production</p></div>
+    <div class="flex gap-2"><button onclick="loadDashboard()" class="px-3 py-2 rounded-xl border bg-white text-xs font-bold"><i class="fa-solid fa-rotate mr-1"></i>Làm mới</button><button onclick="signOut()" class="px-3 py-2 rounded-xl bg-stone-900 text-white text-xs font-bold">Đăng xuất</button></div>
   </div>
+</header>
+
+<main id="appView" class="max-w-7xl mx-auto p-4 hidden">
+  <div class="grid grid-cols-2 md:grid-cols-6 gap-3 mb-5">
+    <div class="bg-white rounded-2xl p-4 border"><div class="text-xs text-stone-500">Chờ duyệt</div><div id="sPending" class="text-2xl font-black">0</div></div>
+    <div class="bg-white rounded-2xl p-4 border"><div class="text-xs text-stone-500">Đã kích hoạt</div><div id="sApproved" class="text-2xl font-black text-emerald-700">0</div></div>
+    <div class="bg-white rounded-2xl p-4 border"><div class="text-xs text-stone-500">Bị khóa</div><div id="sBlocked" class="text-2xl font-black text-rose-700">0</div></div>
+    <div class="bg-white rounded-2xl p-4 border"><div class="text-xs text-stone-500">Đơn chờ</div><div id="sOrders" class="text-2xl font-black text-amber-700">0</div></div>
+    <div class="bg-white rounded-2xl p-4 border"><div class="text-xs text-stone-500">Khách báo CK</div><div id="sConfirmed" class="text-2xl font-black text-violet-700">0</div></div>
+    <div class="bg-white rounded-2xl p-4 border"><div class="text-xs text-stone-500">Doanh thu</div><div id="sRevenue" class="text-xl font-black">0đ</div></div>
+  </div>
+
+  <div class="bg-white border rounded-2xl p-4 mb-5">
+    <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-3"><div><h2 class="font-extrabold">Tài khoản giáo viên</h2><p class="text-xs text-stone-500">Sửa thông tin, duyệt, khóa hoặc lưu trữ. Email đăng nhập không sửa tại đây.</p></div><input id="customerSearch" oninput="renderCustomers()" placeholder="Tìm email, tên, Zalo..." class="border rounded-xl px-3 py-2 text-sm sm:w-72"></div>
+    <div class="overflow-x-auto"><table class="w-full text-xs"><thead class="bg-stone-50"><tr><th class="p-3 text-left">Khách hàng</th><th class="p-3 text-left">Liên hệ</th><th class="p-3 text-left">Trạng thái</th><th class="p-3 text-left">Cuộc họp</th><th class="p-3 text-right">Thao tác</th></tr></thead><tbody id="customerRows"></tbody></table></div>
+  </div>
+
+  <div class="bg-white border rounded-2xl p-4 mb-5">
+    <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-3"><div><h2 class="font-extrabold">Đơn mua gói 100K</h2><p class="text-xs text-stone-500">Sửa đơn, xác nhận tiền, hủy hoặc lưu trữ.</p></div><input id="orderSearch" oninput="renderOrders()" placeholder="Tìm mã đơn, email..." class="border rounded-xl px-3 py-2 text-sm sm:w-72"></div>
+    <div class="overflow-x-auto"><table class="w-full text-xs"><thead class="bg-stone-50"><tr><th class="p-3 text-left">Mã đơn</th><th class="p-3 text-left">Khách</th><th class="p-3 text-left">Số tiền</th><th class="p-3 text-left">Trạng thái</th><th class="p-3 text-left">Ngày tạo</th><th class="p-3 text-right">Thao tác</th></tr></thead><tbody id="orderRows"></tbody></table></div>
+  </div>
+
+  <div class="bg-white border rounded-2xl p-4">
+    <div class="flex items-center justify-between mb-3"><div><h2 class="font-extrabold">Nhật ký quản trị</h2><p class="text-xs text-stone-500">Các thao tác quan trọng để dễ đối soát.</p></div><span class="text-[11px] text-stone-400">100 sự kiện gần nhất</span></div>
+    <div id="auditRows" class="divide-y"></div>
+  </div>
+</main>
+
+<div id="loginView" class="fixed inset-0 bg-stone-950/70 flex items-center justify-center p-4 z-50">
+  <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl">
+    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-user-shield"></i></div>
+    <h2 class="text-xl font-black">Đăng nhập quản trị</h2><p class="text-xs text-stone-500 mt-1 mb-5">Chỉ tài khoản có role <b>admin</b> mới truy cập được.</p>
+    <input id="adminEmail" type="email" placeholder="Email admin" class="w-full border rounded-xl px-3 py-2.5 mb-3">
+    <input id="adminPassword" type="password" placeholder="Mật khẩu" class="w-full border rounded-xl px-3 py-2.5 mb-3">
+    <button onclick="adminLogin()" class="w-full py-3 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold">Đăng nhập Admin</button>
+    <p id="loginMsg" class="text-xs text-rose-600 mt-3 text-center"></p>
+  </div>
+</div>
+
+<div id="customerModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-50"><div class="bg-white rounded-2xl w-full max-w-lg p-5 shadow-2xl">
+  <div class="flex justify-between items-center mb-4"><h3 class="font-black">Sửa khách hàng</h3><button onclick="closeModal('customerModal')"><i class="fa-solid fa-xmark"></i></button></div>
+  <input id="editCustomerId" type="hidden"><label class="text-xs font-bold">Email đăng nhập</label><input id="editCustomerEmail" disabled class="w-full border rounded-xl px-3 py-2 mb-3 bg-stone-100 text-stone-500">
+  <label class="text-xs font-bold">Họ tên</label><input id="editCustomerName" class="w-full border rounded-xl px-3 py-2 mb-3">
+  <label class="text-xs font-bold">Zalo / SĐT</label><input id="editCustomerPhone" class="w-full border rounded-xl px-3 py-2 mb-3">
+  <label class="text-xs font-bold">Trường</label><input id="editCustomerSchool" class="w-full border rounded-xl px-3 py-2 mb-4">
+  <button onclick="saveCustomerEdit()" class="w-full py-2.5 rounded-xl bg-amber-700 text-white font-bold">Lưu thay đổi</button>
+</div></div>
+
+<div id="orderModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-50"><div class="bg-white rounded-2xl w-full max-w-lg p-5 shadow-2xl">
+  <div class="flex justify-between items-center mb-4"><h3 class="font-black">Sửa đơn hàng</h3><button onclick="closeModal('orderModal')"><i class="fa-solid fa-xmark"></i></button></div>
+  <input id="editOrderId" type="hidden"><label class="text-xs font-bold">Họ tên</label><input id="editOrderName" class="w-full border rounded-xl px-3 py-2 mb-3">
+  <label class="text-xs font-bold">Email</label><input id="editOrderEmail" class="w-full border rounded-xl px-3 py-2 mb-3">
+  <label class="text-xs font-bold">Zalo / SĐT</label><input id="editOrderPhone" class="w-full border rounded-xl px-3 py-2 mb-3">
+  <label class="text-xs font-bold">Trường</label><input id="editOrderSchool" class="w-full border rounded-xl px-3 py-2 mb-3">
+  <label class="text-xs font-bold">Ghi chú Admin</label><textarea id="editOrderNote" rows="3" class="w-full border rounded-xl px-3 py-2 mb-4"></textarea>
+  <button onclick="saveOrderEdit()" class="w-full py-2.5 rounded-xl bg-amber-700 text-white font-bold">Lưu thay đổi</button>
+</div></div>
 
 <script type="module">
 const SUPABASE_URL='https://qagfycndpjuicqpueqms.supabase.co';
 const SUPABASE_KEY='sb_publishable_yWT7-8lQ945bt4GFHLHCsQ_GfIwfeUA';
-const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
 const sb=createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-let DASH={customers:[],orders:[],stats:{}};
+let DASH={customers:[],orders:[],logs:[],stats:{}};
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
 const fmtDate=v=>v?new Date(v).toLocaleString('vi-VN'):'—';
 const fmtMoney=v=>Number(v||0).toLocaleString('vi-VN')+'đ';
 function statusBadge(st){const m={pending:'bg-amber-100 text-amber-800',approved:'bg-emerald-100 text-emerald-800',blocked:'bg-rose-100 text-rose-800',paid:'bg-sky-100 text-sky-800',activated:'bg-emerald-100 text-emerald-800',cancelled:'bg-stone-200 text-stone-600'};return `<span class="px-2 py-1 rounded-full font-bold ${m[st]||'bg-stone-100'}">${esc(st)}</span>`}
-function toast(msg,ok=true){const d=document.createElement('div');d.className=`fixed right-5 bottom-5 z-[100] px-4 py-3 rounded-xl text-sm font-bold shadow-xl ${ok?'bg-stone-900 text-amber-200':'bg-rose-800 text-white'}`;d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),2800)}
-
-window.adminLogin=async()=>{try{const {error}=await sb.auth.signInWithPassword({email:$('adminEmail').value.trim(),password:$('adminPassword').value});if(error)throw error;await loadDashboard();}catch(e){$('loginMsg').textContent=e.message}}
-window.signOut=async()=>{await sb.auth.signOut();location.reload()}
-window.loadDashboard=async()=>{try{const {data,error}=await sb.rpc('admin_dashboard');if(error)throw error;DASH=data||{customers:[],orders:[],stats:{}};$('loginView').classList.add('hidden');$('appView').classList.remove('hidden');const s=DASH.stats||{};$('sPending').textContent=s.pendingCustomers||0;$('sApproved').textContent=s.approvedCustomers||0;$('sBlocked').textContent=s.blockedCustomers||0;$('sOrders').textContent=s.pendingOrders||0;$('sRevenue').textContent=fmtMoney(s.revenue);renderCustomers();renderOrders();}catch(e){$('loginView').classList.remove('hidden');$('appView').classList.add('hidden');$('loginMsg').textContent=e.message}}
-window.renderCustomers=()=>{const q=$('customerSearch').value.trim().toLowerCase();const rows=(DASH.customers||[]).filter(c=>[c.email,c.full_name,c.phone,c.school].join(' ').toLowerCase().includes(q));$('customerRows').innerHTML=rows.length?rows.map(c=>`<tr class="border-t"><td class="p-3"><b>${esc(c.full_name||'Chưa nhập tên')}</b><div class="text-stone-500">${esc(c.email)}</div><div class="text-stone-400">${esc(c.school||'')}</div></td><td class="p-3">${esc(c.phone||'—')}</td><td class="p-3">${statusBadge(c.status)}</td><td class="p-3">${c.meeting_count||0}</td><td class="p-3 text-right whitespace-nowrap">${c.status!=='approved'?`<button onclick="approveCustomer('${c.id}','${esc(c.email)}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-700 text-white font-bold">Duyệt</button>`:''} ${c.status!=='blocked'?`<button onclick="blockCustomer('${c.id}')" class="px-2.5 py-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 font-bold">Khóa</button>`:`<button onclick="approveCustomer('${c.id}','${esc(c.email)}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">Mở khóa</button>`} <button onclick="sendReset('${esc(c.email)}')" class="px-2.5 py-1.5 rounded-lg border font-bold">Reset MK</button></td></tr>`).join(''):`<tr><td colspan="5" class="p-8 text-center text-stone-400">Chưa có tài khoản</td></tr>`}
-window.renderOrders=()=>{const q=$('orderSearch').value.trim().toLowerCase();const rows=(DASH.orders||[]).filter(o=>[o.order_code,o.email,o.customer_name,o.phone].join(' ').toLowerCase().includes(q));$('orderRows').innerHTML=rows.length?rows.map(o=>`<tr class="border-t"><td class="p-3 font-mono font-bold">${esc(o.order_code)}</td><td class="p-3"><b>${esc(o.customer_name)}</b><div class="text-stone-500">${esc(o.email)}</div><div class="text-stone-400">${esc(o.phone)}</div></td><td class="p-3 font-bold">${fmtMoney(o.amount)}</td><td class="p-3">${statusBadge(o.status)}</td><td class="p-3">${fmtDate(o.created_at)}</td><td class="p-3 text-right whitespace-nowrap">${o.status==='pending'?`<button onclick="markPaid('${o.id}')" class="px-2.5 py-1.5 rounded-lg bg-sky-50 text-sky-700 border border-sky-200 font-bold">Đã nhận tiền</button>`:''} ${o.status!=='cancelled'&&o.status!=='activated'?`<button onclick="cancelOrder('${o.id}')" class="px-2.5 py-1.5 rounded-lg border text-stone-500 font-bold">Hủy</button>`:''}</td></tr>`).join(''):`<tr><td colspan="6" class="p-8 text-center text-stone-400">Chưa có đơn hàng</td></tr>`}
-window.approveCustomer=async(id,email)=>{if(!confirm(`Duyệt tài khoản ${email}?`))return;const {error}=await sb.rpc('admin_set_customer_status',{p_user_id:id,p_status:'approved',p_order_id:null});if(error)return toast(error.message,false);toast('Đã kích hoạt tài khoản');await loadDashboard()}
-window.blockCustomer=async id=>{if(!confirm('Khóa tài khoản này?'))return;const {error}=await sb.rpc('admin_set_customer_status',{p_user_id:id,p_status:'blocked',p_order_id:null});if(error)return toast(error.message,false);toast('Đã khóa tài khoản');await loadDashboard()}
-window.markPaid=async id=>{const {error}=await sb.rpc('admin_set_order_status',{p_order_id:id,p_status:'paid',p_note:''});if(error)return toast(error.message,false);toast('Đã đánh dấu nhận tiền');await loadDashboard()}
-window.cancelOrder=async id=>{if(!confirm('Hủy đơn này?'))return;const {error}=await sb.rpc('admin_set_order_status',{p_order_id:id,p_status:'cancelled',p_note:''});if(error)return toast(error.message,false);toast('Đã hủy đơn');await loadDashboard()}
-window.sendReset=async email=>{const u=new URL(location.href);u.pathname=u.pathname.replace(/admin\.html$/,'index.html');u.search='';u.hash='';const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:u.toString()});if(error)return toast(error.message,false);toast('Đã yêu cầu gửi email đặt lại mật khẩu')}
-const {data:{session}}=await sb.auth.getSession();if(session)await loadDashboard();
+function toast(msg,ok=true){const d=document.createElement('div');d.className=`fixed right-5 bottom-5 z-[100] px-4 py-3 rounded-xl text-sm font-bold shadow-xl ${ok?'bg-stone-900 text-amber-200':'bg-rose-800 text-white'}`;d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),3000)}
+window.closeModal=id=>{$(id).classList.add('hidden');$(id).classList.remove('flex')};
+window.adminLogin=async()=>{try{const{error}=await sb.auth.signInWithPassword({email:$('adminEmail').value.trim(),password:$('adminPassword').value});if(error)throw error;await loadDashboard()}catch(e){$('loginMsg').textContent=e.message}};
+window.signOut=async()=>{await sb.auth.signOut();location.reload()};
+window.loadDashboard=async()=>{try{const{data,error}=await sb.rpc('admin_dashboard');if(error)throw error;DASH=data||{customers:[],orders:[],logs:[],stats:{}};$('loginView').classList.add('hidden');$('appView').classList.remove('hidden');const s=DASH.stats||{};$('sPending').textContent=s.pendingCustomers||0;$('sApproved').textContent=s.approvedCustomers||0;$('sBlocked').textContent=s.blockedCustomers||0;$('sOrders').textContent=s.pendingOrders||0;$('sConfirmed').textContent=s.customerConfirmedOrders||0;$('sRevenue').textContent=fmtMoney(s.revenue);renderCustomers();renderOrders();renderAudit()}catch(e){$('loginView').classList.remove('hidden');$('appView').classList.add('hidden');$('loginMsg').textContent=e.message}};
+window.renderCustomers=()=>{const q=$('customerSearch').value.trim().toLowerCase();const rows=(DASH.customers||[]).filter(c=>[c.email,c.full_name,c.phone,c.school].join(' ').toLowerCase().includes(q));$('customerRows').innerHTML=rows.length?rows.map(c=>`<tr class="border-t"><td class="p-3"><b>${esc(c.full_name||'Chưa nhập tên')}</b><div class="text-stone-500">${esc(c.email)}</div><div class="text-stone-400">${esc(c.school||'')}</div></td><td class="p-3">${esc(c.phone||'—')}</td><td class="p-3">${statusBadge(c.status)}</td><td class="p-3">${c.meeting_count||0}</td><td class="p-3 text-right whitespace-nowrap space-x-1"><button onclick="editCustomer('${c.id}')" class="px-2.5 py-1.5 rounded-lg border font-bold"><i class="fa-solid fa-pen"></i> Sửa</button>${c.status!=='approved'?` <button onclick="approveCustomer('${c.id}','${esc(c.email)}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-700 text-white font-bold">Duyệt</button>`:''}${c.status!=='blocked'?` <button onclick="blockCustomer('${c.id}')" class="px-2.5 py-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 font-bold">Khóa</button>`:` <button onclick="approveCustomer('${c.id}','${esc(c.email)}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">Mở khóa</button>`} <button onclick="sendReset('${esc(c.email)}','${c.id}')" class="px-2.5 py-1.5 rounded-lg border font-bold">Reset MK</button> <button onclick="archiveCustomer('${c.id}','${esc(c.email)}')" class="px-2.5 py-1.5 rounded-lg border border-rose-200 text-rose-700 font-bold"><i class="fa-regular fa-trash-can"></i> Xóa</button></td></tr>`).join(''):`<tr><td colspan="5" class="p-8 text-center text-stone-400">Chưa có tài khoản</td></tr>`};
+window.renderOrders=()=>{const q=$('orderSearch').value.trim().toLowerCase();const rows=(DASH.orders||[]).filter(o=>[o.order_code,o.email,o.customer_name,o.phone].join(' ').toLowerCase().includes(q));$('orderRows').innerHTML=rows.length?rows.map(o=>`<tr class="border-t"><td class="p-3 font-mono font-bold">${esc(o.order_code)}</td><td class="p-3"><b>${esc(o.customer_name)}</b><div class="text-stone-500">${esc(o.email)}</div><div class="text-stone-400">${esc(o.phone)}</div>${o.admin_note?`<div class="text-[10px] text-amber-700 mt-1">${esc(o.admin_note)}</div>`:''}</td><td class="p-3 font-bold">${fmtMoney(o.amount)}</td><td class="p-3">${statusBadge(o.status)}${o.customer_confirmed_at?`<div class="mt-1 inline-flex px-2 py-1 rounded-full bg-violet-100 text-violet-800 font-bold"><i class="fa-solid fa-bell mr-1"></i>Khách báo đã CK</div><div class="text-[10px] text-stone-400 mt-1">${fmtDate(o.customer_confirmed_at)}</div>`:''}</td><td class="p-3">${fmtDate(o.created_at)}</td><td class="p-3 text-right whitespace-nowrap space-x-1"><button onclick="editOrder('${o.id}')" class="px-2.5 py-1.5 rounded-lg border font-bold"><i class="fa-solid fa-pen"></i> Sửa</button>${o.status==='pending'?` <button onclick="markPaid('${o.id}')" class="px-2.5 py-1.5 rounded-lg ${o.customer_confirmed_at?'bg-emerald-700 text-white':'bg-sky-50 text-sky-700'} border font-bold">${o.customer_confirmed_at?'Xác nhận tiền':'Đã nhận tiền'}</button>`:''}${o.status!=='cancelled'&&o.status!=='activated'?` <button onclick="cancelOrder('${o.id}')" class="px-2.5 py-1.5 rounded-lg border text-stone-500 font-bold">Hủy</button>`:''} <button onclick="archiveOrder('${o.id}','${esc(o.order_code)}')" class="px-2.5 py-1.5 rounded-lg border border-rose-200 text-rose-700 font-bold"><i class="fa-regular fa-trash-can"></i> Xóa</button></td></tr>`).join(''):`<tr><td colspan="6" class="p-8 text-center text-stone-400">Chưa có đơn hàng</td></tr>`};
+window.renderAudit=()=>{const logs=DASH.logs||[];$('auditRows').innerHTML=logs.length?logs.map(l=>`<div class="py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs"><div><b>${esc(l.action)}</b> <span class="text-stone-400">• ${esc(l.target_type)} ${esc(l.target_id||'')}</span><div class="text-stone-500">${esc(l.admin_email||'Admin')}</div></div><div class="text-stone-400">${fmtDate(l.created_at)}</div></div>`).join(''):`<div class="py-8 text-center text-stone-400 text-sm">Chưa có nhật ký</div>`};
+window.editCustomer=id=>{const c=(DASH.customers||[]).find(x=>x.id===id);if(!c)return;$('editCustomerId').value=id;$('editCustomerEmail').value=c.email||'';$('editCustomerName').value=c.full_name||'';$('editCustomerPhone').value=c.phone||'';$('editCustomerSchool').value=c.school||'';$('customerModal').classList.remove('hidden');$('customerModal').classList.add('flex')};
+window.saveCustomerEdit=async()=>{const{error}=await sb.rpc('admin_update_customer',{p_user_id:$('editCustomerId').value,p_full_name:$('editCustomerName').value,p_phone:$('editCustomerPhone').value,p_school:$('editCustomerSchool').value});if(error)return toast(error.message,false);closeModal('customerModal');toast('Đã cập nhật khách hàng');await loadDashboard()};
+window.editOrder=id=>{const o=(DASH.orders||[]).find(x=>x.id===id);if(!o)return;$('editOrderId').value=id;$('editOrderName').value=o.customer_name||'';$('editOrderEmail').value=o.email||'';$('editOrderPhone').value=o.phone||'';$('editOrderSchool').value=o.school||'';$('editOrderNote').value=o.admin_note||'';$('orderModal').classList.remove('hidden');$('orderModal').classList.add('flex')};
+window.saveOrderEdit=async()=>{const{error}=await sb.rpc('admin_update_order',{p_order_id:$('editOrderId').value,p_name:$('editOrderName').value,p_email:$('editOrderEmail').value,p_phone:$('editOrderPhone').value,p_school:$('editOrderSchool').value,p_note:$('editOrderNote').value});if(error)return toast(error.message,false);closeModal('orderModal');toast('Đã cập nhật đơn');await loadDashboard()};
+window.approveCustomer=async(id,email)=>{if(!confirm(`Duyệt tài khoản ${email}?`))return;const{error}=await sb.rpc('admin_set_customer_status',{p_user_id:id,p_status:'approved',p_order_id:null});if(error)return toast(error.message,false);toast('Đã kích hoạt tài khoản');await loadDashboard()};
+window.blockCustomer=async id=>{if(!confirm('Khóa tài khoản này?'))return;const{error}=await sb.rpc('admin_set_customer_status',{p_user_id:id,p_status:'blocked',p_order_id:null});if(error)return toast(error.message,false);toast('Đã khóa tài khoản');await loadDashboard()};
+window.markPaid=async id=>{const{error}=await sb.rpc('admin_set_order_status',{p_order_id:id,p_status:'paid',p_note:''});if(error)return toast(error.message,false);toast('Đã đánh dấu nhận tiền');await loadDashboard()};
+window.cancelOrder=async id=>{if(!confirm('Hủy đơn này?'))return;const{error}=await sb.rpc('admin_set_order_status',{p_order_id:id,p_status:'cancelled',p_note:''});if(error)return toast(error.message,false);toast('Đã hủy đơn');await loadDashboard()};
+window.archiveCustomer=async(id,email)=>{const reason=prompt(`Lưu trữ/Xóa khách ${email}. Nhập lý do:`,'Khách yêu cầu xóa / dữ liệu rác');if(reason===null)return;if(!confirm('Thao tác này sẽ khóa tài khoản và ẩn khỏi Admin. Tiếp tục?'))return;const{error}=await sb.rpc('admin_archive_customer',{p_user_id:id,p_reason:reason});if(error)return toast(error.message,false);toast('Đã lưu trữ khách');await loadDashboard()};
+window.archiveOrder=async(id,code)=>{const reason=prompt(`Lưu trữ/Xóa đơn ${code}. Nhập lý do:`,'Đơn rác / trùng');if(reason===null)return;if(!confirm('Đơn sẽ được ẩn khỏi danh sách chính. Tiếp tục?'))return;const{error}=await sb.rpc('admin_archive_order',{p_order_id:id,p_reason:reason});if(error)return toast(error.message,false);toast('Đã lưu trữ đơn');await loadDashboard()};
+window.sendReset=async(email,id)=>{if(!confirm(`Gửi email đặt lại mật khẩu cho ${email}?`))return;const u=new URL(location.href);u.pathname=u.pathname.replace(/admin\.html$/,'index.html');u.search='';u.hash='';const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:u.toString()});if(error)return toast(error.message,false);await sb.rpc('admin_log_event',{p_action:'customer.password_reset',p_target_type:'profile',p_target_id:id,p_details:{email}});toast('Đã yêu cầu gửi email đặt lại mật khẩu')};
+const{data:{session}}=await sb.auth.getSession();if(session)await loadDashboard();
+setInterval(async()=>{const{data:{session:s}}=await sb.auth.getSession();if(s&&!$('appView').classList.contains('hidden'))await loadDashboard()},15000);
 </script>
 </body></html>
