@@ -869,10 +869,32 @@
           <i class="fa-regular fa-eye"></i> Xem demo dành cho giáo viên
         </button>
         <p class="text-[11px] text-stone-400 text-center -mt-1">Chế độ chỉ xem, không ghi dữ liệu thật.</p>
+        <button type="button" onclick="openRegisterModal()" class="w-full py-2.5 rounded-xl bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 font-bold text-xs transition">
+          <i class="fa-solid fa-user-plus mr-1"></i> Tạo tài khoản sau khi thanh toán
+        </button>
         <button type="button" onclick="openForgotPasswordModal()" class="w-full text-xs font-bold text-amber-800 hover:text-amber-950 hover:underline transition">
           <i class="fa-regular fa-circle-question mr-1"></i> Quên mật khẩu?
         </button>
         <p class="text-[11px] text-stone-400 text-center">Tài khoản được xác thực an toàn qua Supabase Auth.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL TẠO TÀI KHOẢN KHÁCH HÀNG ================= -->
+  <div id="registerModal" class="fixed inset-0 z-[60] bg-black/65 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden my-auto border border-stone-200">
+      <div class="bg-[#83380c] text-white p-5 flex items-center justify-between">
+        <div><h3 class="font-bold text-lg">Tạo Tài Khoản Giáo Viên</h3><p class="text-xs text-amber-200 mt-0.5">Dành cho khách đã đăng ký gói 100K</p></div>
+        <button onclick="closeModal('registerModal')" class="text-amber-200 hover:text-white p-1 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-6 space-y-3">
+        <div><label class="block text-xs font-bold text-stone-700 mb-1">Họ và tên *</label><input id="registerName" type="text" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-amber-700"></div>
+        <div><label class="block text-xs font-bold text-stone-700 mb-1">Email đã dùng khi mua gói *</label><input id="registerEmail" type="email" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-amber-700"></div>
+        <div><label class="block text-xs font-bold text-stone-700 mb-1">Số Zalo</label><input id="registerPhone" type="tel" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-amber-700"></div>
+        <div><label class="block text-xs font-bold text-stone-700 mb-1">Trường học</label><input id="registerSchool" type="text" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-amber-700"></div>
+        <div><label class="block text-xs font-bold text-stone-700 mb-1">Mật khẩu *</label><input id="registerPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Ít nhất 8 ký tự" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-amber-700"></div>
+        <button onclick="handleTeacherRegister()" class="w-full py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm"><i class="fa-solid fa-user-check mr-1"></i> Tạo tài khoản chờ duyệt</button>
+        <p class="text-[11px] leading-relaxed text-stone-500 text-center">Sau khi xác nhận email, tài khoản ở trạng thái <b>Chờ duyệt</b>. Chủ hệ thống sẽ kiểm tra thanh toán và kích hoạt.</p>
       </div>
     </div>
   </div>
@@ -927,7 +949,7 @@
 
   <!-- ================= JAVASCRIPT APPLICATION CORE ================= -->
   <script>
-    const SYSTEM_STORAGE = "GIAY_MOI_HOP_PROD_V10";
+    const SYSTEM_STORAGE = "GIAY_MOI_HOP_PROD_V11";
 
 
     /* ================= CẤU HÌNH ỨNG DỤNG & SUPABASE =================
@@ -943,7 +965,9 @@
           url: "https://qagfycndpjuicqpueqms.supabase.co",
           publishableKey: "sb_publishable_yWT7-8lQ945bt4GFHLHCsQ_GfIwfeUA",
           meetingsTable: "meetings",
-          responsesTable: "responses"
+          responsesTable: "responses",
+          profilesTable: "profiles",
+          ordersTable: "purchase_orders"
         }
       },
       // Để trống => tự lấy domain hiện tại khi deploy Vercel/Netlify/domain riêng.
@@ -2163,31 +2187,95 @@ Trân trọng cảm ơn Quý phụ huynh!`;
       }));
     }
 
+    async function getCurrentProfile() {
+      const client = await getSupabaseClient();
+      const { data: authData, error: authErr } = await client.auth.getUser();
+      if (authErr) throw authErr;
+      if (!authData.user) return null;
+      const { data, error } = await client.from(APP_CONFIG.backend.supabase.profilesTable)
+        .select('id,email,full_name,phone,school,status,role,plan,approved_at')
+        .eq('id', authData.user.id).maybeSingle();
+      if (error) throw error;
+      return data || null;
+    }
+
+    function openRegisterModal() {
+      const buyName = document.getElementById('buyName')?.value?.trim() || '';
+      const buyEmail = document.getElementById('buyEmail')?.value?.trim() || '';
+      const buyPhone = document.getElementById('buyPhone')?.value?.trim() || '';
+      const buySchool = document.getElementById('buySchool')?.value?.trim() || '';
+      closeModal('authModal');
+      if (buyName) document.getElementById('registerName').value = buyName;
+      if (buyEmail) document.getElementById('registerEmail').value = buyEmail;
+      if (buyPhone) document.getElementById('registerPhone').value = buyPhone;
+      if (buySchool) document.getElementById('registerSchool').value = buySchool;
+      document.getElementById('registerModal')?.classList.remove('hidden');
+      document.getElementById('registerModal')?.classList.add('flex');
+    }
+
+    async function handleTeacherRegister() {
+      const fullName = document.getElementById('registerName')?.value?.trim() || '';
+      const email = document.getElementById('registerEmail')?.value?.trim().toLowerCase() || '';
+      const phone = document.getElementById('registerPhone')?.value?.trim() || '';
+      const school = document.getElementById('registerSchool')?.value?.trim() || '';
+      const password = document.getElementById('registerPassword')?.value || '';
+      if (!fullName || !email.includes('@') || password.length < 8) {
+        showToastNotification('Vui lòng nhập họ tên, email hợp lệ và mật khẩu ít nhất 8 ký tự.', false);
+        return;
+      }
+      try {
+        const client = await getSupabaseClient();
+        const redirectTo = new URL(window.location.href); redirectTo.search = ''; redirectTo.hash = '';
+        const { data, error } = await client.auth.signUp({
+          email, password,
+          options: { emailRedirectTo: redirectTo.toString(), data: { full_name: fullName, phone, school } }
+        });
+        if (error) throw error;
+        closeModal('registerModal');
+        document.getElementById('registerPassword').value = '';
+        showToastNotification(data.session
+          ? 'Đã tạo tài khoản. Tài khoản đang chờ chủ hệ thống duyệt.'
+          : 'Đã tạo tài khoản. Hãy xác nhận email, sau đó chờ chủ hệ thống duyệt.');
+      } catch (err) {
+        showToastNotification('Không thể tạo tài khoản: ' + err.message, false);
+      }
+    }
+
     async function handleLoginSubmit() {
       const email = document.getElementById('loginUsername').value.trim();
       const password = document.getElementById('loginPassword')?.value || '';
       if (!email || !email.includes('@') || !password) {
-        showToastNotification('Vui lòng nhập email và mật khẩu giáo viên.', false);
-        return;
+        showToastNotification('Vui lòng nhập email và mật khẩu giáo viên.', false); return;
       }
       if (APP_CONFIG.backend.provider !== 'supabase' || !isSupabaseConfigured()) {
-        showToastNotification('Website chưa được cấu hình Supabase.', false);
-        return;
+        showToastNotification('Website chưa được cấu hình Supabase.', false); return;
       }
       try {
         const client = await getSupabaseClient();
         const { data, error } = await client.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        const profile = await getCurrentProfile();
+        if (!profile) {
+          await client.auth.signOut();
+          throw new Error('Chưa có hồ sơ tài khoản. Hãy liên hệ hỗ trợ.');
+        }
+        if (profile.status !== 'approved' && profile.role !== 'admin') {
+          await client.auth.signOut();
+          const msg = profile.status === 'blocked'
+            ? 'Tài khoản đang bị khóa. Vui lòng liên hệ hỗ trợ.'
+            : 'Tài khoản đã tạo nhưng đang chờ xét duyệt thanh toán gói 100K.';
+          showToastNotification(msg, false); return;
+        }
         const user = data.user;
         appData.currentUser = {
-          code: user.email || '',
-          name: user.user_metadata?.full_name || user.user_metadata?.name || user.email || 'Giáo viên',
-          school: user.user_metadata?.school || '',
-          isAuthenticated: true
+          code: profile.email || user.email || '',
+          name: profile.full_name || user.user_metadata?.full_name || user.email || 'Giáo viên',
+          school: profile.school || '',
+          isAuthenticated: true,
+          role: profile.role || 'teacher',
+          status: profile.status || 'approved'
         };
-        await hydrateMeetingsFromBackend();
-        saveAppDatabase();
-        closeModal('authModal');
+        await hydrateMeetingsFromBackend(); saveAppDatabase(); closeModal('authModal');
         document.getElementById('loginPassword').value = '';
         showToastNotification('Đăng nhập thành công!');
       } catch (err) {
@@ -2298,27 +2386,33 @@ Trân trọng cảm ơn Quý phụ huynh!`;
       document.getElementById('purchasePaymentView')?.classList.add('hidden');
     }
 
-    function generatePurchasePayment() {
+    async function generatePurchasePayment() {
       const name = document.getElementById('buyName')?.value.trim() || '';
-      const email = document.getElementById('buyEmail')?.value.trim() || '';
+      const email = document.getElementById('buyEmail')?.value.trim().toLowerCase() || '';
       const phone = document.getElementById('buyPhone')?.value.trim() || '';
       const school = document.getElementById('buySchool')?.value.trim() || '';
-      if (!name || !email || !phone) {
-        showToastNotification('Vui lòng nhập họ tên, email và số Zalo.', false);
-        return;
+      if (!name || !email || !phone) { showToastNotification('Vui lòng nhập họ tên, email và số Zalo.', false); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToastNotification('Email chưa đúng định dạng.', false); return; }
+      try {
+        const client = await getSupabaseClient();
+        const { data, error } = await client.rpc('create_purchase_order', {
+          p_name: name, p_email: email, p_phone: phone, p_school: school
+        });
+        if (error) throw error;
+        const code = data?.orderCode || data?.order_code;
+        if (!code) throw new Error('Không tạo được mã đơn hàng.');
+        const transferContent = `MUA ${code}`;
+        const qrUrl = `https://api.vietqr.io/image/${SALES_CONFIG.bankId}-${SALES_CONFIG.accountNo}-compact2.jpg?amount=${SALES_CONFIG.price}&accountName=${encodeURIComponent(SALES_CONFIG.accountName)}&addInfo=${encodeURIComponent(transferContent)}`;
+        document.getElementById('purchaseVietQr').src = qrUrl;
+        document.getElementById('purchaseTransferContent').innerText = transferContent;
+        document.getElementById('purchaseZaloMessage').value = `Chào bạn Dinh, tôi đã chuyển khoản 100.000đ mua gói Giấy Mời Họp Phụ Huynh.\n- Họ tên: ${name}\n- Email đăng nhập: ${email}\n- Zalo: ${phone}\n- Trường: ${school || '—'}\n- Mã đơn: ${code}\n- Nội dung CK: ${transferContent}\nNhờ bạn kiểm tra và duyệt tài khoản giúp tôi.`;
+        document.getElementById('purchaseFormView').classList.add('hidden');
+        document.getElementById('purchasePaymentView').classList.remove('hidden');
+        const regEmail = document.getElementById('registerEmail'); if (regEmail) regEmail.value = email;
+      } catch (err) {
+        console.error('Create purchase order failed:', err);
+        showToastNotification('Không tạo được đơn mua hàng: ' + err.message, false);
       }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showToastNotification('Email chưa đúng định dạng.', false);
-        return;
-      }
-      const code = 'GM' + Math.random().toString(36).slice(2, 7).toUpperCase();
-      const transferContent = `MUA ${code}`;
-      const qrUrl = `https://api.vietqr.io/image/${SALES_CONFIG.bankId}-${SALES_CONFIG.accountNo}-compact2.jpg?amount=${SALES_CONFIG.price}&accountName=${encodeURIComponent(SALES_CONFIG.accountName)}&addInfo=${encodeURIComponent(transferContent)}`;
-      document.getElementById('purchaseVietQr').src = qrUrl;
-      document.getElementById('purchaseTransferContent').innerText = transferContent;
-      document.getElementById('purchaseZaloMessage').value = `Chào bạn Dinh, tôi đã chuyển khoản 100.000đ mua gói Giấy Mời Họp Phụ Huynh.\n- Họ tên: ${name}\n- Email đăng nhập: ${email}\n- Zalo: ${phone}\n- Trường: ${school || '—'}\n- Mã thanh toán: ${code}\n- Nội dung CK: ${transferContent}\nNhờ bạn kiểm tra và cấp tài khoản giúp tôi.`;
-      document.getElementById('purchaseFormView').classList.add('hidden');
-      document.getElementById('purchasePaymentView').classList.remove('hidden');
     }
 
     async function copyPurchaseZaloMessage() {
@@ -2378,13 +2472,21 @@ Trân trọng cảm ơn Quý phụ huynh!`;
         const { data } = await client.auth.getSession();
         const user = data.session?.user;
         if (user) {
-          appData.currentUser = {
-            code: user.email || 'GV',
-            name: user.user_metadata?.full_name || user.user_metadata?.name || user.email || 'Giáo viên',
-            school: user.user_metadata?.school || '',
-            isAuthenticated: true
-          };
-          await hydrateMeetingsFromBackend();
+          const profile = await getCurrentProfile();
+          if (profile && (profile.status === 'approved' || profile.role === 'admin')) {
+            appData.currentUser = {
+              code: profile.email || user.email || 'GV',
+              name: profile.full_name || user.user_metadata?.full_name || user.email || 'Giáo viên',
+              school: profile.school || '',
+              isAuthenticated: true,
+              role: profile.role || 'teacher',
+              status: profile.status || 'approved'
+            };
+            await hydrateMeetingsFromBackend();
+          } else {
+            await client.auth.signOut();
+            appData = cloneData(defaultDatabase);
+          }
         } else {
           appData = cloneData(defaultDatabase);
         }

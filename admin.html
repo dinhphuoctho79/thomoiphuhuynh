@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Quản trị khách hàng • Giấy Mời Họp Phụ Huynh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-stone-100 text-stone-900 min-h-screen">
+  <header class="bg-white border-b sticky top-0 z-20">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      <div><h1 class="font-extrabold text-lg">Quản trị khách hàng</h1><p class="text-xs text-stone-500">Gói giáo viên 100K • Supabase</p></div>
+      <div class="flex gap-2"><button onclick="loadDashboard()" class="px-3 py-2 rounded-xl border bg-white text-xs font-bold"><i class="fa-solid fa-rotate mr-1"></i>Làm mới</button><button onclick="signOut()" class="px-3 py-2 rounded-xl bg-stone-900 text-white text-xs font-bold">Đăng xuất</button></div>
+    </div>
+  </header>
+
+  <main id="appView" class="max-w-7xl mx-auto p-4 hidden">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
+      <div class="bg-white rounded-2xl p-4 border"><div class="text-xs text-stone-500">Chờ duyệt</div><div id="sPending" class="text-2xl font-black">0</div></div>
+      <div class="bg-white rounded-2xl p-4 border"><div class="text-xs text-stone-500">Đã kích hoạt</div><div id="sApproved" class="text-2xl font-black text-emerald-700">0</div></div>
+      <div class="bg-white rounded-2xl p-4 border"><div class="text-xs text-stone-500">Bị khóa</div><div id="sBlocked" class="text-2xl font-black text-rose-700">0</div></div>
+      <div class="bg-white rounded-2xl p-4 border"><div class="text-xs text-stone-500">Đơn chờ</div><div id="sOrders" class="text-2xl font-black text-amber-700">0</div></div>
+      <div class="bg-white rounded-2xl p-4 border col-span-2 md:col-span-1"><div class="text-xs text-stone-500">Doanh thu kích hoạt</div><div id="sRevenue" class="text-xl font-black">0đ</div></div>
+    </div>
+
+    <div class="bg-white border rounded-2xl p-4 mb-5">
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-3"><div><h2 class="font-extrabold">Tài khoản giáo viên</h2><p class="text-xs text-stone-500">Duyệt sau khi kiểm tra chuyển khoản.</p></div><input id="customerSearch" oninput="renderCustomers()" placeholder="Tìm email, tên, Zalo..." class="border rounded-xl px-3 py-2 text-sm sm:w-72"></div>
+      <div class="overflow-x-auto"><table class="w-full text-xs"><thead class="bg-stone-50"><tr><th class="p-3 text-left">Khách hàng</th><th class="p-3 text-left">Liên hệ</th><th class="p-3 text-left">Trạng thái</th><th class="p-3 text-left">Cuộc họp</th><th class="p-3 text-right">Thao tác</th></tr></thead><tbody id="customerRows"></tbody></table></div>
+    </div>
+
+    <div class="bg-white border rounded-2xl p-4">
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-3"><div><h2 class="font-extrabold">Đơn mua gói 100K</h2><p class="text-xs text-stone-500">Mã chuyển khoản được tạo tự động từ website.</p></div><input id="orderSearch" oninput="renderOrders()" placeholder="Tìm mã đơn, email..." class="border rounded-xl px-3 py-2 text-sm sm:w-72"></div>
+      <div class="overflow-x-auto"><table class="w-full text-xs"><thead class="bg-stone-50"><tr><th class="p-3 text-left">Mã đơn</th><th class="p-3 text-left">Khách</th><th class="p-3 text-left">Số tiền</th><th class="p-3 text-left">Trạng thái</th><th class="p-3 text-left">Ngày tạo</th><th class="p-3 text-right">Thao tác</th></tr></thead><tbody id="orderRows"></tbody></table></div>
+    </div>
+  </main>
+
+  <div id="loginView" class="fixed inset-0 bg-stone-950/70 flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl">
+      <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-user-shield"></i></div>
+      <h2 class="text-xl font-black">Đăng nhập quản trị</h2><p class="text-xs text-stone-500 mt-1 mb-5">Chỉ tài khoản có role <b>admin</b> mới truy cập được.</p>
+      <input id="adminEmail" type="email" placeholder="Email admin" class="w-full border rounded-xl px-3 py-2.5 mb-3">
+      <input id="adminPassword" type="password" placeholder="Mật khẩu" class="w-full border rounded-xl px-3 py-2.5 mb-3">
+      <button onclick="adminLogin()" class="w-full py-3 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold">Đăng nhập Admin</button>
+      <p id="loginMsg" class="text-xs text-rose-600 mt-3 text-center"></p>
+    </div>
+  </div>
+
+<script type="module">
+const SUPABASE_URL='https://qagfycndpjuicqpueqms.supabase.co';
+const SUPABASE_KEY='sb_publishable_yWT7-8lQ945bt4GFHLHCsQ_GfIwfeUA';
+const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+const sb=createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+let DASH={customers:[],orders:[],stats:{}};
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
+const fmtDate=v=>v?new Date(v).toLocaleString('vi-VN'):'—';
+const fmtMoney=v=>Number(v||0).toLocaleString('vi-VN')+'đ';
+function statusBadge(st){const m={pending:'bg-amber-100 text-amber-800',approved:'bg-emerald-100 text-emerald-800',blocked:'bg-rose-100 text-rose-800',paid:'bg-sky-100 text-sky-800',activated:'bg-emerald-100 text-emerald-800',cancelled:'bg-stone-200 text-stone-600'};return `<span class="px-2 py-1 rounded-full font-bold ${m[st]||'bg-stone-100'}">${esc(st)}</span>`}
+function toast(msg,ok=true){const d=document.createElement('div');d.className=`fixed right-5 bottom-5 z-[100] px-4 py-3 rounded-xl text-sm font-bold shadow-xl ${ok?'bg-stone-900 text-amber-200':'bg-rose-800 text-white'}`;d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),2800)}
+
+window.adminLogin=async()=>{try{const {error}=await sb.auth.signInWithPassword({email:$('adminEmail').value.trim(),password:$('adminPassword').value});if(error)throw error;await loadDashboard();}catch(e){$('loginMsg').textContent=e.message}}
+window.signOut=async()=>{await sb.auth.signOut();location.reload()}
+window.loadDashboard=async()=>{try{const {data,error}=await sb.rpc('admin_dashboard');if(error)throw error;DASH=data||{customers:[],orders:[],stats:{}};$('loginView').classList.add('hidden');$('appView').classList.remove('hidden');const s=DASH.stats||{};$('sPending').textContent=s.pendingCustomers||0;$('sApproved').textContent=s.approvedCustomers||0;$('sBlocked').textContent=s.blockedCustomers||0;$('sOrders').textContent=s.pendingOrders||0;$('sRevenue').textContent=fmtMoney(s.revenue);renderCustomers();renderOrders();}catch(e){$('loginView').classList.remove('hidden');$('appView').classList.add('hidden');$('loginMsg').textContent=e.message}}
+window.renderCustomers=()=>{const q=$('customerSearch').value.trim().toLowerCase();const rows=(DASH.customers||[]).filter(c=>[c.email,c.full_name,c.phone,c.school].join(' ').toLowerCase().includes(q));$('customerRows').innerHTML=rows.length?rows.map(c=>`<tr class="border-t"><td class="p-3"><b>${esc(c.full_name||'Chưa nhập tên')}</b><div class="text-stone-500">${esc(c.email)}</div><div class="text-stone-400">${esc(c.school||'')}</div></td><td class="p-3">${esc(c.phone||'—')}</td><td class="p-3">${statusBadge(c.status)}</td><td class="p-3">${c.meeting_count||0}</td><td class="p-3 text-right whitespace-nowrap">${c.status!=='approved'?`<button onclick="approveCustomer('${c.id}','${esc(c.email)}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-700 text-white font-bold">Duyệt</button>`:''} ${c.status!=='blocked'?`<button onclick="blockCustomer('${c.id}')" class="px-2.5 py-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 font-bold">Khóa</button>`:`<button onclick="approveCustomer('${c.id}','${esc(c.email)}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">Mở khóa</button>`} <button onclick="sendReset('${esc(c.email)}')" class="px-2.5 py-1.5 rounded-lg border font-bold">Reset MK</button></td></tr>`).join(''):`<tr><td colspan="5" class="p-8 text-center text-stone-400">Chưa có tài khoản</td></tr>`}
+window.renderOrders=()=>{const q=$('orderSearch').value.trim().toLowerCase();const rows=(DASH.orders||[]).filter(o=>[o.order_code,o.email,o.customer_name,o.phone].join(' ').toLowerCase().includes(q));$('orderRows').innerHTML=rows.length?rows.map(o=>`<tr class="border-t"><td class="p-3 font-mono font-bold">${esc(o.order_code)}</td><td class="p-3"><b>${esc(o.customer_name)}</b><div class="text-stone-500">${esc(o.email)}</div><div class="text-stone-400">${esc(o.phone)}</div></td><td class="p-3 font-bold">${fmtMoney(o.amount)}</td><td class="p-3">${statusBadge(o.status)}</td><td class="p-3">${fmtDate(o.created_at)}</td><td class="p-3 text-right whitespace-nowrap">${o.status==='pending'?`<button onclick="markPaid('${o.id}')" class="px-2.5 py-1.5 rounded-lg bg-sky-50 text-sky-700 border border-sky-200 font-bold">Đã nhận tiền</button>`:''} ${o.status!=='cancelled'&&o.status!=='activated'?`<button onclick="cancelOrder('${o.id}')" class="px-2.5 py-1.5 rounded-lg border text-stone-500 font-bold">Hủy</button>`:''}</td></tr>`).join(''):`<tr><td colspan="6" class="p-8 text-center text-stone-400">Chưa có đơn hàng</td></tr>`}
+window.approveCustomer=async(id,email)=>{if(!confirm(`Duyệt tài khoản ${email}?`))return;const {error}=await sb.rpc('admin_set_customer_status',{p_user_id:id,p_status:'approved',p_order_id:null});if(error)return toast(error.message,false);toast('Đã kích hoạt tài khoản');await loadDashboard()}
+window.blockCustomer=async id=>{if(!confirm('Khóa tài khoản này?'))return;const {error}=await sb.rpc('admin_set_customer_status',{p_user_id:id,p_status:'blocked',p_order_id:null});if(error)return toast(error.message,false);toast('Đã khóa tài khoản');await loadDashboard()}
+window.markPaid=async id=>{const {error}=await sb.rpc('admin_set_order_status',{p_order_id:id,p_status:'paid',p_note:''});if(error)return toast(error.message,false);toast('Đã đánh dấu nhận tiền');await loadDashboard()}
+window.cancelOrder=async id=>{if(!confirm('Hủy đơn này?'))return;const {error}=await sb.rpc('admin_set_order_status',{p_order_id:id,p_status:'cancelled',p_note:''});if(error)return toast(error.message,false);toast('Đã hủy đơn');await loadDashboard()}
+window.sendReset=async email=>{const u=new URL(location.href);u.pathname=u.pathname.replace(/admin\.html$/,'index.html');u.search='';u.hash='';const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:u.toString()});if(error)return toast(error.message,false);toast('Đã yêu cầu gửi email đặt lại mật khẩu')}
+const {data:{session}}=await sb.auth.getSession();if(session)await loadDashboard();
+</script>
+</body></html>
