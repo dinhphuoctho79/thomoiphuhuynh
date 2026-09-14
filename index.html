@@ -153,19 +153,13 @@
 
       <!-- Right Header Actions -->
       <div class="flex items-center gap-2.5">
-        <button onclick="openLicensePaywallModal()" id="btnHeaderLicenseStatus" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
-          <i class="fa-solid fa-crown text-amber-950"></i>
-          <span>Kích Hoạt Bản Quyền (100k)</span>
+        <button onclick="openPurchaseModal()" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold transition flex items-center gap-1.5 shadow-sm" title="Mua gói bản quyền 100.000đ">
+          <i class="fa-solid fa-crown"></i>
+          <span class="hidden md:inline">Gói 100K</span>
         </button>
-
-        <button onclick="openAdminPortal()" class="px-2.5 py-1.5 rounded-xl bg-stone-900 hover:bg-black text-amber-300 text-xs font-semibold transition flex items-center gap-1.5" title="Quản trị duyệt đơn (Admin)">
-          <i class="fa-solid fa-user-shield text-amber-400"></i>
-          <span class="hidden md:inline">Admin</span>
-          <span id="badgePendingOrdersCount" class="w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] flex items-center justify-center font-bold">1</span>
-        </button>
-
-        <button onclick="openAuthModal('login')" class="text-stone-500 hover:text-amber-800 p-2 rounded-xl hover:bg-stone-100 transition" title="Đăng nhập tài khoản">
-          <i class="fa-solid fa-right-to-bracket text-base"></i>
+        <button id="btnHeaderAuth" onclick="handleHeaderAuthAction()" class="px-3 py-1.5 rounded-xl bg-stone-900 hover:bg-black text-amber-300 text-xs font-semibold transition flex items-center gap-1.5" title="Đăng nhập giáo viên">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span id="txtHeaderAuth" class="hidden sm:inline">Đăng nhập</span>
         </button>
       </div>
 
@@ -181,17 +175,17 @@
         <div>
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/25 text-amber-200 text-xs font-medium mb-3 backdrop-blur-sm">
             <i class="fa-solid fa-shield-halved text-amber-300"></i>
-            <span id="bannerSubLabel">Khu vực quản trị riêng của Cô Nguyễn Thu Hà</span>
-            <span id="bannerLicenseBadge" class="ml-1 px-2 py-0.2 rounded bg-amber-500 text-stone-900 font-extrabold text-[10px]">BẢN DÙNG THỬ</span>
+            <span id="bannerSubLabel">Khu vực quản lý dành cho giáo viên</span>
+            <span id="bannerAuthBadge" class="ml-1 px-2 py-0.5 rounded bg-white/15 text-amber-100 font-extrabold text-[10px] border border-white/15">CHƯA ĐĂNG NHẬP</span>
           </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2" id="bannerHeading">Xin chào, Cô Nguyễn Thu Hà</h2>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2" id="bannerHeading">Xin chào, Giáo viên</h2>
           <p class="text-amber-100 text-xs sm:text-sm max-w-xl leading-relaxed" id="bannerDescription">
-            Trường THCS Chu Văn An • Mã giáo viên: <strong class="text-white font-semibold" id="dispTeacherCode">GV001</strong>. Tạo giấy mời điện tử và theo dõi phản hồi phụ huynh trực quan theo thời gian thực.
+            <span id="bannerSchoolText">Đăng nhập để quản lý giấy mời và theo dõi phản hồi phụ huynh theo thời gian thực.</span> <strong class="text-white font-semibold hidden" id="dispTeacherCode"></strong>
           </p>
         </div>
 
         <div class="flex items-center gap-3">
-          <button onclick="openCreateModal()" class="px-5 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-stone-900 font-bold text-sm shadow-lg transition flex items-center gap-2 transform active:scale-95">
+          <button id="btnCreateMeeting" onclick="openCreateModal()" class="px-5 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-stone-900 font-bold text-sm shadow-lg transition flex items-center gap-2 transform active:scale-95">
             <i class="fa-solid fa-plus text-base"></i> Tạo Giấy Mời Họp
           </button>
         </div>
@@ -201,22 +195,51 @@
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-6 pt-6 border-t border-white/15">
         <div class="bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
           <span class="text-xs text-amber-200 font-medium block">Tổng cuộc họp đã tạo</span>
-          <span class="text-2xl sm:text-3xl font-extrabold text-white mt-1 block" id="cntTotalMeetings">1</span>
+          <span class="text-2xl sm:text-3xl font-extrabold text-white mt-1 block" id="cntTotalMeetings">0</span>
         </div>
         <div class="bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
           <span class="text-xs text-amber-200 font-medium block">Tổng lượt phản hồi</span>
-          <span class="text-2xl sm:text-3xl font-extrabold text-white mt-1 block" id="cntTotalResponses">5</span>
+          <span class="text-2xl sm:text-3xl font-extrabold text-white mt-1 block" id="cntTotalResponses">0</span>
         </div>
         <div class="bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
           <span class="text-xs text-emerald-300 font-medium block">Xác nhận tham dự</span>
-          <span class="text-2xl sm:text-3xl font-extrabold text-emerald-300 mt-1 block" id="cntTotalAttend">4</span>
+          <span class="text-2xl sm:text-3xl font-extrabold text-emerald-300 mt-1 block" id="cntTotalAttend">0</span>
         </div>
         <div class="bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
           <span class="text-xs text-rose-300 font-medium block">Không thể tham dự</span>
-          <span class="text-2xl sm:text-3xl font-extrabold text-rose-300 mt-1 block" id="cntTotalAbsent">1</span>
+          <span class="text-2xl sm:text-3xl font-extrabold text-rose-300 mt-1 block" id="cntTotalAbsent">0</span>
         </div>
       </div>
     </div>
+
+    <!-- ================= BẢNG GIÁ / BÁN TÀI KHOẢN ================= -->
+    <section id="pricingSection" class="mb-8">
+      <div class="rounded-3xl bg-white border border-amber-200 shadow-sm overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_.8fr]">
+          <div class="p-6 sm:p-7">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold border border-amber-200 mb-3">
+              <i class="fa-solid fa-crown"></i> GÓI GIÁO VIÊN TRỌN ĐỜI
+            </div>
+            <h3 class="text-xl sm:text-2xl font-extrabold text-stone-900">Sử dụng đầy đủ chỉ <span class="text-amber-800">100.000đ</span></h3>
+            <p class="text-sm text-stone-500 mt-2 max-w-2xl leading-relaxed">Một lần thanh toán, dùng lâu dài cho công tác chủ nhiệm. Có tài khoản riêng, đồng bộ dữ liệu Supabase và hỗ trợ khôi phục mật khẩu qua email.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-5 text-xs text-stone-700">
+              <div class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Không giới hạn giấy mời và phản hồi phụ huynh</span></div>
+              <div class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Link & QR mở được trên điện thoại phụ huynh</span></div>
+              <div class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Xuất Excel, ảnh JPG và nội dung gửi Zalo</span></div>
+              <div class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i><span>Quên mật khẩu có thể tự đặt lại qua email</span></div>
+            </div>
+          </div>
+          <div class="bg-gradient-to-br from-[#7a3206] to-[#b45309] text-white p-6 sm:p-7 flex flex-col justify-center">
+            <p class="text-xs uppercase tracking-widest text-amber-200 font-bold">Giá kích hoạt</p>
+            <div class="flex items-end gap-2 mt-1"><span class="text-4xl font-extrabold">100.000</span><span class="text-lg font-bold text-amber-200 mb-1">VNĐ</span></div>
+            <p class="text-xs text-amber-100 mt-2">Thanh toán MBBank • Xác nhận qua Zalo • Cấp tài khoản theo email</p>
+            <button onclick="openPurchaseModal()" class="mt-5 w-full py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-extrabold text-sm shadow-lg transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-cart-shopping"></i> Mua & Kích Hoạt Ngay
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Meetings Section Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
@@ -260,7 +283,7 @@
   <!-- Footer -->
   <footer class="bg-white border-t border-stone-200 py-4 text-xs text-stone-500 mt-auto">
     <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-      <div>© 2026 Giấy Mời Họp Phụ Huynh – Hỗ trợ kỹ thuật: <strong>0386435510</strong> (Zalo: Nguyễn Công Dinh)</div>
+      <div>© 2026 Giấy Mời Họp Phụ Huynh – Hệ thống thư mời điện tử</div>
       <div class="text-stone-400">Tối ưu trên cả máy tính & điện thoại thông minh</div>
     </div>
   </footer>
@@ -350,22 +373,22 @@
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div class="sm:col-span-3">
               <label class="block text-xs font-bold text-stone-700 mb-1">TÊN CUỘC HỌP <span class="text-rose-600">*</span></label>
-              <input type="text" id="createMeetingTitle" value="Họp phụ huynh đầu năm học 2024 - 2025" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+              <input type="text" id="createMeetingTitle" value="" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
             </div>
             <div>
               <label class="block text-xs font-bold text-stone-700 mb-1">LỚP <span class="text-rose-600">*</span></label>
-              <input type="text" id="createMeetingClass" value="7A1" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+              <input type="text" id="createMeetingClass" value="" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-bold text-stone-700 mb-1">TÊN GIÁO VIÊN HIỂN THỊ TRÊN GIẤY MỜI <span class="text-rose-600">*</span></label>
-              <input type="text" id="createTeacherName" value="Cô Nguyễn Thu Hà" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+              <input type="text" id="createTeacherName" value="" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
             </div>
             <div>
               <label class="block text-xs font-bold text-stone-700 mb-1">NĂM HỌC</label>
-              <input type="text" id="createSchoolYear" value="2024 - 2025" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+              <input type="text" id="createSchoolYear" value="" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
             </div>
           </div>
 
@@ -377,15 +400,15 @@
                   <i class="fa-regular fa-calendar-days"></i> Chọn lịch
                 </button>
               </div>
-              <input type="text" id="createMeetingDate" value="Chủ Nhật, 15/09/2024" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+              <input type="text" id="createMeetingDate" value="" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
             </div>
             <div>
               <label class="block text-xs font-bold text-stone-700 mb-1">THỜI GIAN HỌP <span class="text-rose-600">*</span></label>
-              <input type="text" id="createMeetingTime" value="14:00 - 16:00" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+              <input type="text" id="createMeetingTime" value="" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
             </div>
             <div>
               <label class="block text-xs font-bold text-stone-700 mb-1">ĐỊA ĐIỂM <span class="text-rose-600">*</span></label>
-              <input type="text" id="createMeetingLocation" value="Phòng học lớp 7A1 (Tầng 2, Nhà B)" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
+              <input type="text" id="createMeetingLocation" value="" class="w-full px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs focus:outline-none focus:border-amber-700" />
             </div>
           </div>
         </div>
@@ -504,7 +527,7 @@
           Khuyên Dùng Cho Nhà Trường
         </span>
         <h3 class="text-2xl sm:text-3xl font-extrabold text-white mb-1">Thư Mời Họp Phụ Huynh Trực Tuyến</h3>
-        <p class="text-xs text-stone-400 mb-6" id="envSubHeader">Cô Nguyễn Thu Hà • Lớp 7A1 (2024 - 2025)</p>
+        <p class="text-xs text-stone-400 mb-6" id="envSubHeader">Giáo viên • Lớp học</p>
 
         <div class="envelope-3d-scene">
           <div id="envelopeInteractiveObj" class="env-card env-traditional flex flex-col justify-end p-5 text-center" onclick="open3dEnvelopeInteractive()">
@@ -515,8 +538,8 @@
             </div>
             <div class="relative z-10 bg-white/95 backdrop-blur rounded-xl p-3 border border-stone-300 shadow-md mt-auto">
               <span class="text-[9px] uppercase tracking-widest text-stone-400 font-bold block">TRÂN TRỌNG KÍNH GỬI</span>
-              <strong class="text-sm text-stone-900 font-extrabold block mt-0.5" id="envCardRecipient">Quý Phụ Huynh Học Sinh Lớp 7A1</strong>
-              <span class="text-[10px] text-stone-500 block mt-0.5" id="envCardSubInfo">Năm học 2024 - 2025 • GVCN: Cô Nguyễn Thu Hà</span>
+              <strong class="text-sm text-stone-900 font-extrabold block mt-0.5" id="envCardRecipient">Quý Phụ Huynh Học Sinh</strong>
+              <span class="text-[10px] text-stone-500 block mt-0.5" id="envCardSubInfo">Thông tin giáo viên chủ nhiệm</span>
             </div>
           </div>
         </div>
@@ -559,32 +582,32 @@
 
             <div class="pt-1">
               <span class="inline-block px-3.5 py-1 rounded-full bg-amber-100/80 text-amber-950 font-bold text-[11px] tracking-wide border border-amber-300/60" id="letterBadgeClass">
-                BAN GIÁM HIỆU & GIÁO VIÊN CHỦ NHIỆM LỚP 7A1
+                BAN GIÁM HIỆU & GIÁO VIÊN CHỦ NHIỆM
               </span>
             </div>
 
             <h2 class="text-2xl sm:text-3xl font-formal font-bold text-amber-950 pt-2 tracking-wide" id="letterTitle">GIẤY MỜI HỌP PHỤ HUYNH</h2>
-            <p class="text-xs text-amber-900 font-semibold" id="letterClassYear">Lớp 7A1 • Năm học 2024 - 2025</p>
+            <p class="text-xs text-amber-900 font-semibold" id="letterClassYear">Lớp học • Năm học</p>
           </div>
 
           <!-- Lời kính mời -->
           <div class="text-xs sm:text-sm text-stone-700 leading-relaxed text-center font-medium">
-            Trân trọng kính mời Quý phụ huynh học sinh <strong class="text-amber-950 underline font-bold" id="letterRecipientName">Lớp 7A1</strong> tham dự buổi họp phụ huynh:
+            Trân trọng kính mời Quý phụ huynh học sinh <strong class="text-amber-950 underline font-bold" id="letterRecipientName">Lớp học</strong> tham dự buổi họp phụ huynh:
           </div>
 
           <!-- Chi tiết cuộc họp -->
           <div class="bg-amber-50/70 rounded-2xl p-4 border border-amber-200/80 text-xs sm:text-sm space-y-2.5">
             <div class="flex items-center gap-2.5">
               <i class="fa-regular fa-user text-amber-800 w-4"></i>
-              <span>Giáo viên chủ nhiệm: <strong class="text-stone-900" id="letterTeacherName">Cô Nguyễn Thu Hà</strong></span>
+              <span>Giáo viên chủ nhiệm: <strong class="text-stone-900" id="letterTeacherName">Giáo viên chủ nhiệm</strong></span>
             </div>
             <div class="flex items-center gap-2.5">
               <i class="fa-regular fa-calendar-check text-amber-800 w-4"></i>
-              <span>Thời gian: <strong class="text-stone-900" id="letterTimeInfo">14:00 - 16:00, 15/09/2024</strong></span>
+              <span>Thời gian: <strong class="text-stone-900" id="letterTimeInfo">Thời gian cuộc họp</strong></span>
             </div>
             <div class="flex items-center gap-2.5">
               <i class="fa-solid fa-location-dot text-amber-800 w-4"></i>
-              <span>Địa điểm: <strong class="text-stone-900" id="letterLocationInfo">Phòng học lớp 7A1 (Tầng 2, Nhà B)</strong></span>
+              <span>Địa điểm: <strong class="text-stone-900" id="letterLocationInfo">Địa điểm</strong></span>
             </div>
           </div>
 
@@ -657,15 +680,15 @@
       <div class="p-6 text-center space-y-4">
         <div class="border-2 border-dashed border-amber-300 bg-amber-50/40 rounded-2xl p-4 text-center">
           <span class="text-[10px] uppercase font-extrabold text-stone-400 block mb-1">THƯ MỜI HỌP ĐIỆN TỬ</span>
-          <h4 class="font-bold text-stone-900 text-sm" id="qrFlyerTitle">Họp phụ huynh đầu năm học 2024 - 2025</h4>
-          <p class="text-xs text-stone-600 mb-3" id="qrFlyerClassYear">Lớp 7A1 • Năm học 2024 - 2025</p>
+          <h4 class="font-bold text-stone-900 text-sm" id="qrFlyerTitle">Giấy mời họp phụ huynh</h4>
+          <p class="text-xs text-stone-600 mb-3" id="qrFlyerClassYear">Lớp học • Năm học</p>
 
           <div id="qrcodeBox" class="flex justify-center my-3 p-3 bg-white rounded-xl shadow-sm inline-block mx-auto border border-stone-100"></div>
 
           <div class="text-[11px] text-stone-700 space-y-1 text-left bg-white/90 p-2.5 rounded-xl border border-amber-200 mt-3">
-            <div><i class="fa-regular fa-calendar text-amber-800 mr-1.5"></i> Ngày: <strong id="qrFlyerDate">Chủ Nhật, 15/09/2024</strong></div>
-            <div><i class="fa-regular fa-clock text-amber-800 mr-1.5"></i> Thời gian: <strong id="qrFlyerTime">14:00 - 16:00</strong></div>
-            <div><i class="fa-solid fa-location-dot text-amber-800 mr-1.5"></i> Địa điểm: <span id="qrFlyerLocation">Phòng học lớp 7A1 (Tầng 2, Nhà B)</span></div>
+            <div><i class="fa-regular fa-calendar text-amber-800 mr-1.5"></i> Ngày: <strong id="qrFlyerDate">Ngày họp</strong></div>
+            <div><i class="fa-regular fa-clock text-amber-800 mr-1.5"></i> Thời gian: <strong id="qrFlyerTime">Thời gian</strong></div>
+            <div><i class="fa-solid fa-location-dot text-amber-800 mr-1.5"></i> Địa điểm: <span id="qrFlyerLocation">Địa điểm</span></div>
           </div>
 
           <div class="mt-3 flex items-center gap-1.5 bg-white p-1.5 rounded-xl border border-stone-200">
@@ -702,9 +725,9 @@
         <div>
           <div class="flex items-center gap-2">
             <h3 class="font-bold text-lg">Quản Lý Phản Hồi Phụ Huynh</h3>
-            <span class="px-2 py-0.5 rounded bg-amber-400 text-stone-900 font-extrabold text-xs" id="tableClassBadge">Lớp 7A1</span>
+            <span class="px-2 py-0.5 rounded bg-amber-400 text-stone-900 font-extrabold text-xs" id="tableClassBadge">Lớp học</span>
           </div>
-          <p class="text-xs text-amber-200 mt-0.5" id="tableMeetingSub">Họp phụ huynh đầu năm học 2024 - 2025</p>
+          <p class="text-xs text-amber-200 mt-0.5" id="tableMeetingSub">Giấy mời họp phụ huynh</p>
         </div>
         <button onclick="closeModal('responsesModal')" class="text-amber-200 hover:text-white p-1 text-lg"><i class="fa-solid fa-xmark"></i></button>
       </div>
@@ -767,175 +790,49 @@
     </div>
   </div>
 
-  <!-- ================= MODAL BÁN BẢN QUYỀN 100K (MBBANK - NGUYỄN CÔNG DINH) ================= -->
-  <div id="licensePaywallModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+  <!-- ================= MODAL MUA GÓI 100K ================= -->
+  <div id="purchaseModal" class="fixed inset-0 z-[65] bg-black/75 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
     <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden my-auto border border-amber-900/30">
       <div class="bg-gradient-to-r from-[#83380c] to-[#b45309] text-white p-5 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-2xl bg-amber-400 text-stone-950 flex items-center justify-center text-xl font-bold shadow"><i class="fa-solid fa-crown"></i></div>
-          <div>
-            <h3 class="font-extrabold text-lg leading-tight">Kích Hoạt Tài Khoản Vĩnh Viễn</h3>
-            <p class="text-xs text-amber-200">Gói bản quyền trọn đời chỉ với 100.000 VNĐ</p>
-          </div>
+          <div class="w-11 h-11 rounded-2xl bg-amber-400 text-stone-950 flex items-center justify-center text-xl shadow"><i class="fa-solid fa-crown"></i></div>
+          <div><h3 class="font-extrabold text-lg leading-tight">Mua Gói Giáo Viên Trọn Đời</h3><p class="text-xs text-amber-200">100.000 VNĐ • cấp tài khoản theo email</p></div>
         </div>
-        <button onclick="closeModal('licensePaywallModal')" class="text-amber-200 hover:text-white p-1 text-lg"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="closeModal('purchaseModal')" class="text-amber-200 hover:text-white p-1 text-lg"><i class="fa-solid fa-xmark"></i></button>
       </div>
-
-      <div class="p-6 space-y-4 max-h-[82vh] overflow-y-auto">
-        <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 space-y-2 text-xs text-stone-700">
-          <div class="flex items-center justify-between pb-2 border-b border-amber-200/80">
-            <span class="font-extrabold text-stone-900 text-sm">Phí kích hoạt trọn đời: 100.000 VNĐ</span>
-            <span class="px-2.5 py-0.5 rounded-full bg-rose-600 text-white font-extrabold text-xs">BẢN QUYỀN</span>
-          </div>
-          <div class="grid grid-cols-1 gap-1 text-[11.5px] text-stone-600">
-            <div>• Sử dụng vĩnh viễn • Không giới hạn thư mời & lượt phản hồi</div>
-            <div>• Xuất file Excel (.xls) chuẩn thể thức kèm chữ ký GVCN</div>
-            <div>• Xuất ảnh thiệp mời JPG sắc nét gửi nhóm Zalo lớp</div>
-          </div>
+      <div class="p-6 max-h-[82vh] overflow-y-auto">
+        <div id="purchaseFormView" class="space-y-3">
+          <div class="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-stone-700"><strong class="text-stone-900">100.000đ / tài khoản trọn đời</strong><div class="mt-1 text-[11px] text-stone-500">Sau khi xác nhận thanh toán, tài khoản đăng nhập sẽ được cấp theo email bên dưới.</div></div>
+          <div><label class="block text-xs font-bold text-stone-700 mb-1">Họ và tên giáo viên *</label><input id="buyName" type="text" placeholder="Ví dụ: Cô Nguyễn Thu Hà" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-amber-700"></div>
+          <div><label class="block text-xs font-bold text-stone-700 mb-1">Email dùng để đăng nhập *</label><input id="buyEmail" type="email" placeholder="giaovien@gmail.com" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-amber-700"></div>
+          <div><label class="block text-xs font-bold text-stone-700 mb-1">Số điện thoại / Zalo *</label><input id="buyPhone" type="tel" placeholder="Số Zalo nhận hỗ trợ" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-amber-700"></div>
+          <div><label class="block text-xs font-bold text-stone-700 mb-1">Trường học / Đơn vị công tác</label><input id="buySchool" type="text" placeholder="Tên trường" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-amber-700"></div>
+          <button onclick="generatePurchasePayment()" class="w-full py-3 rounded-2xl bg-[#b44509] hover:bg-[#963704] text-white font-bold text-sm shadow transition flex items-center justify-center gap-2">Tiếp tục thanh toán <i class="fa-solid fa-arrow-right"></i></button>
         </div>
-
-        <div id="paywallFormView" class="space-y-3">
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">Họ và tên giáo viên <span class="text-rose-600">*</span></label>
-            <input type="text" id="buyName" value="Cô Nguyễn Thu Hà" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-700" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">Số điện thoại / Zalo nhận tài khoản <span class="text-rose-600">*</span></label>
-            <input type="tel" id="buyPhone" value="0386435510" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-700" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">Trường học / Đơn vị công tác</label>
-            <input type="text" id="buySchool" value="Trường THCS Chu Văn An" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-700" />
-          </div>
-          <button onclick="generateOrderPayment()" class="w-full py-3 rounded-2xl bg-[#b44509] hover:bg-[#963704] text-white font-bold text-xs shadow transition flex items-center justify-center gap-2 mt-2">
-            Tiếp tục: Thanh toán & Kích hoạt <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </div>
-
-        <!-- Màn hình chuyển khoản MBBANK chuẩn theo Nguyễn Công Dinh -->
-        <div id="paywallQrView" class="space-y-4 hidden">
-          <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 flex items-start gap-2">
-            <i class="fa-regular fa-circle-check text-emerald-600 text-base mt-0.5"></i>
-            <div>Thông tin đăng ký đã được lưu. Thầy/cô vui lòng chuyển khoản <strong>100.000 VNĐ</strong> và sao chép tin nhắn gửi Zalo cho Admin Dinh để kích hoạt.</div>
-          </div>
-
-          <div class="p-4 rounded-2xl border border-amber-200 bg-amber-50/50">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-bold text-stone-800"><i class="fa-solid fa-qrcode text-amber-700 mr-1"></i> MÃ QR CHUYỂN KHOẢN (MBBANK)</span>
-              <span class="px-2 py-0.5 rounded-full bg-amber-200 text-[#7a3206] font-extrabold text-xs">100.000 VNĐ</span>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
-              <div class="bg-white p-2 rounded-xl border border-stone-200 shadow-sm flex flex-col items-center justify-center">
-                <img id="vietQrImgTag" src="" alt="VietQR MBBANK" class="w-40 h-40 object-contain rounded-lg" />
-              </div>
-              <div class="space-y-2 text-xs">
-                <div class="p-2.5 bg-white rounded-xl border border-stone-200">
-                  <span class="text-stone-400 block text-[10px]">Chủ tài khoản / Admin kích hoạt:</span>
-                  <span class="font-extrabold text-stone-800 text-sm">NGUYỄN CÔNG DINH</span>
-                  <div class="text-stone-600 font-bold mt-0.5">STK: <span class="font-mono text-amber-900">157303979</span></div>
-                  <span class="text-stone-500 block text-[11px]">Ngân hàng Quân Đội (MBBANK)</span>
-                </div>
-                <div class="p-2.5 bg-amber-100/70 rounded-xl border border-amber-200">
-                  <div class="flex items-center justify-between text-[10px] font-bold text-amber-900">
-                    <span>Nội dung chuyển khoản:</span>
-                    <button onclick="copyToClipboard(document.getElementById('dispOrderContent').innerText)" class="text-amber-800 hover:underline">Sao chép</button>
-                  </div>
-                  <div class="font-mono font-bold text-stone-900 text-xs bg-white p-1.5 rounded mt-1 text-center" id="dispOrderContent">Đăng Ký Giấy Mời Trực Tuyến</div>
-                </div>
-              </div>
+        <div id="purchasePaymentView" class="hidden space-y-4">
+          <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900">Quét QR để chuyển <strong>100.000 VNĐ</strong>. Sau đó gửi tin nhắn xác nhận qua Zalo để được cấp tài khoản.</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center p-4 rounded-2xl border border-amber-200 bg-amber-50/50">
+            <div class="bg-white p-2 rounded-xl border border-stone-200 shadow-sm flex justify-center"><img id="purchaseVietQr" src="" alt="VietQR MBBank" class="w-44 h-44 object-contain rounded-lg"></div>
+            <div class="space-y-2 text-xs">
+              <div class="p-2.5 bg-white rounded-xl border border-stone-200"><span class="text-stone-400 block text-[10px]">Chủ tài khoản</span><strong class="text-stone-900">NGUYỄN CÔNG DINH</strong><div class="font-bold mt-1">MBBank • STK <span class="font-mono text-amber-900">157303979</span></div></div>
+              <div class="p-2.5 bg-amber-100/70 rounded-xl border border-amber-200"><div class="flex justify-between text-[10px] font-bold text-amber-900"><span>Nội dung CK</span><button onclick="copyToClipboard(document.getElementById('purchaseTransferContent').innerText)" class="hover:underline">Sao chép</button></div><div id="purchaseTransferContent" class="font-mono font-bold text-stone-900 bg-white p-1.5 rounded mt-1 text-center">MUA GIAY MOI</div></div>
             </div>
           </div>
-
           <div class="p-3.5 bg-white border border-stone-200 rounded-2xl space-y-2 text-xs">
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-stone-800">Số Zalo Admin: <strong class="text-amber-900">0386435510 (Nguyễn Công Dinh)</strong></span>
-              <button onclick="copyToClipboard('0386435510')" class="text-amber-800 hover:underline font-semibold">Sao chép SĐT</button>
-            </div>
-            <textarea id="zaloPaywallMessage" rows="5" class="w-full p-2 bg-stone-50 border border-stone-200 rounded-xl text-xs font-mono text-stone-700 focus:outline-none" readonly></textarea>
-            <div class="grid grid-cols-2 gap-2">
-              <button onclick="copyZaloTextAction()" class="py-2 rounded-xl bg-[#b44509] hover:bg-[#963704] text-white font-bold text-xs shadow transition flex items-center justify-center gap-1.5">
-                <i class="fa-regular fa-copy"></i> Sao chép tin Zalo
-              </button>
-              <a href="https://zalo.me/0386435510" target="_blank" class="py-2 rounded-xl bg-white border border-stone-300 text-stone-800 font-bold text-xs transition flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-arrow-up-right-from-square text-blue-600"></i> Mở Zalo chat
-              </a>
+            <div class="flex items-center justify-between gap-2"><span class="font-bold text-stone-800">Zalo hỗ trợ: <strong class="text-amber-900">0386435510</strong></span><button onclick="copyToClipboard('0386435510')" class="text-amber-800 hover:underline font-semibold">Sao chép SĐT</button></div>
+            <textarea id="purchaseZaloMessage" rows="6" class="w-full p-2 bg-stone-50 border border-stone-200 rounded-xl text-xs font-mono text-stone-700 focus:outline-none" readonly></textarea>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <button onclick="copyPurchaseZaloMessage()" class="py-2.5 rounded-xl bg-[#b44509] hover:bg-[#963704] text-white font-bold text-xs flex items-center justify-center gap-1.5"><i class="fa-regular fa-copy"></i> Sao chép xác nhận</button>
+              <a href="https://zalo.me/0386435510" target="_blank" rel="noopener" class="py-2.5 rounded-xl bg-white border border-stone-300 text-stone-800 font-bold text-xs flex items-center justify-center gap-1.5"><i class="fa-solid fa-arrow-up-right-from-square text-blue-600"></i> Mở Zalo</a>
             </div>
           </div>
-
-          <div class="flex items-center justify-between pt-1">
-            <button onclick="backToPaywallForm()" class="text-xs text-stone-500 hover:text-stone-800">← Sửa lại thông tin</button>
-            <button onclick="confirmPaidAndClose()" class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow transition flex items-center gap-1.5">
-              <i class="fa-regular fa-circle-check"></i> Xác nhận đã chuyển khoản
-            </button>
-          </div>
+          <div class="flex items-center justify-between"><button onclick="backToPurchaseForm()" class="text-xs text-stone-500 hover:text-stone-800">← Sửa thông tin</button><button onclick="closeModal('purchaseModal')" class="px-4 py-2 rounded-xl bg-stone-900 text-white text-xs font-bold">Đóng</button></div>
         </div>
-      </div>
-      <div class="px-6 py-2.5 bg-stone-50 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-400">
-        <span>Bảo mật danh sách giáo viên & học sinh 100%</span>
-        <button onclick="closeModal('licensePaywallModal')" class="hover:text-stone-700">Đóng</button>
       </div>
     </div>
   </div>
 
-  <!-- ================= MODAL ADMIN PORTAL ================= -->
-  <div id="adminPortalModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden my-auto border border-amber-900/30">
-      <div class="bg-stone-900 text-white p-5 flex items-center justify-between border-b border-amber-600/30">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-lg"><i class="fa-solid fa-user-shield"></i></div>
-          <div>
-            <div class="flex items-center gap-2">
-              <h3 class="font-extrabold text-base sm:text-lg text-amber-300">Quản Trị Bán Hàng & Duyệt Đơn 100k</h3>
-              <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-mono">MBBANK 157303979</span>
-            </div>
-            <p class="text-xs text-stone-400">Admin: Nguyễn Công Dinh • SĐT Zalo: 0386435510</p>
-          </div>
-        </div>
-        <button onclick="closeModal('adminPortalModal')" class="text-stone-400 hover:text-white p-1 text-lg"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-5 bg-stone-50 border-b border-stone-200 text-xs">
-        <div class="p-4 bg-white rounded-2xl border border-stone-200 shadow-sm flex items-center justify-between">
-          <div><span class="text-stone-500 block">Tổng doanh thu thực thu</span><span class="text-2xl font-extrabold text-emerald-700 mt-1 block" id="admTotalRevenue">100.000 VNĐ</span></div>
-          <i class="fa-solid fa-sack-dollar text-2xl text-emerald-600"></i>
-        </div>
-        <div class="p-4 bg-white rounded-2xl border border-stone-200 shadow-sm flex items-center justify-between">
-          <div><span class="text-stone-500 block">Đơn hàng chờ duyệt (100k)</span><span class="text-2xl font-extrabold text-amber-600 mt-1 block" id="admPendingCount">1</span></div>
-          <i class="fa-solid fa-clock-rotate-left text-2xl text-amber-500"></i>
-        </div>
-        <div class="p-4 bg-white rounded-2xl border border-stone-200 shadow-sm flex items-center justify-between">
-          <div><span class="text-stone-500 block">Tài khoản GV đã kích hoạt</span><span class="text-2xl font-extrabold text-stone-900 mt-1 block" id="admActiveCount">1</span></div>
-          <i class="fa-solid fa-users-viewfinder text-2xl text-blue-600"></i>
-        </div>
-      </div>
-
-      <div class="p-5">
-        <div class="overflow-x-auto border border-stone-200 rounded-2xl max-h-80">
-          <table class="w-full text-left text-xs text-stone-800">
-            <thead class="bg-stone-100 text-stone-500 uppercase text-[11px] font-semibold sticky top-0 border-b border-stone-200">
-              <tr>
-                <th class="py-3 px-4">Mã đơn / Mã GV</th>
-                <th class="py-3 px-4">Tên giáo viên</th>
-                <th class="py-3 px-4">Số Zalo</th>
-                <th class="py-3 px-4">Số tiền</th>
-                <th class="py-3 px-4">Trạng thái</th>
-                <th class="py-3 px-4 text-center">Thao tác duyệt</th>
-              </tr>
-            </thead>
-            <tbody id="admOrdersTableBody" class="divide-y divide-stone-100"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="p-4 bg-stone-50 border-t border-stone-200 flex items-center justify-between text-xs text-stone-500">
-        <div>Quản trị yêu cầu xác thực backend khi triển khai thực tế.</div>
-        <button onclick="closeModal('adminPortalModal')" class="px-5 py-2 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold transition">Đóng Quản Trị</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= MODAL ĐĂNG NHẬP / DÙNG THỬ ================= -->
+  <!-- ================= MODAL ĐĂNG NHẬP GIÁO VIÊN ================= -->
   <div id="authModal" class="fixed inset-0 z-50 bg-black/65 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden my-auto border border-stone-200">
       <div class="bg-[#83380c] text-white p-5 flex items-center justify-between">
@@ -961,24 +858,65 @@
         <button onclick="handleLoginSubmit()" class="w-full py-3 rounded-xl bg-[#b44509] hover:bg-[#963704] text-white font-bold text-sm shadow transition">
           Đăng nhập hệ thống
         </button>
-
-        <div class="pt-2">
-          <div class="flex items-center my-3">
-            <div class="flex-grow border-t border-stone-200"></div>
-            <span class="px-3 text-xs uppercase tracking-wider font-semibold text-stone-400">Hoặc dùng thử trải nghiệm</span>
-            <div class="flex-grow border-t border-stone-200"></div>
-          </div>
-          <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-              <span class="px-2.5 py-1 rounded-lg bg-[#83380c] text-white text-xs font-bold">Demo</span>
-              <div>
-                <p class="text-xs font-bold text-stone-800">Tài khoản Dùng thử (Cô Thu Hà – 7A1) ✨</p>
-                <p class="text-[11px] text-stone-500">Xem 1 giấy mời họp mẫu & danh sách phụ huynh phản hồi</p>
-              </div>
-            </div>
-            <button onclick="loginAsDemoUser()" class="px-3 py-1.5 rounded-lg bg-amber-200 hover:bg-amber-300 text-stone-900 font-bold text-xs transition">Dùng thử 1 chạm</button>
-          </div>
+        <div class="flex items-center gap-2 my-1">
+          <div class="flex-1 border-t border-stone-200"></div>
+          <span class="text-[10px] uppercase tracking-wider font-bold text-stone-400">hoặc</span>
+          <div class="flex-1 border-t border-stone-200"></div>
         </div>
+        <button type="button" onclick="enterTeacherDemo()" class="w-full py-3 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-sm transition flex items-center justify-center gap-2">
+          <i class="fa-regular fa-eye"></i> Xem demo dành cho giáo viên
+        </button>
+        <p class="text-[11px] text-stone-400 text-center -mt-1">Chế độ chỉ xem, không ghi dữ liệu thật.</p>
+        <button type="button" onclick="openForgotPasswordModal()" class="w-full text-xs font-bold text-amber-800 hover:text-amber-950 hover:underline transition">
+          <i class="fa-regular fa-circle-question mr-1"></i> Quên mật khẩu?
+        </button>
+        <p class="text-[11px] text-stone-400 text-center">Tài khoản được xác thực an toàn qua Supabase Auth.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL QUÊN MẬT KHẨU ================= -->
+  <div id="forgotPasswordModal" class="fixed inset-0 z-[60] bg-black/65 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden my-auto border border-stone-200">
+      <div class="bg-[#83380c] text-white p-5 flex items-center justify-between">
+        <div>
+          <h3 class="font-bold text-lg leading-tight">Khôi Phục Mật Khẩu</h3>
+          <p class="text-xs text-amber-200 mt-0.5">Nhận liên kết đặt lại mật khẩu qua email</p>
+        </div>
+        <button onclick="closeModal('forgotPasswordModal')" class="text-amber-200 hover:text-white p-1 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Email tài khoản *</label>
+          <input type="email" id="forgotPasswordEmail" placeholder="giaovien@truong.edu.vn" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-amber-700" />
+        </div>
+        <button onclick="sendPasswordResetEmail()" class="w-full py-3 rounded-xl bg-[#b44509] hover:bg-[#963704] text-white font-bold text-sm shadow transition">
+          <i class="fa-regular fa-paper-plane mr-1"></i> Gửi liên kết đặt lại mật khẩu
+        </button>
+        <p class="text-[11px] text-stone-400 leading-relaxed text-center">Vì lý do bảo mật, hệ thống không hiển thị hay cấp mật khẩu cũ. Người dùng sẽ tự đặt mật khẩu mới từ liên kết Supabase gửi qua email.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL ĐẶT MẬT KHẨU MỚI ================= -->
+  <div id="resetPasswordModal" class="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden my-auto border border-stone-200">
+      <div class="bg-[#83380c] text-white p-5">
+        <h3 class="font-bold text-lg leading-tight">Đặt Mật Khẩu Mới</h3>
+        <p class="text-xs text-amber-200 mt-0.5">Tạo mật khẩu mới cho tài khoản của bạn</p>
+      </div>
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Mật khẩu mới *</label>
+          <input type="password" id="newPassword" minlength="8" autocomplete="new-password" placeholder="Ít nhất 8 ký tự" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-amber-700" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Nhập lại mật khẩu *</label>
+          <input type="password" id="confirmNewPassword" minlength="8" autocomplete="new-password" placeholder="Nhập lại mật khẩu mới" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-amber-700" />
+        </div>
+        <button onclick="submitNewPassword()" class="w-full py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm shadow transition">
+          <i class="fa-solid fa-key mr-1"></i> Cập nhật mật khẩu
+        </button>
       </div>
     </div>
   </div>
@@ -987,7 +925,7 @@
 
   <!-- ================= JAVASCRIPT APPLICATION CORE ================= -->
   <script>
-    const SYSTEM_STORAGE = "GIAY_MOI_HOP_MBBANK_V8";
+    const SYSTEM_STORAGE = "GIAY_MOI_HOP_PROD_V10";
 
 
     /* ================= CẤU HÌNH ỨNG DỤNG & SUPABASE =================
@@ -1007,10 +945,16 @@
         }
       },
       // Để trống => tự lấy domain hiện tại khi deploy Vercel/Netlify/domain riêng.
-      publicBaseUrl: "",
-      features: {
-        localAdminDemo: false
-      }
+      publicBaseUrl: ""
+    };
+
+    const SALES_CONFIG = {
+      price: 100000,
+      bankId: "970422",
+      bankName: "MBBANK",
+      accountNo: "157303979",
+      accountName: "NGUYEN CONG DINH",
+      zaloPhone: "0386435510"
     };
 
     function cloneData(value) {
@@ -1298,68 +1242,84 @@
       await getBackendAdapter().deleteMeeting(meetingId);
     }
 
-    // Cấu hình thanh toán chuẩn MBBANK - Nguyễn Công Dinh
-    const ADMIN_BANK_CONFIG = {
-      bankName: "MBBANK",
-      bankId: "970422",
-      accountNo: "157303979",
-      accountName: "NGUYEN CONG DINH",
-      adminPhone: "0386435510",
-      amount: 100000
-    };
-
     const defaultDatabase = {
       currentUser: {
-        code: "GV001",
-        name: "Cô Nguyễn Thu Hà",
-        school: "Trường THCS Chu Văn An",
-        isLicensed: false
+        code: "",
+        name: "Giáo viên",
+        school: "",
+        isAuthenticated: false
       },
-      orders: [
-        {
-          orderCode: "GV-1001",
-          name: "Cô Nguyễn Thu Hà",
-          phone: "0386435510",
-          school: "Trường THCS Chu Văn An",
-          amount: 100000,
-          status: "pending",
-          time: "14:20, 14/09/2026"
-        }
-      ],
+      meetings: []
+    };
+
+    const demoDatabase = {
+      currentUser: {
+        code: "DEMO",
+        name: "Giáo viên Demo",
+        school: "Trường THCS Minh Họa",
+        isAuthenticated: false,
+        isDemo: true
+      },
       meetings: [
         {
-          id: "MTG-8F72K",
-          title: "Họp phụ huynh đầu năm học 2024 - 2025",
+          id: "DEMO-7A1",
+          publicToken: "demo-7a1",
+          title: "Họp phụ huynh đầu năm học",
           className: "7A1",
-          teacherName: "Cô Nguyễn Thu Hà",
-          schoolYear: "2024 - 2025",
-          theme: "traditional",
-          date: "Chủ Nhật, 15/09/2024",
+          teacherName: "Cô Nguyễn Minh Anh",
+          schoolYear: getCurrentSchoolYear(),
+          date: getNextSundayLabel(),
           time: "14:00 - 16:00",
           location: "Phòng học lớp 7A1 (Tầng 2, Nhà B)",
-          teacherQuote: "Sự hiện diện của Quý phụ huynh là niềm vinh hạnh và nguồn động viên to lớn cho các thầy cô cùng các em học sinh!",
-          schoolNote: "Quý phụ huynh vui lòng gửi xe tại cổng trường và mang theo sổ tay.",
+          teacherQuote: "Sự hiện diện của Quý phụ huynh là nguồn động viên quý báu đối với tập thể lớp.",
+          schoolNote: "Quý phụ huynh vui lòng có mặt trước giờ họp 10 phút.",
+          theme: "traditional",
           agenda: [
-            "Báo cáo tóm tắt tình hình học tập và rèn luyện của học sinh",
-            "Triển khai phương hướng, chỉ tiêu và kế hoạch năm học mới",
-            "Thống nhất các biện pháp phối hợp giữa gia đình và nhà trường",
-            "Bầu Ban đại diện cha mẹ học sinh lớp"
+            "Báo cáo tình hình học tập và rèn luyện của học sinh",
+            "Triển khai kế hoạch và mục tiêu năm học",
+            "Thống nhất phương án phối hợp giữa gia đình và nhà trường",
+            "Trao đổi và giải đáp ý kiến của phụ huynh"
           ],
           responses: [
-            { id: 1, student: "Nguyễn Minh An", parent: "Nguyễn Văn Bình", status: "attend", note: "—", time: "21:10, 2/9/2024" },
-            { id: 2, student: "Trần Minh Anh", parent: "Trần Thị Hoa", status: "absent", note: "Bận công tác đột xuất, sẽ trao đổi riêng với cô sau.", time: "22:25, 2/9/2024" },
-            { id: 3, student: "Lê Hoàng Nam", parent: "Lê Văn Tuấn", status: "attend", note: "—", time: "16:12, 3/9/2024" },
-            { id: 4, student: "Phạm Quỳnh Chi", parent: "Phạm Hải Đăng", status: "attend", note: "—", time: "18:40, 3/9/2024" },
-            { id: 5, student: "Vũ Đức Duy", parent: "Vũ Quốc Toàn", status: "attend", note: "—", time: "01:05, 4/9/2024" }
+            { id: "D1", student: "Nguyễn Gia Bảo", parent: "Nguyễn Văn Hùng", status: "attend", note: "Sẽ tham dự đầy đủ", time: "19:15, 12/09/2026" },
+            { id: "D2", student: "Trần Minh Châu", parent: "Trần Thị Lan", status: "attend", note: "Cảm ơn cô giáo", time: "20:08, 12/09/2026" },
+            { id: "D3", student: "Lê Hoàng Nam", parent: "Lê Văn Sơn", status: "absent", note: "Đi công tác, xin phép vắng", time: "08:31, 13/09/2026" },
+            { id: "D4", student: "Phạm Khánh Linh", parent: "Phạm Thu Hà", status: "attend", note: "Sẽ đến đúng giờ", time: "09:02, 13/09/2026" }
           ]
         }
       ]
     };
 
+    function isTeacherDemoMode() {
+      return !!appData?.currentUser?.isDemo;
+    }
+
+    function blockDemoWrite(action = 'thao tác này') {
+      if (!isTeacherDemoMode()) return false;
+      showToastNotification(`Chế độ Demo chỉ xem, không thể ${action}.`, false);
+      return true;
+    }
+
+    function enterTeacherDemo() {
+      appData = cloneData(demoDatabase);
+      currentMeetingTarget = appData.meetings[0] || null;
+      editingMeetingId = null;
+      closeModal('authModal');
+      refreshUI();
+      showToastNotification('Đã mở chế độ Demo chỉ xem dành cho giáo viên.');
+    }
+
+    function exitTeacherDemo() {
+      appData = cloneData(defaultDatabase);
+      currentMeetingTarget = null;
+      refreshUI();
+      showToastNotification('Đã thoát chế độ Demo.');
+    }
+
     let appData = loadAppState();
     let currentSelectedTheme = "traditional";
     let activeAgendaTabMode = "item";
-    let currentMeetingTarget = appData.meetings[0];
+    let currentMeetingTarget = appData.meetings[0] || null;
     let attendanceFilterMode = "all";
     let isOpenedFromCreateModal = false;
     let editingMeetingId = null;
@@ -1372,7 +1332,6 @@
         const parsed = JSON.parse(raw);
         return {
           currentUser: { ...cloneData(defaultDatabase.currentUser), ...(parsed.currentUser || {}) },
-          orders: Array.isArray(parsed.orders) ? parsed.orders : [],
           meetings: Array.isArray(parsed.meetings) ? parsed.meetings : []
         };
       } catch (e) {
@@ -1382,6 +1341,7 @@
     }
 
     function saveAppDatabase() {
+      if (isTeacherDemoMode()) return;
       try {
         localStorage.setItem(SYSTEM_STORAGE, JSON.stringify(appData));
       } catch (e) {
@@ -1411,131 +1371,26 @@
       }, 2800);
     }
 
-    /* ================= 2. QUẢN LÝ BẢN QUYỀN 100K & MBBANK ================= */
-    function openLicensePaywallModal() {
-      document.getElementById('paywallFormView').classList.remove('hidden');
-      document.getElementById('paywallQrView').classList.add('hidden');
-      document.getElementById('licensePaywallModal').classList.remove('hidden');
-      document.getElementById('licensePaywallModal').classList.add('flex');
-    }
-
-    function backToPaywallForm() {
-      document.getElementById('paywallFormView').classList.remove('hidden');
-      document.getElementById('paywallQrView').classList.add('hidden');
-    }
-
-    function generateOrderPayment() {
-      const name = document.getElementById('buyName').value.trim();
-      const phone = document.getElementById('buyPhone').value.trim();
-      const school = document.getElementById('buySchool').value.trim() || "THCS Chu Văn An";
-
-      if (!name || !phone) {
-        showToastNotification("Vui lòng nhập họ tên và số điện thoại Zalo!", false);
-        return;
+    /* ================= 2. TẠO & SỬA GIẤY MỜI HỌP ================= */
+    async function openCreateModal() {
+      if (blockDemoWrite('tạo giấy mời')) return;
+      if (APP_CONFIG.backend.provider === 'supabase') {
+        if (!isSupabaseConfigured()) {
+          showToastNotification('Chưa cấu hình Supabase cho website.', false);
+          return;
+        }
+        try {
+          const session = await getBackendAdapter().getSession();
+          if (!session?.user) {
+            showToastNotification('Vui lòng đăng nhập giáo viên trước khi tạo giấy mời.', false);
+            openAuthModal();
+            return;
+          }
+        } catch (err) {
+          showToastNotification('Không kiểm tra được phiên đăng nhập: ' + err.message, false);
+          return;
+        }
       }
-
-      const orderCode = "GV" + Math.floor(1000 + Math.random() * 9000);
-      const transferContent = `Dang Ky ${orderCode}`;
-
-      const newOrder = {
-        orderCode: orderCode,
-        name: name,
-        phone: phone,
-        school: school,
-        amount: 100000,
-        status: "pending",
-        time: new Date().toLocaleTimeString('vi-VN') + ", " + new Date().toLocaleDateString('vi-VN')
-      };
-
-      appData.orders.unshift(newOrder);
-      saveAppDatabase();
-
-      document.getElementById('dispOrderContent').innerText = transferContent;
-      const vietQrUrl = `https://api.vietqr.io/image/${ADMIN_BANK_CONFIG.bankId}-${ADMIN_BANK_CONFIG.accountNo}-compact2.jpg?amount=${ADMIN_BANK_CONFIG.amount}&accountName=${encodeURIComponent(ADMIN_BANK_CONFIG.accountName)}&addInfo=${encodeURIComponent(transferContent)}`;
-      document.getElementById('vietQrImgTag').src = vietQrUrl;
-
-      const zaloMsg = 
-`Chào bạn Dinh, tôi đã chuyển khoản 100.000đ mua bản quyền Giấy Mời Họp Phụ Huynh:
-- Họ và tên: ${name}
-- Số điện thoại/Zalo: ${phone}
-- Trường công tác: ${school}
-- Mã GV dự kiến: ${orderCode}
-- Nội dung CK: ${transferContent} (100.000đ MBBANK - 157303979)
-Nhờ bạn kiểm tra và kích hoạt tài khoản giúp tôi nhé. Cảm ơn bạn!`;
-
-      document.getElementById('zaloPaywallMessage').value = zaloMsg;
-      document.getElementById('paywallFormView').classList.add('hidden');
-      document.getElementById('paywallQrView').classList.remove('hidden');
-    }
-
-    function copyZaloTextAction() {
-      copyToClipboard(document.getElementById('zaloPaywallMessage').value);
-      showToastNotification("Đã sao chép tin nhắn Zalo gửi Admin Nguyễn Công Dinh!");
-    }
-
-    function confirmPaidAndClose() {
-      showToastNotification("Đơn hàng đang chờ duyệt. Admin sẽ kiểm tra và kích hoạt ngay!");
-      closeModal('licensePaywallModal');
-    }
-
-    /* ================= 3. QUẢN TRỊ ADMIN PORTAL ================= */
-    function openAdminPortal() {
-      if (APP_CONFIG.backend.provider === 'local' && !APP_CONFIG.features.localAdminDemo) {
-        showToastNotification('Admin đã được khóa ở bản frontend. Hãy nối Firebase/Supabase + xác thực trước khi bật quản trị.', false);
-        return;
-      }
-      // Khi triển khai thực tế, quyền Admin phải được xác thực bằng Firebase Auth/Supabase Auth + rules/RLS.
-      renderAdminOrders();
-      document.getElementById('adminPortalModal').classList.remove('hidden');
-      document.getElementById('adminPortalModal').classList.add('flex');
-    }
-
-    window.addEventListener('keydown', (e) => {
-      if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) openAdminPortal();
-    });
-
-    function renderAdminOrders() {
-      const tbody = document.getElementById('admOrdersTableBody');
-      tbody.innerHTML = '';
-      let pending = 0, active = 0, totalRev = 0;
-
-      (appData.orders || []).forEach(ord => {
-        if (ord.status === 'pending') pending++;
-        if (ord.status === 'activated') { active++; totalRev += (ord.amount || 100000); }
-        const isAct = ord.status === 'activated';
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-amber-50/50 transition';
-        tr.innerHTML = `
-          <td class="py-3 px-4 font-mono font-bold text-amber-900">${escapeHtml(ord.orderCode)}</td>
-          <td class="py-3 px-4"><strong>${escapeHtml(ord.name)}</strong><div class="text-[11px] text-stone-400">${escapeHtml(ord.school)}</div></td>
-          <td class="py-3 px-4 font-mono">${escapeHtml(ord.phone)}</td>
-          <td class="py-3 px-4 font-bold text-emerald-700">${Number(ord.amount || 100000).toLocaleString('vi-VN')}đ</td>
-          <td class="py-3 px-4">${isAct ? '<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">Đã kích hoạt</span>' : '<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold animate-pulse">Chờ duyệt</span>'}</td>
-          <td class="py-3 px-4 text-center">${isAct ? '<span class="text-stone-400 text-xs">Đã duyệt</span>' : `<button data-order-code="${escapeAttr(ord.orderCode)}" class="approve-order-btn px-3 py-1 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow transition">Duyệt Kích Hoạt</button>`}</td>`;
-        tbody.appendChild(tr);
-      });
-
-      tbody.querySelectorAll('.approve-order-btn').forEach(btn => btn.addEventListener('click', () => approveOrderAction(btn.dataset.orderCode)));
-      document.getElementById('admTotalRevenue').innerText = totalRev.toLocaleString('vi-VN') + ' VNĐ';
-      document.getElementById('admPendingCount').innerText = pending;
-      document.getElementById('admActiveCount').innerText = active;
-      document.getElementById('badgePendingOrdersCount').innerText = pending;
-    }
-
-    function approveOrderAction(code) {
-      const ord = appData.orders.find(o => o.orderCode === code);
-      if (!ord) return;
-      ord.status = "activated";
-      if (appData.currentUser.code === ord.orderCode || appData.currentUser.name === ord.name) {
-        appData.currentUser.isLicensed = true;
-      }
-      saveAppDatabase();
-      renderAdminOrders();
-      showToastNotification(`Đã duyệt đơn [${ord.orderCode} - ${ord.name}]!`);
-    }
-
-    /* ================= 4. TẠO & SỬA GIẤY MỜI HỌP ================= */
-    function openCreateModal() {
       editingMeetingId = null;
       const schoolYear = getCurrentSchoolYear();
       document.getElementById('createModalHeading').innerText = 'Tạo Giấy Mời Họp Phụ Huynh';
@@ -1564,6 +1419,7 @@ Nhờ bạn kiểm tra và kích hoạt tài khoản giúp tôi nhé. Cảm ơn 
     }
 
     function openEditMeetingModal(meetingId) {
+      if (blockDemoWrite('chỉnh sửa cuộc họp')) return;
       const m = appData.meetings.find(x => x.id === meetingId);
       if (!m) return;
       editingMeetingId = meetingId;
@@ -1612,6 +1468,7 @@ Nhờ bạn kiểm tra và kích hoạt tài khoản giúp tôi nhé. Cảm ơn 
     }
 
     function requestDeleteMeeting(meetingId) {
+      if (blockDemoWrite('xóa cuộc họp')) return;
       const m = appData.meetings.find(x => x.id === meetingId);
       if (!m) return;
       meetingIdToDelete = meetingId;
@@ -1621,6 +1478,7 @@ Nhờ bạn kiểm tra và kích hoạt tài khoản giúp tôi nhé. Cảm ơn 
     }
 
     async function confirmExecuteDeleteMeeting() {
+      if (blockDemoWrite('xóa cuộc họp')) return;
       if (!meetingIdToDelete) return;
       const deletingId = meetingIdToDelete;
       appData.meetings = appData.meetings.filter(x => x.id !== deletingId);
@@ -1737,6 +1595,7 @@ Nhờ bạn kiểm tra và kích hoạt tài khoản giúp tôi nhé. Cảm ơn 
     }
 
     async function saveAndGenerateInvitation() {
+      if (blockDemoWrite('lưu giấy mời')) return;
       const title = document.getElementById('createMeetingTitle').value.trim();
       const className = document.getElementById('createMeetingClass').value.trim();
       const teacherName = document.getElementById('createTeacherName').value.trim();
@@ -1895,6 +1754,7 @@ Nhờ bạn kiểm tra và kích hoạt tài khoản giúp tôi nhé. Cảm ơn 
 
     async function handleParentFeedbackSubmit(e) {
       e.preventDefault();
+      if (blockDemoWrite('gửi phản hồi')) return;
       const student = document.getElementById('feedbackStudent').value.trim();
       const parent = document.getElementById('feedbackParent').value.trim();
       const note = document.getElementById('feedbackNote').value.trim() || '—';
@@ -2044,7 +1904,7 @@ Trân trọng cảm ơn Quý phụ huynh!`;
     async function openAttendanceManager(id) {
       currentMeetingTarget = appData.meetings.find(x => x.id === id) || appData.meetings[0];
       if (!currentMeetingTarget) return;
-      if (APP_CONFIG.backend.provider === 'supabase') {
+      if (APP_CONFIG.backend.provider === 'supabase' && !isTeacherDemoMode()) {
         try {
           const fresh = await getBackendAdapter().getMeeting(id);
           if (fresh) {
@@ -2062,6 +1922,14 @@ Trân trọng cảm ơn Quý phụ huynh!`;
       document.getElementById('tableClassBadge').innerText = 'Lớp ' + currentMeetingTarget.className;
       document.getElementById('tableMeetingSub').innerText = `${currentMeetingTarget.title} • ${currentMeetingTarget.date}`;
       renderAttendanceRows();
+      const rosterBtn = document.querySelector('#responsesModal button[onclick="promptImportStudentRoster()"]');
+      const exportBtn = document.querySelector('#responsesModal button[onclick="exportToAdministrativeExcel()"]');
+      [rosterBtn, exportBtn].forEach(btn => {
+        if (!btn) return;
+        btn.disabled = isTeacherDemoMode();
+        btn.classList.toggle('opacity-50', isTeacherDemoMode());
+        btn.classList.toggle('cursor-not-allowed', isTeacherDemoMode());
+      });
       document.getElementById('responsesModal').classList.remove('hidden');
       document.getElementById('responsesModal').classList.add('flex');
     }
@@ -2124,6 +1992,7 @@ Trân trọng cảm ơn Quý phụ huynh!`;
     }
 
     function promptImportStudentRoster() {
+      if (blockDemoWrite('thêm danh sách học sinh')) return;
       const str = prompt("Dán danh sách học sinh (mỗi dòng một tên) để hệ thống tự động dò danh sách vắng:", "");
       if (str) {
         const count = str.split("\n").filter(Boolean).length;
@@ -2133,6 +2002,7 @@ Trân trọng cảm ơn Quý phụ huynh!`;
     }
 
     function exportToAdministrativeExcel() {
+      if (blockDemoWrite('xuất dữ liệu')) return;
       const m = currentMeetingTarget;
       if (!m) return;
       const rows = (m.responses || []).map((r, i) => ({
@@ -2162,9 +2032,51 @@ Trân trọng cảm ơn Quý phụ huynh!`;
     /* ================= 8. GIAO DIỆN & CƠ CHẾ HOẠT ĐỘNG CHÍNH ================= */
     function refreshUI() {
       const u = appData.currentUser || defaultDatabase.currentUser;
-      document.getElementById('dispTeacherCode').innerText = u.code || '—';
-      document.getElementById('bannerHeading').innerText = `Xin chào, ${u.name || 'Giáo viên'}`;
-      document.getElementById('bannerSubLabel').innerText = `Khu vực quản trị riêng của ${u.name || 'Giáo viên'}`;
+      const isAuthenticated = !!u.isAuthenticated;
+      const isDemo = !!u.isDemo;
+      const displayName = (isAuthenticated || isDemo) ? (u.name || u.code || 'Giáo viên') : 'Giáo viên';
+
+      const codeEl = document.getElementById('dispTeacherCode');
+      if (codeEl) {
+        codeEl.textContent = u.code || '';
+        codeEl.classList.toggle('hidden', !(isAuthenticated || isDemo) || !u.code);
+      }
+      document.getElementById('bannerHeading').innerText = (isAuthenticated || isDemo) ? `Xin chào, ${displayName}` : 'Xin chào, Giáo viên';
+      document.getElementById('bannerSubLabel').innerText = isDemo ? 'Chế độ Demo dành cho giáo viên • Chỉ xem' : (isAuthenticated ? `Khu vực quản lý riêng của ${displayName}` : 'Khu vực quản lý dành cho giáo viên');
+      const schoolText = document.getElementById('bannerSchoolText');
+      if (schoolText) {
+        schoolText.textContent = isDemo
+          ? 'Dữ liệu minh họa chỉ để giáo viên xem thử giao diện; mọi chức năng ghi dữ liệu đã bị khóa.'
+          : (isAuthenticated
+            ? `${u.school ? u.school + ' • ' : ''}${u.code ? 'Tài khoản: ' + u.code + '. ' : ''}Tạo giấy mời điện tử và theo dõi phản hồi phụ huynh theo thời gian thực.`
+            : 'Đăng nhập để quản lý giấy mời và theo dõi phản hồi phụ huynh theo thời gian thực.');
+      }
+
+      const badge = document.getElementById('bannerAuthBadge');
+      if (badge) {
+        badge.className = isDemo
+          ? 'ml-1 px-2 py-0.5 rounded bg-sky-300 text-sky-950 font-extrabold text-[10px]'
+          : (isAuthenticated ? 'ml-1 px-2 py-0.5 rounded bg-emerald-400 text-stone-950 font-extrabold text-[10px]' : 'ml-1 px-2 py-0.5 rounded bg-white/15 text-amber-100 font-extrabold text-[10px] border border-white/15');
+        badge.innerText = isDemo ? 'DEMO • CHỈ XEM' : (isAuthenticated ? 'ĐÃ ĐĂNG NHẬP' : 'CHƯA ĐĂNG NHẬP');
+      }
+
+      const authBtn = document.getElementById('btnHeaderAuth');
+      const authText = document.getElementById('txtHeaderAuth');
+      if (authBtn && authText) {
+        authBtn.title = isDemo ? 'Thoát chế độ Demo' : (isAuthenticated ? 'Đăng xuất' : 'Đăng nhập giáo viên');
+        authText.innerText = isDemo ? 'Thoát Demo' : (isAuthenticated ? 'Đăng xuất' : 'Đăng nhập');
+        const icon = authBtn.querySelector('i');
+        if (icon) icon.className = (isAuthenticated || isDemo) ? 'fa-solid fa-right-from-bracket' : 'fa-solid fa-right-to-bracket';
+      }
+
+
+      const createBtn = document.getElementById('btnCreateMeeting');
+      if (createBtn) {
+        createBtn.disabled = isDemo;
+        createBtn.classList.toggle('opacity-60', isDemo);
+        createBtn.classList.toggle('cursor-not-allowed', isDemo);
+        createBtn.title = isDemo ? 'Demo chỉ xem' : '';
+      }
 
       const meetings = appData.meetings || [];
       const responses = meetings.flatMap(m => m.responses || []);
@@ -2172,21 +2084,6 @@ Trân trọng cảm ơn Quý phụ huynh!`;
       document.getElementById('cntTotalResponses').innerText = responses.length;
       document.getElementById('cntTotalAttend').innerText = responses.filter(r => r.status === 'attend').length;
       document.getElementById('cntTotalAbsent').innerText = responses.filter(r => r.status === 'absent').length;
-      document.getElementById('badgePendingOrdersCount').innerText = (appData.orders || []).filter(o => o.status === 'pending').length;
-
-      const btnHeader = document.getElementById('btnHeaderLicenseStatus');
-      const badgeBanner = document.getElementById('bannerLicenseBadge');
-      if (u.isLicensed) {
-        btnHeader.className = 'px-3 py-1.5 rounded-xl bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold transition flex items-center gap-1.5';
-        btnHeader.innerHTML = '<i class="fa-solid fa-crown text-emerald-700"></i> <span>Đã Kích Hoạt Bản Quyền</span>';
-        badgeBanner.className = 'ml-1 px-2 py-0.2 rounded bg-emerald-400 text-stone-950 font-extrabold text-[10px]';
-        badgeBanner.innerText = 'BẢN QUYỀN VĨNH VIỄN';
-      } else {
-        btnHeader.className = 'px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold transition flex items-center gap-1.5 shadow-sm';
-        btnHeader.innerHTML = '<i class="fa-solid fa-crown text-amber-950"></i> <span>Kích Hoạt Bản Quyền (100k)</span>';
-        badgeBanner.className = 'ml-1 px-2 py-0.2 rounded bg-amber-400 text-stone-900 font-extrabold text-[10px]';
-        badgeBanner.innerText = 'BẢN DÙNG THỬ';
-      }
       renderMeetingsList();
     }
 
@@ -2238,14 +2135,16 @@ Trân trọng cảm ơn Quý phụ huynh!`;
           </div>
           <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-stone-100">
             <div class="flex items-center gap-2">
+              ${isTeacherDemoMode() ? '<span class="text-xs text-stone-400 italic">Dữ liệu minh họa</span>' : `
               <button data-action="copy" data-id="${id}" class="meeting-action px-3 py-1.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"><i class="fa-regular fa-copy text-stone-400"></i> Sao chép link</button>
-              <button data-action="qr" data-id="${id}" class="meeting-action px-3.5 py-1.5 rounded-xl border border-amber-300 bg-[#fffbeb] hover:bg-amber-100 text-[#92400e] text-xs font-bold transition flex items-center gap-1.5 shadow-sm"><i class="fa-solid fa-qrcode"></i> QR & Ảnh JPG</button>
+              <button data-action="qr" data-id="${id}" class="meeting-action px-3.5 py-1.5 rounded-xl border border-amber-300 bg-[#fffbeb] hover:bg-amber-100 text-[#92400e] text-xs font-bold transition flex items-center gap-1.5 shadow-sm"><i class="fa-solid fa-qrcode"></i> QR & Ảnh JPG</button>`}
             </div>
             <div class="flex items-center gap-2">
               <button data-action="view" data-id="${id}" class="meeting-action px-3.5 py-1.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"><i class="fa-regular fa-eye text-stone-400"></i> Xem giấy mời</button>
-              <button data-action="responses" data-id="${id}" class="meeting-action px-4 py-2 rounded-xl bg-gradient-to-r from-[#b44509] to-[#963704] hover:from-[#963704] hover:to-[#782802] text-white text-xs font-bold transition flex items-center gap-1.5 shadow"><i class="fa-solid fa-clipboard-check"></i> Quản lý phản hồi (${respCount})</button>
+              <button data-action="responses" data-id="${id}" class="meeting-action px-4 py-2 rounded-xl bg-gradient-to-r from-[#b44509] to-[#963704] hover:from-[#963704] hover:to-[#782802] text-white text-xs font-bold transition flex items-center gap-1.5 shadow"><i class="fa-solid fa-clipboard-check"></i> ${isTeacherDemoMode() ? 'Xem phản hồi mẫu' : 'Quản lý phản hồi'} (${respCount})</button>
+              ${isTeacherDemoMode() ? '<span class="px-2.5 py-1 rounded-lg bg-sky-50 text-sky-700 border border-sky-200 text-[10px] font-bold">CHỈ XEM</span>' : `
               <button data-action="edit" data-id="${id}" class="meeting-action p-2 text-stone-400 hover:text-amber-800 rounded-xl hover:bg-amber-50 transition" title="Chỉnh sửa cuộc họp"><i class="fa-solid fa-pen text-sm"></i></button>
-              <button data-action="delete" data-id="${id}" class="meeting-action p-2 text-stone-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 transition" title="Xóa cuộc họp"><i class="fa-regular fa-trash-can text-sm"></i></button>
+              <button data-action="delete" data-id="${id}" class="meeting-action p-2 text-stone-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 transition" title="Xóa cuộc họp"><i class="fa-regular fa-trash-can text-sm"></i></button>`}
             </div>
           </div>`;
         container.appendChild(card);
@@ -2263,70 +2162,166 @@ Trân trọng cảm ơn Quý phụ huynh!`;
     }
 
     async function handleLoginSubmit() {
-      const u = document.getElementById('loginUsername').value.trim();
+      const email = document.getElementById('loginUsername').value.trim();
       const password = document.getElementById('loginPassword')?.value || '';
-      if (!u) {
-        showToastNotification('Vui lòng nhập email giáo viên.', false);
+      if (!email || !email.includes('@') || !password) {
+        showToastNotification('Vui lòng nhập email và mật khẩu giáo viên.', false);
         return;
       }
-      if (APP_CONFIG.backend.provider === 'local') {
-        appData.currentUser.code = u.toUpperCase();
-        saveAppDatabase();
-        closeModal('authModal');
-        showToastNotification('Đã vào chế độ local demo.');
-        return;
-      }
-      if (!isSupabaseConfigured()) {
-        showToastNotification('Chưa dán Project URL và Publishable key Supabase vào APP_CONFIG.', false);
-        return;
-      }
-      if (!u.includes('@') || !password) {
-        showToastNotification('Supabase Auth cần email và mật khẩu.', false);
+      if (APP_CONFIG.backend.provider !== 'supabase' || !isSupabaseConfigured()) {
+        showToastNotification('Website chưa được cấu hình Supabase.', false);
         return;
       }
       try {
         const client = await getSupabaseClient();
-        const { data, error } = await client.auth.signInWithPassword({ email: u, password });
+        const { data, error } = await client.auth.signInWithPassword({ email, password });
         if (error) throw error;
         const user = data.user;
         appData.currentUser = {
-          code: user.email || 'GV',
+          code: user.email || '',
           name: user.user_metadata?.full_name || user.user_metadata?.name || user.email || 'Giáo viên',
           school: user.user_metadata?.school || '',
-          isLicensed: true
+          isAuthenticated: true
         };
         await hydrateMeetingsFromBackend();
         saveAppDatabase();
         closeModal('authModal');
-        showToastNotification('Đăng nhập Supabase thành công!');
+        document.getElementById('loginPassword').value = '';
+        showToastNotification('Đăng nhập thành công!');
       } catch (err) {
         showToastNotification('Đăng nhập thất bại: ' + err.message, false);
       }
     }
 
-    async function signOutTeacher() {
-      if (APP_CONFIG.backend.provider !== 'supabase') return;
+    function openForgotPasswordModal() {
+      const loginEmail = document.getElementById('loginUsername')?.value?.trim() || '';
+      const emailInput = document.getElementById('forgotPasswordEmail');
+      if (emailInput && loginEmail.includes('@')) emailInput.value = loginEmail;
+      closeModal('authModal');
+      document.getElementById('forgotPasswordModal')?.classList.remove('hidden');
+      document.getElementById('forgotPasswordModal')?.classList.add('flex');
+    }
+
+    async function sendPasswordResetEmail() {
+      const email = document.getElementById('forgotPasswordEmail')?.value?.trim() || '';
+      if (!email || !email.includes('@')) {
+        showToastNotification('Vui lòng nhập email tài khoản hợp lệ.', false);
+        return;
+      }
+      if (APP_CONFIG.backend.provider !== 'supabase' || !isSupabaseConfigured()) {
+        showToastNotification('Website chưa được cấu hình Supabase.', false);
+        return;
+      }
       try {
         const client = await getSupabaseClient();
-        await client.auth.signOut();
-        appData.meetings = [];
-        appData.currentUser = cloneData(defaultDatabase.currentUser);
-        saveAppDatabase();
-        showToastNotification('Đã đăng xuất.');
+        const redirectTo = new URL(window.location.href);
+        redirectTo.search = '';
+        redirectTo.hash = '';
+        redirectTo.searchParams.set('recovery', '1');
+        const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo: redirectTo.toString() });
+        if (error) throw error;
+        closeModal('forgotPasswordModal');
+        showToastNotification('Nếu email tồn tại, hệ thống đã gửi liên kết đặt lại mật khẩu.');
       } catch (err) {
-        showToastNotification('Không thể đăng xuất: ' + err.message, false);
+        console.error('Password reset request failed:', err);
+        showToastNotification('Không thể gửi email đặt lại mật khẩu: ' + err.message, false);
       }
     }
 
-    function loginAsDemoUser() {
-      if (APP_CONFIG.backend.provider === 'supabase') {
-        showToastNotification('Bản Supabase dùng tài khoản giáo viên thật. Hãy đăng nhập bằng email và mật khẩu.', false);
+    function openResetPasswordModal() {
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmNewPassword').value = '';
+      document.getElementById('resetPasswordModal')?.classList.remove('hidden');
+      document.getElementById('resetPasswordModal')?.classList.add('flex');
+    }
+
+    async function submitNewPassword() {
+      const password = document.getElementById('newPassword')?.value || '';
+      const confirmPassword = document.getElementById('confirmNewPassword')?.value || '';
+      if (password.length < 8) {
+        showToastNotification('Mật khẩu mới phải có ít nhất 8 ký tự.', false);
         return;
       }
-      appData.currentUser = { code: "GV001", name: "Cô Nguyễn Thu Hà", school: "Trường THCS Chu Văn An", isLicensed: false };
-      saveAppDatabase();
-      closeModal('authModal');
-      showToastNotification("Đã kích hoạt tài khoản Demo: Cô Nguyễn Thu Hà");
+      if (password !== confirmPassword) {
+        showToastNotification('Hai lần nhập mật khẩu chưa khớp.', false);
+        return;
+      }
+      try {
+        const client = await getSupabaseClient();
+        const { error } = await client.auth.updateUser({ password });
+        if (error) throw error;
+        closeModal('resetPasswordModal');
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete('recovery');
+        cleanUrl.hash = '';
+        window.history.replaceState({}, '', cleanUrl.toString());
+        showToastNotification('Đã cập nhật mật khẩu mới. Bạn có thể tiếp tục sử dụng tài khoản.');
+      } catch (err) {
+        console.error('Update password failed:', err);
+        showToastNotification('Không thể cập nhật mật khẩu: ' + err.message, false);
+      }
+    }
+
+    async function signOutTeacher() {
+      try {
+        if (APP_CONFIG.backend.provider === 'supabase' && isSupabaseConfigured()) {
+          const client = await getSupabaseClient();
+          await client.auth.signOut();
+        }
+      } catch (err) {
+        console.warn('Supabase signOut:', err);
+      } finally {
+        appData = cloneData(defaultDatabase);
+        try { localStorage.removeItem(SYSTEM_STORAGE); } catch (_) {}
+        refreshUI();
+        showToastNotification('Đã đăng xuất.');
+      }
+    }
+
+    async function handleHeaderAuthAction() {
+      if (isTeacherDemoMode()) exitTeacherDemo();
+      else if (appData.currentUser?.isAuthenticated) await signOutTeacher();
+      else openAuthModal();
+    }
+
+    function openPurchaseModal() {
+      document.getElementById('purchaseFormView')?.classList.remove('hidden');
+      document.getElementById('purchasePaymentView')?.classList.add('hidden');
+      const modal = document.getElementById('purchaseModal');
+      if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+    }
+
+    function backToPurchaseForm() {
+      document.getElementById('purchaseFormView')?.classList.remove('hidden');
+      document.getElementById('purchasePaymentView')?.classList.add('hidden');
+    }
+
+    function generatePurchasePayment() {
+      const name = document.getElementById('buyName')?.value.trim() || '';
+      const email = document.getElementById('buyEmail')?.value.trim() || '';
+      const phone = document.getElementById('buyPhone')?.value.trim() || '';
+      const school = document.getElementById('buySchool')?.value.trim() || '';
+      if (!name || !email || !phone) {
+        showToastNotification('Vui lòng nhập họ tên, email và số Zalo.', false);
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToastNotification('Email chưa đúng định dạng.', false);
+        return;
+      }
+      const code = 'GM' + Math.random().toString(36).slice(2, 7).toUpperCase();
+      const transferContent = `MUA ${code}`;
+      const qrUrl = `https://api.vietqr.io/image/${SALES_CONFIG.bankId}-${SALES_CONFIG.accountNo}-compact2.jpg?amount=${SALES_CONFIG.price}&accountName=${encodeURIComponent(SALES_CONFIG.accountName)}&addInfo=${encodeURIComponent(transferContent)}`;
+      document.getElementById('purchaseVietQr').src = qrUrl;
+      document.getElementById('purchaseTransferContent').innerText = transferContent;
+      document.getElementById('purchaseZaloMessage').value = `Chào bạn Dinh, tôi đã chuyển khoản 100.000đ mua gói Giấy Mời Họp Phụ Huynh.\n- Họ tên: ${name}\n- Email đăng nhập: ${email}\n- Zalo: ${phone}\n- Trường: ${school || '—'}\n- Mã thanh toán: ${code}\n- Nội dung CK: ${transferContent}\nNhờ bạn kiểm tra và cấp tài khoản giúp tôi.`;
+      document.getElementById('purchaseFormView').classList.add('hidden');
+      document.getElementById('purchasePaymentView').classList.remove('hidden');
+    }
+
+    async function copyPurchaseZaloMessage() {
+      await copyToClipboard(document.getElementById('purchaseZaloMessage')?.value || '');
+      showToastNotification('Đã sao chép nội dung xác nhận thanh toán.');
     }
 
     function openAuthModal() {
@@ -2370,6 +2365,14 @@ Trân trọng cảm ơn Quý phụ huynh!`;
       if (APP_CONFIG.backend.provider !== 'supabase' || !isSupabaseConfigured()) return;
       try {
         const client = await getSupabaseClient();
+        if (!window.__supabaseAuthListenerInstalled) {
+          window.__supabaseAuthListenerInstalled = true;
+          client.auth.onAuthStateChange((event) => {
+            if (event === 'PASSWORD_RECOVERY') {
+              setTimeout(openResetPasswordModal, 0);
+            }
+          });
+        }
         const { data } = await client.auth.getSession();
         const user = data.session?.user;
         if (user) {
@@ -2377,11 +2380,11 @@ Trân trọng cảm ơn Quý phụ huynh!`;
             code: user.email || 'GV',
             name: user.user_metadata?.full_name || user.user_metadata?.name || user.email || 'Giáo viên',
             school: user.user_metadata?.school || '',
-            isLicensed: true
+            isAuthenticated: true
           };
           await hydrateMeetingsFromBackend();
         } else {
-          appData.meetings = [];
+          appData = cloneData(defaultDatabase);
         }
       } catch (err) {
         console.error('Restore session failed:', err);
@@ -2414,6 +2417,13 @@ Trân trọng cảm ơn Quý phụ huynh!`;
       }
       await restoreSupabaseSession();
       refreshUI();
+      if (new URLSearchParams(window.location.search).get('recovery') === '1') {
+        try {
+          const client = await getSupabaseClient();
+          const { data } = await client.auth.getSession();
+          if (data.session) openResetPasswordModal();
+        } catch (_) {}
+      }
       await openMeetingFromUrlIfAny();
     });
   </script>
